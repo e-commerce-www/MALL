@@ -13,7 +13,7 @@ signup = CreateView.as_view(
     model = User,
     form_class = SignupForm,
     template_name = 'accounts/signup_form.html',
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('songs:home')
 )
 
 login = LoginView.as_view(
@@ -24,6 +24,9 @@ login = LoginView.as_view(
 logout = LogoutView.as_view(
     next_page = 'accounts:login'
 )
+
+def apply_seller(request):
+    return render(request, 'accounts/apply_seller.html')
 
 @login_required
 def profile(request):
