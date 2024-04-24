@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'taggit',
     'apps.payments',
     'apps.accounts',
+    'apps.follows',
     'apps.orders',
     'apps.songs',
     'apps.carts',
