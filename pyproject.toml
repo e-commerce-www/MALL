@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "mall"
+version = "0.1.0"
+description = ""
+authors = ["madEffort <madeffort0903@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.10.12"
+django = "^5.0.4"
+django-environ = "^0.11.2"
+django-taggit = "^5.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
