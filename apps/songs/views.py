@@ -17,3 +17,6 @@ def song_detail(request, pk):
     song = get_object_or_404(Song, pk=pk)
 
     return render(request, "songs/song_detail.html", context={"song": song})
+
+def test(request):
+    return render(request, "songs/test.html")

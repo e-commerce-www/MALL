@@ -1,7 +1,6 @@
 from django.db import models
-
-from django.contrib.auth import get_user_model
 from apps.songs.models import Song
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
