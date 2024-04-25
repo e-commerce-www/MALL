@@ -4,7 +4,7 @@ from apps.songs.models import Song
 
 
 def song_list(request):
-    song_list = get_list_or_404(Song)
+    song_list = Song.objects.all()
     paginator = Paginator(song_list, 10)
 
     page_number = page_number = request.GET.get("page", 1)
@@ -17,6 +17,3 @@ def song_detail(request, pk):
     song = get_object_or_404(Song, pk=pk)
 
     return render(request, "songs/song_detail.html", context={"song": song})
-
-def test(request):
-    return render(request, "songs/test.html")
