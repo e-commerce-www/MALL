@@ -4,8 +4,8 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class Follows(models.Model):
-    follower = models.ForeignKey(User, on_delete=models.CASCADE)
-    following = models.ForeignKey(User, on_delete=models.CASCADE)
+    follower = models.ForeignKey(User, related_name='following_set', on_delete=models.CASCADE)
+    following = models.ForeignKey(User, related_name='followers_set', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     
     class Meta:
