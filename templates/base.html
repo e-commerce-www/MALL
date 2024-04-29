@@ -81,40 +81,51 @@
 <body>
     <div class="wrapper">
         <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white">
             <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="{% url 'home' %}">MVP 로고</a>
-                <!-- <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form> -->
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link" href="#!">검색</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'songs:song_list' %}">음악</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'carts:my_songs' %}">찜한 음악</a></li>
-                    </ul>
-                    {% if user.is_authenticated %}
-                        <a class="btn signup-btn rounded-5" href="{% url 'oauth:profile' %}">마이페이지</a>
-                    {% else %}
-                        <form class="d-flex">
-                            <!-- <button class="btn btn-outline-dark" type="submit">
-                                <i class="bi-cart-fill me-1"></i>
-                                Cart
-                                <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-                            </button> -->
-                            <a class="btn login-btn rounded-5" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                onclick="updateModalText('로그인')">
-                                로그인
-                            </a>
-
-                            <a class="btn signup-btn rounded-5" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                onclick="updateModalText('가입')">
-                                회원가입
-                            </a>
-                        </form>
-                    {% endif %}
-                </div>
+                <nav class="navbar navbar-expand-sm navbar-light bg-white ">
+                    <div class="container">
+                        <a class="navbar-brand" href="{% url 'home' %}">MVP 로고</a>
+                        <button
+                            class="navbar-toggler d-lg-none"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#collapsibleNavId"
+                            aria-controls="collapsibleNavId"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation"
+                        >
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="collapsibleNavId">
+                            <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+                                <li class="nav-item"><a class="nav-link" href="#!">검색</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'songs:song_list' %}">음악</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'carts:my_songs' %}">찜한 음악</a></li>
+                            </ul>
+                
+                            {% if user.is_authenticated %}
+                                <a class="btn signup-btn rounded-5" href="{% url 'oauth:profile' %}">마이페이지</a>
+                            {% else %}
+                                        <form class="d-flex">
+                                            <!-- <button class="btn btn-outline-dark" type="submit">
+                                                <i class="bi-cart-fill me-1"></i>
+                                                Cart
+                                                <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                                            </button> -->
+                                            <a class="btn login-btn rounded-5" data-bs-toggle="modal" data-bs-target="#loginModal"
+                                                onclick="updateModalText('로그인')">
+                                                로그인
+                                            </a>
+                
+                                            <a class="btn signup-btn rounded-5" data-bs-toggle="modal" data-bs-target="#loginModal"
+                                                onclick="updateModalText('가입')">
+                                                회원가입
+                                            </a>
+                                        </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </nav>
             </div>
         </nav>
 
