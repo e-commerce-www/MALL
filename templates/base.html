@@ -95,7 +95,7 @@
                         <li class="nav-item"><a class="nav-link" href="{% url 'carts:my_songs' %}">찜한 음악</a></li>
                     </ul>
                     {% if user.is_authenticated %}
-                        <a class="btn signup-btn rounded-5" href="#">마이페이지 버튼</a>
+                        <a class="btn signup-btn rounded-5" href="{% url 'oauth:profile' %}">마이페이지 버튼</a>
                     {% else %}
                         <form class="d-flex">
                             <!-- <button class="btn btn-outline-dark" type="submit">

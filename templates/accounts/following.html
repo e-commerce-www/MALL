@@ -59,7 +59,7 @@
                 <td>{{ follow.following }}</td>
                 <td>최근 활동 상세</td>
                 <td>
-                    <form action = "{% url 'follows:unfollow' follow.id %}" method="post">
+                    <form action = "{% url 'oauth:unfollow' pk=follow.id %}" method="post"> 
                         {% csrf_token %}
                         <button type="submit" class="btn btn-secondary btn-sm">팔로우 취소</button>
                     </form>

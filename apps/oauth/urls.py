@@ -9,4 +9,6 @@ urlpatterns = [
     path('sales/', views.sales, name='sales'),
     path('download/', views.download, name='download'),
     path('follow/', views.following, name='following'),
+    path('unfollow/<int:pk>/', views.unfollow, name='unfollow'),
+    
 ]
