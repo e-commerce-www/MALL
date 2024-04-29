@@ -1,34 +1,58 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- 캐러샐 -->
-<!-- <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-indicators">
-      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-    </div> -->
 <div class="input-group">
     <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
     <button type="button" class="btn btn-outline-primary">search</button>
 </div>
 <br>
-<div class="card" style="width: 18rem;">
-    <img src="media/image.jpeg" class="card-img-top" alt="...">
-    <div class="card-body">
-      <p class="card-text">노래제목</p>
+{{song_list}}
+<br>
+<h3>신곡 리스트</h3>
+<div class="row">
+  <div class="col-md-3">
+    <div class="card" style="width: 15rem;">
+      <a href="#">
+        <img src="media/image4.jpeg" class="card-img-top" alt="...">
+      </a>
+      <div class="card-body">
+        <p class="card-text">첫만남은 계획대로 되지 않아</p>
+        <p class="card-text">TWS</p>
+      </div>
     </div>
   </div>
-  <div class="card" style="width: 18rem;">
-    <img src="..." class="card-img-top" alt="...">
-    <div class="card-body">
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  <div class="col-md-3">
+    <div class="card" style="width: 15rem;">
+      <a href="#">
+        <img src="media/image2.jpeg" class="card-img-top" alt="...">
+      </a>
+      <div class="card-body">
+        <p class="card-text">Magnetic</p>
+        <p class="card-text">ILLIT</p>
+      </div>
     </div>
   </div>
-  <div class="card" style="width: 18rem;">
-  <img src="..." class="card-img-top" alt="...">
-  <div class="card-body">
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  <div class="col-md-3">
+    <div class="card" style="width: 15rem;">
+      <a href="#">
+        <img src="media/image3.jpeg" class="card-img-top" alt="...">
+      </a>
+      <div class="card-body">
+        <p class="card-text">SHEESH</p>
+        <p class="card-text">BABYMONSTER</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card" style="width: 15rem;">
+      <a href="#">
+        <img src="media/image5.jpeg" class="card-img-top" alt="...">
+      </a>
+      <div class="card-body">
+        <p class="card-text">Hype Boy</p>
+        <p class="card-text">NewJeans</p>
+      </div>
+    </div>
   </div>
 </div>
 <br>
@@ -39,14 +63,19 @@
     <button type="button" class="btn btn-outline-primary">주간 </button>
     <button type="button" class="btn btn-outline-primary">월간</button>
 </div>
+
 <br>
-<div class="list-group">
+  <div class="list-group">
     <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-      The current link item
+      일간 TOP10 리스트
     </a>
-    <a href="#" class="list-group-item list-group-item-action">A second link item</a>
-    <a href="#" class="list-group-item list-group-item-action">A third link item</a>
-    <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
-    <a href="#" class="list-group-item list-group-item-action disabled" tabindex="-1" aria-disabled="true">A disabled link item</a>
+    <a href="#" class="list-group-item list-group-item-action">NewJeans - OMG
+      <br><br><audio src="" controls="controls"></audio></a>
+    <a href="#" class="list-group-item list-group-item-action">NewJeans - ETA
+      <br><br><audio src="" controls="controls"></audio></a>
+    </a>
+    <a href="#" class="list-group-item list-group-item-action">Love wins all - IU
+      <br><br><audio src="" controls="controls"></audio></a>
+    </a>
   </div>
 {% endblock content %}

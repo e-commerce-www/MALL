@@ -1,5 +1,4 @@
 from django.shortcuts import render
-
 # from apps.songs.models import Song
 
 def home(request):
