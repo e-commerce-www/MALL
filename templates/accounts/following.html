@@ -19,6 +19,7 @@
 
     }
 
+
 </style>
 
 {% endblock extra-style %}
@@ -41,35 +42,14 @@
 
 {% endblock %}
 
-
 {% block content %}
 
-<div class = "container">
-    <div class = "row">
-        <div class = "col-md-4 left-section" style="border: 1px solid #000;">
-            <h2>내 정보</h2>
-            <div>프로필 이미지 : <img src="{{ user.profile.url }}" alt="{{user.username}}" width="200px;"></div>
-            <div>닉네임: {{ user.username }}</div>
-            <div>이메일: {{ user.email }}</div>
-        </div>
-
-        <div class = "col-md-8">
-            <div class ="row">
-                <div class = "col-md-12 right-top" style="border: 1px solid #000; margin-left: 20px;">
-                    <h2>다운로드 내역</h2>
-                </div>
-            </div>
-            <div class = "row">
-                <div class = "col-md-12 right-bottom" style="border: 1px solid #000; margin-top: 20px; margin-left:20px;">
-                    <h2>찜한 내역</h2>
-                </div>
-            </div>
-        </div>
+<div class = "followingDetail">
+    <div class = "follow">
+        <ul>
+            <li style = "list-style: none;"><a href = "#">팔로우 판매자ID</a></li>
+        </ul>
     </div>
- 
 </div>
-
-
-
 
 {% endblock %}

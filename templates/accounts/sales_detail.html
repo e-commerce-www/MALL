@@ -19,6 +19,11 @@
 
     }
 
+    /* table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    } */
+
 </style>
 
 {% endblock extra-style %}
@@ -41,35 +46,30 @@
 
 {% endblock %}
 
-
 {% block content %}
 
-<div class = "container">
-    <div class = "row">
-        <div class = "col-md-4 left-section" style="border: 1px solid #000;">
-            <h2>내 정보</h2>
-            <div>프로필 이미지 : <img src="{{ user.profile.url }}" alt="{{user.username}}" width="200px;"></div>
-            <div>닉네임: {{ user.username }}</div>
-            <div>이메일: {{ user.email }}</div>
-        </div>
-
-        <div class = "col-md-8">
-            <div class ="row">
-                <div class = "col-md-12 right-top" style="border: 1px solid #000; margin-left: 20px;">
-                    <h2>다운로드 내역</h2>
-                </div>
-            </div>
-            <div class = "row">
-                <div class = "col-md-12 right-bottom" style="border: 1px solid #000; margin-top: 20px; margin-left:20px;">
-                    <h2>찜한 내역</h2>
-                </div>
-            </div>
-        </div>
-    </div>
- 
+<div class = "container-fluid">
+    <table class ="container-fluid">
+        <thead>
+            <tr>
+                <th scope="col">No.</th>
+                <th scope="col">등록날짜</th>
+                <th scope="col">노래제목</th>
+                <th scope="col">가격</th>
+                <th scope="col">총 판매횟수</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>No. NNN</td>
+                <td>등록날짜 상세</td>
+                <td>노래제목 상세</td>
+                <td>가격 상세</td>
+                <td>판매날짜 상세</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
-
-
 
 
 {% endblock %}

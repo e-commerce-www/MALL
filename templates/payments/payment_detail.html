@@ -1,14 +1,26 @@
-
+{% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
 
-<h1>결제 내역</h1>
+<div class="container py-5">
+    <h1 class="mb-4">결제 내역</h1>
 
-{{ payment.merchant_uid }}
-{{ payment.name }}
-{{ payment.amount }}
-{{ payment.status }}
-{{ payment.is_paid }}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">결제 정보</h5>
+            <p class="card-text">
+                <strong>거래 ID:</strong> {{ payment.merchant_uid }}<br>
+                <div>
+                    <img src="{{ payment.order.song.thumbnail.url }}" alt="{{ payment.name }}" width="200px;">
+                </div>
+                <strong>상품명:</strong> {{ payment.name }}<br>
+                <strong>결제 금액:</strong> {{ payment.amount|intcomma }}원<br>
+                <strong>결제 상태:</strong> {{ payment.get_status_display }}<br>
+                <strong>결제 여부:</strong> {{ payment.is_paid|yesno:"결제 완료,미결제" }}
+            </p>
+        </div>
+    </div>
+</div>
 
 {% endblock content %}
-
