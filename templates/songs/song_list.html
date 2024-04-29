@@ -13,6 +13,20 @@
 </style>
 {% block content %}
 <h1>음악</h1>
+
+태그...
+<div>
+    <ul>
+        {% for se_song in song_list %}
+        <li>{{ se_song.title }} - 
+            {% for tag in se_song.tags.all %}
+                #{{tag.name}}
+            {% endfor %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
 <div>
     <div class="container">
         <div class="row">
