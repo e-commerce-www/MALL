@@ -12,7 +12,7 @@
             <p class="card-text">
                 <strong>거래 ID:</strong> {{ payment.merchant_uid }}<br>
                 <div>
-                    <img src="{{ payment.song.thumbnail.url }}" alt="{{ payment.name }}" width="200px;">
+                    <img src="{{ payment.order.song.thumbnail.url }}" alt="{{ payment.name }}" width="200px;">
                 </div>
                 <strong>상품명:</strong> {{ payment.name }}<br>
                 <strong>결제 금액:</strong> {{ payment.amount|intcomma }}원<br>

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load session_filters %}
 
 <!-- 파란색 배경 카드 가운데로 해서 길게 만들어줌  -->
 <style>
@@ -14,12 +15,12 @@
 {% block content %}
 <h1>음악</h1>
 
-태그...
+<!-- 태그 넣는 법-->
 <div>
     <ul>
-        {% for se_song in song_list %}
-        <li>{{ se_song.title }} - 
-            {% for tag in se_song.tags.all %}
+        {% for song in page_obj %}
+        <li>{{ song.title }} - 
+            {% for tag in song.tags.all %}
                 #{{tag.name}}
             {% endfor %}
         </li>
@@ -58,16 +59,28 @@
                         </a>
                     </div>
                     <div class="col-auto d-flex align-items-center">
-                        <audio controls class="me-3">
-                            <source src="your_song.mp3" type="audio/mpeg">
+                        <audio controls class="me-3" controlsList="nodownload">
+                            <source src="{% url 'songs:song_stream' song.id %}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
-                        <!-- 찜 버튼 -->
-                        <button type="button" class="btn btn-outline-light me-2">찜</button>
-                        <!-- 다운로드 버튼 -->
-                        <form action="{% url 'payments:payment_pay' song.id %}" onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                            <button class="btn btn-outline-light me-2" type="submit" onclick="">구매</button>
-                        </form>
+                        
+                        
+                        <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
+                        {% is_purchased request.user song.id as purchased %}
+                        {% if not purchased %}
+                            <!-- 찜 버튼 -->
+                            <button type="button" class="btn btn-outline-light me-2">찜</button>
+                            <!-- 다운로드 버튼 -->
+                            <form action="{% url 'payments:payment_pay' song.id %}" onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
+                                <button class="btn btn-outline-light me-2" type="submit" onclick="">구매</button>
+                            </form>
+                        {% else %}
+                            <div class="text-white ">
+                                구매한 음원
+                            </div>
+                        {% endif %}
+
+
                     </div>
                 </div>
             </div>
@@ -101,6 +114,15 @@
 
 {% block extra-script %}
 <script>
+    var myAudio = document.getElementById("myAudio");
+
+    function playAudio() {
+        myAudio.play();
+    }
+
+    function pauseAudio() {
+        myAudio.pause();
+    }
     function confirmPurchase(title) {
         return confirm('정말 "' + title + '"을(를) 구매하시겠습니까?');
     }
