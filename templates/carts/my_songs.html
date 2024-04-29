@@ -75,46 +75,45 @@
             </form>
         </div>
         {% endfor %}
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if page_obj.has_other_pages %}
+                    {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
+                    {% endif %}
+        
+                    {% for num in page_range %}
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endfor %}
+        
+                    {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a></li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+        </nav>
     </div>
     <div id="recentMusicList" class="musicList">
         {% for song_id in request.session.viewed_songs %}
-            {% with song=song_id|get_song %}
-                {% if song %}
-                    <div>
-                        <div class="content">
-                            <h3>{{ song.title }}</h3>
-                            <p>{{ song.seller }}</p>
+                {% with song=song_id|get_song %}
+                    {% if song %}
+                        <div>
+                            <div class="content">
+                                <h3>{{ song.title }}</h3>
+                                <p>{{ song.seller }}</p>
+                            </div>
+                            <form action="{% url 'payments:payment_pay' song.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">구매</button>
+                            </form>
                         </div>
-                        <form action="{% url 'payments:payment_pay' song.id %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">구매</button>
-                        </form>
-                    </div>
-                {% endif %}
-            {% endwith %}
+                    {% endif %}
+                {% endwith %}
         {% endfor %}
     </div>
 </div>
 
-<nav aria-label="Page navigation example">
-    <ul class="pagination">
-        {% if page_obj.has_other_pages %}
-        {% if page_obj.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
-        </li>
-        {% endif %}
 
-        {% for num in page_obj.paginator.page_range %}
-        <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link"
-                href="?page={{ num }}">{{ num }}</a></li>
-        {% endfor %}
-
-        {% if page_obj.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a></li>
-        {% endif %}
-        {% endif %}
-    </ul>
-</nav>
 
 {% endblock content %}
 

@@ -13,6 +13,7 @@ def payment_pay(request, pk):
 
     payment = Payment.objects.create(
         user=request.user,
+        song=song,
         name=song.title,
         amount=song.price,
     )
