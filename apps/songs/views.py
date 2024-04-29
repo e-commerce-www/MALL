@@ -10,7 +10,7 @@ def song_list(request):
     page_number = page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
 
-    return render(request, "songs/song_list.html", context={"page_obj": page_obj})
+    return render(request, "songs/song_list.html", context={"page_obj": page_obj, "song_list" : song_list})
 
 
 def song_detail(request, pk):
