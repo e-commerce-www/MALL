@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from apps.songs.models import Song
+from apps.orders.models import Order
 from .models import Payment
 from django.http import Http404
 from django.conf import settings
@@ -11,10 +12,16 @@ from django.conf import settings
 def payment_pay(request, pk):
     song = Song.objects.get(pk=pk)
 
-    payment = Payment.objects.create(
+    order = Order.objects.create(
         user=request.user,
-        name=song.title,
+        song=song,
         amount=song.price,
+    )
+
+    payment = Payment.objects.create(
+        order=order,
+        name=order.song.title,
+        amount=order.amount,
     )
 
     payment_props = {
@@ -40,7 +47,7 @@ def payment_pay(request, pk):
 @login_required
 def payment_verify(request, pk):
     payment = get_object_or_404(Payment, pk=pk)
-    if request.user == payment.user:
+    if request.user == payment.order.user:
         payment.verify()
         return redirect("payments:payment_detail", pk=payment.pk)
     else:
@@ -50,7 +57,7 @@ def payment_verify(request, pk):
 @login_required
 def payment_detail(request, pk):
     payment = get_object_or_404(Payment, pk=pk)
-    if request.user == payment.user:
+    if request.user == payment.order.user:
         return render(
             request,
             "payments/payment_detail.html",

@@ -94,22 +94,26 @@
                         <li class="nav-item"><a class="nav-link" href="{% url 'songs:song_list' %}">음악</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'carts:my_songs' %}">찜한 음악</a></li>
                     </ul>
-                    <form class="d-flex">
-                        <!-- <button class="btn btn-outline-dark" type="submit">
-                            <i class="bi-cart-fill me-1"></i>
-                            Cart
-                            <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-                        </button> -->
-                        <a class="btn login-btn rounded-5" data-bs-toggle="modal" data-bs-target="#loginModal"
-                            onclick="updateModalText('로그인')">
-                            로그인
-                        </a>
+                    {% if user.is_authenticated %}
+                        <a class="btn signup-btn rounded-5" href="{% url 'oauth:profile' %}">마이페이지</a>
+                    {% else %}
+                        <form class="d-flex">
+                            <!-- <button class="btn btn-outline-dark" type="submit">
+                                <i class="bi-cart-fill me-1"></i>
+                                Cart
+                                <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                            </button> -->
+                            <a class="btn login-btn rounded-5" data-bs-toggle="modal" data-bs-target="#loginModal"
+                                onclick="updateModalText('로그인')">
+                                로그인
+                            </a>
 
-                        <a class="btn signup-btn rounded-5" data-bs-toggle="modal" data-bs-target="#loginModal"
-                            onclick="updateModalText('가입')">
-                            회원가입
-                        </a>
-                    </form>
+                            <a class="btn signup-btn rounded-5" data-bs-toggle="modal" data-bs-target="#loginModal"
+                                onclick="updateModalText('가입')">
+                                회원가입
+                            </a>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </nav>
@@ -139,13 +143,18 @@
             crossorigin="anonymous"></script>
         <script>
             function updateModalText(action) {
+                const modalKind = document.getElementById('loginModalLabel');
                 const googleButton = document.getElementById('googleAuthAction');
                 const naverLink = document.getElementById('naverAuthAction');
-                const kakaoLink = document.getElementById('kakaoAuthAction');
-
+                
+                
+                if(action === '가입') {
+                    modalKind.textContent = `회원${action}`;
+                } else {
+                    modalKind.textContent = `${action}`;
+                }
                 googleButton.textContent = `구글 계정으로 ${action}`;
                 naverLink.textContent = `네이버 계정으로 ${action}`;
-                kakaoLink.textContent = `카카오 계정으로 ${action}`;
             }
         </script>
         {% block extra-script %} {% endblock extra-script %}
@@ -169,6 +178,7 @@
                 </div>
             </div>
         </div>
+    </div>
 </body>
 
 </html>
