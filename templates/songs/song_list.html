@@ -58,6 +58,13 @@
                             <small class="text-secondary text-white">작곡가: {{ song.seller }}</small>
                         </a>
                     </div>
+                    <div class="col-auto">
+                        <div class="d-flex justify-content-center">
+                            {% for tag in song.tags.all %}
+                            <span class="badge bg-dark text-white me-1" style="font-size: 1.2rem;">#{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
                     <div class="col-auto d-flex align-items-center">
                         <audio controls class="me-3" controlsList="nodownload">
                             <source src="{% url 'songs:song_stream' song.id %}" type="audio/mpeg">
