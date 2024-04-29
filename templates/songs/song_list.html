@@ -12,6 +12,18 @@
     </ul>
 </div>
 
+<div>
+    <ul>
+        {% for se_song in song_list %}
+        <li>{{ se_song.title }} - 
+            {% for tag in se_song.tags.all %}
+                #{{tag.name}}
+            {% endfor %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
 {% if page_obj.has_other_pages %}
 <div>
     <ul class="pagination">
