@@ -1,5 +1,4 @@
 
-
 import django.db.models.deletion
 import taggit.managers
 from django.conf import settings

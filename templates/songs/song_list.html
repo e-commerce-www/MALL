@@ -1,17 +1,20 @@
 {% extends 'base.html' %}
 
+<!-- 파란색 배경 카드 가운데로 해서 길게 만들어줌  -->
+<style>
+    .card-horizontal {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .card-horizontal .card-body {
+        flex: 1;
+    }
+</style>
 {% block content %}
-<h1>노래페이지</h1>
+<h1>음악</h1>
 
-
-<div>
-    <ul>
-        {% for song in page_obj %}
-        <li>{{ song }}</li>
-        {% endfor %}
-    </ul>
-</div>
-
+태그...
 <div>
     <ul>
         {% for se_song in song_list %}
@@ -24,27 +27,82 @@
     </ul>
 </div>
 
-{% if page_obj.has_other_pages %}
 <div>
-    <ul class="pagination">
-        {% if page_obj.has_previous %}
-        <li><a href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
-        {% endif %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <form class="d-flex">
+                    <input class="form-control me-sm-2" type="search" placeholder="Search">
+                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+        <div class="row mt-3 mb-3">
+            <div class="col">
+                <div class="btn-group" role="group" aria-label="Sort">
+                    <button type="button" class="btn btn-secondary">최신순</button>
+                    <button type="button" class="btn btn-secondary">인기순</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-        <li class="active"><span>{{ num }}</span></li>
-        {% else %}
-        <li><a href="?page={{ num }}">{{ num }}</a></li>
-        {% endif %}
+    <div>
+        {% for song in page_obj %}
+            <div class="container-fluid p-0 mt-1">
+                <div class="row justify-content-between align-items-center bg-dark p-3 shadow">
+                    <div class="col-auto">
+                        <a href="{% url 'songs:song_detail' song.id %}"> <!-- 노래 세부 내용 페이지로 링크 -->
+                            <h5 class="text-white mb-0">노래 제목 : {{ song.title }}</h5>
+                            <small class="text-secondary text-white">작곡가: {{ song.seller }}</small>
+                        </a>
+                    </div>
+                    <div class="col-auto d-flex align-items-center">
+                        <audio controls class="me-3">
+                            <source src="your_song.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                        <!-- 찜 버튼 -->
+                        <button type="button" class="btn btn-outline-light me-2">찜</button>
+                        <!-- 다운로드 버튼 -->
+                        <form action="{% url 'payments:payment_pay' song.id %}" onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
+                            <button class="btn btn-outline-light me-2" type="submit" onclick="">구매</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
+    </div>
+    
+    <div class="container mt-3">
+        <div class="d-flex justify-content-center">
+            <div>
+                <ul class="pagination">
+                {% if page_obj.has_other_pages %}
+                    {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
+                    {% endif %}
+        
+                    {% for num in page_range %}
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endfor %}
+        
+                    {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a></li>
+                    {% endif %}
+                {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
 
-        {% if page_obj.has_next %}
-        <li><a href="?page={{ page_obj.next_page_number }}">Next &raquo;</a></li>
-        {% endif %}
-    </ul>
 </div>
-
-
-{% endif %}
 {% endblock content %}
+
+{% block extra-script %}
+<script>
+    function confirmPurchase(title) {
+        return confirm('정말 "' + title + '"을(를) 구매하시겠습니까?');
+    }
+</script>
+{% endblock extra-script %}
