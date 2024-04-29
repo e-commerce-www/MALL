@@ -19,6 +19,7 @@
 
     }
 
+
 </style>
 
 {% endblock extra-style %}
@@ -44,24 +45,11 @@
 {% block content %}
 
 <div class = "followingDetail">
-    <table class ="container-fluid">
-        <thead>
-            <tr>
-                <th scope="col">노래제목</th>
-                <th scope="col"></th>
-                <th scope="col">판매자</th>
-                <th scope="col">가격</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>노래제목 상세</td>
-                <td><audio src="sound.mp3" autoplay loop controls id="myAudio"></audio></td>
-                <td>판매자 상세</td>
-                <td>가격 상세</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class = "follow">
+        <ul style = "text-decoration: none;">
+            <li style = "list-style: none;"><a href = "#">팔로우 판매자ID</a></li>
+        </ul>
+    </div>
 </div>
 
 {% endblock %}
