@@ -2,10 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from apps.orders.models import Order
 from .forms import UserEditForm
+    
 
 # Create your views here.
 def profile(request):
-    
     if request.method == 'POST':
         form = UserEditForm(request.POST, request.FILES, instance=request.user)  # request.user는 현재 로그인한 사용자의 인스턴스
         if form.is_valid():
