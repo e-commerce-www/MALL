@@ -8,10 +8,7 @@
         border-top: 1px solid black;
         border-bottom: 1px solid black;
     }
-    a {
-        text-decoration: none;
-        color: black;
-    }
+
     .remenu li {
         display: inline;
         margin-left: 20px;
@@ -30,11 +27,11 @@
     <h2 style = "padding-left:30px">마이페이지</h2>
     <div class = "remenu">
         <ul>
-            <li><a href = "{% url 'oauth:profile' %}">홈</a></li>
-            <li><a href = "{% url 'oauth:purchase' %}">구매내역</a></li>
-            <li><a href = "{% url 'oauth:sales' %}">판매내역</a></li>
-            <li><a href = "{% url 'oauth:download' %}">음악 다운로드</a></li>
-            <li><a href = "{% url 'oauth:following' %}">뮤지션 팔로우</a></li>
+            <li><a href = "{% url 'oauth:profile' %}" class="text-decoration-none text-black">홈</a></li>
+            <li><a href = "{% url 'oauth:purchase' %}" class="text-decoration-none text-black">구매내역</a></li>
+            <li><a href = "{% url 'oauth:sales' %}" class="text-decoration-none text-black">판매내역</a></li>
+            <li><a href = "{% url 'oauth:download' %}" class="text-decoration-none text-black">음악 다운로드</a></li>
+            <li><a href = "{% url 'oauth:following' %}" class="text-decoration-none text-black">뮤지션 팔로우</a></li>
         </ul>
     </div>
 
@@ -44,12 +41,33 @@
 
 {% block content %}
 
+
 <div class = "followingDetail">
-    <div class = "follow">
-        <ul>
-            <li style = "list-style: none;"><a href = "#">팔로우 판매자ID</a></li>
-        </ul>
-    </div>
+    <table class = "container-fluid">
+        <thead>
+            <tr>
+                <th scope="col">No.</th>
+                <th scope="col">뮤지션 정보</th>
+                <th scope="col">최근 활동</th>
+                <th scope="col">취소</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for follow in follows %}
+            <tr>
+                <td>No. {{ follow.id }}</td>
+                <td>{{ follow.following }}</td>
+                <td>최근 활동 상세</td>
+                <td>
+                    <form action = "{% url 'follows:unfollow' follow.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary btn-sm">팔로우 취소</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 {% endblock %}
