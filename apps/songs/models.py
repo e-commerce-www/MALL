@@ -44,3 +44,6 @@ class Song(models.Model):
     price = models.PositiveIntegerField()
     seller = models.ForeignKey(User, on_delete=models.CASCADE)
     
+    def __str__(self) -> str:
+        return self.title
+    

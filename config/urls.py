@@ -33,6 +33,7 @@ urlpatterns = [
     path('accounts/', include('apps.oauth.urls')),
     path('orders/', include('apps.orders.urls')),
     path('mySongs/', include('apps.carts.urls')),
+    path('search/', views.SearchFormView.as_view(), name='search'),
     path('payments/', include('apps.payments.urls')),
-
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
