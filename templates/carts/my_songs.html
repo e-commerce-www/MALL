@@ -33,6 +33,7 @@
     .content {
         flex: 1;
         margin-right: 10px;
+        margin-bottom: 0px; /* 내용과 버튼 사이의 간격 설정 */
     }
 
     .pagination {
@@ -48,6 +49,25 @@
     .musicList {
         display: none;
     }
+    .song-list {
+        display: flex; /* 가로로 배치하기 위해 flex 속성 추가 */
+        flex-wrap: wrap; /* 너비를 벗어나면 다음 줄로 넘어감 */
+        gap: 10px; /* 각 항목 사이의 간격 설정 */
+    }
+
+    .song-item {
+        width: calc(100%); /* 각 항목의 너비를 반으로 설정하고 간격을 고려 */
+        background-color: #9e9e9e; /* 배경색 설정 */
+        padding: 15px; /* 내부 여백 설정 */
+        border-radius: 30px; /* 모서리 둥글게 */
+        margin-bottom: 10px;
+    }
+
+    .btn
+
+    .purchase-form {
+        margin-right: auto; /* 구매 버튼을 항목의 오른쪽에 배치 */
+    }
 </style>
 {% endblock extra-style %}
 
@@ -55,26 +75,28 @@
 
 
 <div class="shopping-cart">
-    <h2>찜한 음악</h2>
-    <div>
+    <h2>My Carts</h2>
+    <div style="margin-bottom: 30px;">
         <input type="radio" class="btn-check" name="options-base" id="favoritesList" autocomplete="off">
         <label class="btn" for="favoritesList">Favorites</label>
         <input type="radio" class="btn-check" name="options-base" id="recentList" autocomplete="off">
         <label class="btn" for="recentList">최근 본 음악</label>
     </div>
-    <div id="favoritesMusicList" class="musicList">
+    <div id="favoritesMusicList" class="song-list">
         {% for my_song in page_obj %}
-        <div>
+        <div class="song-item">
             <div class="content">
-                <h3>타이틀: {{ my_song.song.title }}</h3>
-                <p>아티스트: {{ my_song.song.seller }}</p>
+                <h5>{{ my_song.song.title }}</h5>
+                <p>produced by: {{ my_song.song.seller }}</p>
             </div>
-            <form action="{% url 'payments:payment_pay' my_song.song.id %}" method="post">
+            <form action="{% url 'payments:payment_pay' my_song.song.id %}" method="post" class="purchase-form">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger">구매</button>
             </form>
         </div>
         {% endfor %}
+    </div>
+    
         <nav aria-label="Page navigation example">
             <ul class="pagination">
                 {% if page_obj.has_other_pages %}
