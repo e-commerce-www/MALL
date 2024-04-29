@@ -22,10 +22,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
+# 포트원
+PORTONE_SHOP_ID = config('PORTONE_SHOP_ID')
+PORTONE_API_KEY = config('PORTONE_API_KEY')
+PORTONE_API_SECRET = config('PORTONE_API_SECRET')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 SITE_ID = 3
 
@@ -51,13 +56,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    # humanize
+    'django.contrib.humanize',
     # oauth
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.naver',
-    'allauth.socialaccount.providers.kakao',
+    # 'allauth.socialaccount.providers.kakao',
     # libraries
     'taggit',
     # apps
@@ -67,6 +74,7 @@ INSTALLED_APPS = [
     'apps.oauth',
     'apps.songs',
     'apps.carts',
+    'apps',
 ]
 
 
@@ -159,6 +167,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -176,11 +185,14 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-ACCOUNT_EMAIL_REQUIRED = False
+LOGIN_REDIRECT_URL = 'home'
+
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-SOCIALACCOUNT_AUTO_SIGNUP = False
+SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
-
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR/'media'
+ACCOUNT_LOGOUT_ON_GET = True
+SOCIALACCOUNT_ONLY = True

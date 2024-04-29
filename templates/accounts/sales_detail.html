@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block extra-style %} 
+<style>
+    .remenu {
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+    a {
+        text-decoration: none;
+        color: black;
+    }
+    .remenu li {
+        display: inline;
+        margin-left: 20px;
+        margin-right: 20px;
+
+    }
+
+    /* table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    } */
+
+</style>
+
+{% endblock extra-style %}
+
+{% block header %}
+
+<div class = "container mt-5">
+    <h2 style = "padding-left:30px">마이페이지</h2>
+    <div class = "remenu">
+        <ul>
+            <li><a href = "{% url 'oauth:profile' %}">홈</a></li>
+            <li><a href = "{% url 'oauth:purchase' %}">구매내역</a></li>
+            <li><a href = "{% url 'oauth:sales' %}">판매내역</a></li>
+            <li><a href = "{% url 'oauth:download' %}">음악 다운로드</a></li>
+            <li><a href = "{% url 'oauth:following' %}">뮤지션 팔로우</a></li>
+        </ul>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block content %}
+
+<div class = "container-fluid">
+    <table class ="container-fluid">
+        <thead>
+            <tr>
+                <th scope="col">No.</th>
+                <th scope="col">등록날짜</th>
+                <th scope="col">노래제목</th>
+                <th scope="col">가격</th>
+                <th scope="col">총 판매횟수</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>No. NNN</td>
+                <td>등록날짜 상세</td>
+                <td>노래제목 상세</td>
+                <td>가격 상세</td>
+                <td>판매날짜 상세</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

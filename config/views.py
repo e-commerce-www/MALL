@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from apps.songs.models import Song
-
-# from apps.songs.models import Song
+from django.views.generic import FormView
+from apps.songs.forms import PostSearchForm
+from django.db.models import Q
 
 def home(request):
     
@@ -15,10 +16,6 @@ def custom_404(request, exception):
     return render(request, '404.html', status=404)
 
 
-from django.views.generic import FormView
-from apps.songs.forms import PostSearchForm
-from django.db.models import Q
-#--- FormView
 class SearchFormView(FormView): 
     form_class = PostSearchForm 
     template_name = 'search/post_search.html' 
@@ -36,3 +33,11 @@ class SearchFormView(FormView):
         context['object_list'] = post_list 
 
         return render(self.request, self.template_name, context)
+
+    # songs = Song.objects.all() 노래 가져오기 예시
+    
+    return render(request, 'home.html')
+
+def custom_404(request, exception):
+    return render(request, '404.html', status=404)
+

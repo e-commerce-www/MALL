@@ -1,0 +1,27 @@
+
+
+{% block content %}
+
+{{payment_props|json_script:"payment-props"}}
+<script>window.PAYMENT_VERIFY_URL = "{{ payment_verify_url }}"</script>
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<script>
+    (function() {
+        const IMP = window.IMP;
+        const code = "{{ portone_shop_id }}"
+        IMP.init(code);
+
+        const merchant_uid = '{{ payment.merchant_uid }}'
+        const props_json = document.getElementById('payment-props').textContent;
+        const props = JSON.parse(props_json)
+
+        console.log(props)
+
+        IMP.request_pay(props, function (response) {
+            location.href = window.PAYMENT_VERIFY_URL;
+        });
+    })();
+</script>
+
+
+{% endblock content %}

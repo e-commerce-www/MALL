@@ -1,0 +1,75 @@
+{% extends 'base.html'%}
+{% load humanize %}
+
+{% block extra-style %} 
+<style>
+    .remenu {
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+    .remenu li {
+        display: inline;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    /* table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    } */
+    
+
+</style>
+
+{% endblock extra-style %}
+
+
+{% block header %}
+
+<div class = "container mt-5">
+    <h2 style="padding-left:30px;">마이페이지</h2>
+    <div class = "remenu">
+        <ul>
+            <li><a class="text-decoration-none " href = "{% url 'oauth:profile' %}">홈</a></li>
+            <li><a class="text-decoration-none text-black " href = "{% url 'oauth:purchase' %}">구매내역</a></li>
+            <li><a href = "{% url 'oauth:sales' %}">판매내역</a></li>
+            <li><a href = "{% url 'oauth:download' %}">음악 다운로드</a></li>
+            <li><a href = "{% url 'oauth:following' %}">뮤지션 팔로우</a></li>
+        </ul>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block content %}
+<div class = "container-fluid">
+    <table class ="container-fluid">
+        <thead>
+            <tr>
+                <th scope="col">No.</th>
+                <th scope="col">구매날짜</th>
+                <th scope="col">노래제목</th>
+                <th scope="col">판매자</th>
+                <th scope="col">가격</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for order in orders %}
+            <tr>
+                <td>No. {{order.id}}</td>
+                <td><a href="{% url 'payments:payment_detail' order.song.id %}">{{ order.created_at }}</a></td>
+                <td>{{ order.song.title }}</td>
+                <td>{{ order.song.seller }}</td>
+                <td>{{ order.amount|intcomma }}원</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
