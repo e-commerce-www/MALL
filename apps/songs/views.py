@@ -15,5 +15,13 @@ def song_list(request):
 
 def song_detail(request, pk):
     song = get_object_or_404(Song, pk=pk)
+    
+    viewed_songs = request.session.get('viewed_products', [])
+    
+    if song.id not in viewed_songs:
+        viewed_songs.insert(0, song.id)
+        viewed_songs = viewed_songs[:10]
+    
+    request.session['viewed_songs'] = viewed_songs
 
     return render(request, "songs/song_detail.html", context={"song": song})

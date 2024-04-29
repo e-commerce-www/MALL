@@ -16,14 +16,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.generic import RedirectView
+from . import views
+
+handler404 = 'config.views.custom_404'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('apps.oauth.urls')),
+    path('', views.home, name='index'),
+    path('home/', views.home, name='home'),
+    path('songs/', include('apps.songs.urls')),
+    path('accounts/signup/', RedirectView.as_view(pattern_name='account_login', permanent=True)),
     path('accounts/', include('allauth.urls')),
+    path('accounts/', include('apps.oauth.urls')),
     path('orders/', include('apps.orders.urls')),
     path('mySongs/', include('apps.carts.urls')),
-    path('', include('apps.songs.urls')),
-    
-    
-]
+    path('payments/', include('apps.payments.urls')),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
