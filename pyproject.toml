@@ -13,6 +13,8 @@ psycopg2-binary = "^2.9.9"
 pillow = "^10.3.0"
 python-decouple = "^3.8"
 django-allauth = "0.61.1"
+requests = "2.26.0"
+iamport-rest-client = "^0.9.0"
 
 
 [build-system]

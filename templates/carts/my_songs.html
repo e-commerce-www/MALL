@@ -1,31 +1,144 @@
-<h1>찜한 음악</h1>
+{% extends "base.html" %}
+{% load session_filters %}
 
-<div>
-    <ul>
+{% block extra-style %}
+<style>
+    input[type="radio"].btn-check {
+        display: block;
+    }
+
+    input[type="radio"].btn-check+label.btn {
+        cursor: pointer;
+        padding: 10px 20px;
+        border: 2px solid transparent;
+        border-radius: 5px;
+        margin-right: 50px;
+    }
+
+    input[type="radio"].btn-check:focus+label.btn {
+        border-color: #000000;
+        /* Change border color on focus */
+    }
+
+    .musicItem {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        background-color: #f0f0f0;
+    }
+
+    .content {
+        flex: 1;
+        margin-right: 10px;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+    }
+
+    #favoritesMusicList {
+        display: block; /* Show Favorites by default */
+    }
+
+    /* Initially hidden */
+    .musicList {
+        display: none;
+    }
+</style>
+{% endblock extra-style %}
+
+{% block content %}
+
+
+<div class="shopping-cart">
+    <h2>찜한 음악</h2>
+    <div>
+        <input type="radio" class="btn-check" name="options-base" id="favoritesList" autocomplete="off">
+        <label class="btn" for="favoritesList">Favorites</label>
+        <input type="radio" class="btn-check" name="options-base" id="recentList" autocomplete="off">
+        <label class="btn" for="recentList">최근 본 음악</label>
+    </div>
+    <div id="favoritesMusicList" class="musicList">
         {% for my_song in page_obj %}
-            <li>{{ my_song.song }}</li>
+        <div>
+            <div class="content">
+                <h3>타이틀: {{ my_song.song.title }}</h3>
+                <p>아티스트: {{ my_song.song.seller }}</p>
+            </div>
+            <form action="{% url 'payments:payment_pay' my_song.song.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">구매</button>
+            </form>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
+    <div id="recentMusicList" class="musicList">
+        {% for song_id in request.session.viewed_songs %}
+            {% with song=song_id|get_song %}
+                {% if song %}
+                    <div>
+                        <div class="content">
+                            <h3>{{ song.title }}</h3>
+                            <p>{{ song.seller }}</p>
+                        </div>
+                        <form action="{% url 'payments:payment_pay' song.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">구매</button>
+                        </form>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        {% endfor %}
+    </div>
 </div>
 
-{% if page_obj.has_other_pages %}
-    <div>
-        <ul class="pagination">
-            {% if page_obj.has_previous %}
-                <li><a href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
-            {% endif %}
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        {% if page_obj.has_other_pages %}
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+        </li>
+        {% endif %}
 
-            {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                    <li class="active"><span>{{ num }}</span></li>
-                {% else %}
-                    <li><a href="?page={{ num }}">{{ num }}</a></li>
-                {% endif %}
-            {% endfor %}
+        {% for num in page_obj.paginator.page_range %}
+        <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link"
+                href="?page={{ num }}">{{ num }}</a></li>
+        {% endfor %}
 
-            {% if page_obj.has_next %}
-                <li><a href="?page={{ page_obj.next_page_number }}">Next &raquo;</a></li>
-            {% endif %}
-        </ul>
-    </div>
-{% endif %}
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a></li>
+        {% endif %}
+        {% endif %}
+    </ul>
+</nav>
+
+{% endblock content %}
+
+{% block extra-script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var favBtn = document.getElementById('favoritesList');
+        var recBtn = document.getElementById('recentList');
+        var favList = document.getElementById('favoritesMusicList');
+        var recList = document.getElementById('recentMusicList');
+
+        favBtn.addEventListener('change', function () {
+            if (favBtn.checked) {
+                favList.style.display = 'block';
+                recList.style.display = 'none';
+            }
+        });
+
+        recBtn.addEventListener('change', function () {
+            if (recBtn.checked) {
+                recList.style.display = 'block';
+                favList.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock extra-script %}
