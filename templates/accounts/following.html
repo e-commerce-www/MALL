@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block extra-style %} 
+<style>
+    .remenu {
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+    a {
+        text-decoration: none;
+        color: black;
+    }
+    .remenu li {
+        display: inline;
+        margin-left: 20px;
+        margin-right: 20px;
+
+    }
+
+</style>
+
+{% endblock extra-style %}
+
+{% block header %}
+
+<div class = "container mt-5">
+    <h2 style = "padding-left:30px">마이페이지</h2>
+    <div class = "remenu">
+        <ul>
+            <li><a href = "{% url 'oauth:profile' %}">홈</a></li>
+            <li><a href = "{% url 'oauth:purchase' %}">구매내역</a></li>
+            <li><a href = "{% url 'oauth:sales' %}">판매내역</a></li>
+            <li><a href = "{% url 'oauth:download' %}">음악 다운로드</a></li>
+            <li><a href = "{% url 'oauth:following' %}">뮤지션 팔로우</a></li>
+        </ul>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block content %}
+
+<div class = "followingDetail">
+    <table class ="container-fluid">
+        <thead>
+            <tr>
+                <th scope="col">노래제목</th>
+                <th scope="col"></th>
+                <th scope="col">판매자</th>
+                <th scope="col">가격</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>노래제목 상세</td>
+                <td><audio src="sound.mp3" autoplay loop controls id="myAudio"></audio></td>
+                <td>판매자 상세</td>
+                <td>가격 상세</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
