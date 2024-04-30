@@ -2,6 +2,37 @@
 
 {% block content %}
 <h1>홈페이지</h1>
+<form id="search-form">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">search</button>
+</form>
+<div>검색한 입력어: </div>
+<div id="display-content"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  document.getElementById("search-form").addEventListener('submit', function(event) {
+      event.preventDefault();
+      const search_name_value = document.getElementById('id_name').value;
+      const display_content = document.getElementById('display-content');
+      axios({
+          method: 'post',
+          url: '{% url "search" %}',
+          data: JSON.stringify({
+              name: search_name_value
+          }),
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': '{{ csrf_token }}'
+          }
+      })
+      .then(response => {
+          display_content.textContent = response.data.success;
+      })
+      .catch(error => console.log(error));
+  });
+</script>
 <br>
 <div class="row">
     <div class="col-12">
