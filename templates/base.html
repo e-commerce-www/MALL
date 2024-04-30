@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Shop Homepage - Start Bootstrap Template</title>
+    <title>MVP:Music Value Platform</title>
 
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
@@ -92,30 +92,29 @@
                     </button>
                     <div class="collapse navbar-collapse" id="collapsibleNavId">
                         <ul class="navbar-nav me-auto mt-2 mt-lg-0">
-                            <li class="nav-item"><a class="nav-link" href="#!">검색</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'songs:song_list' %}">음악</a></li>
                             <li class="nav-item"><button class="nav-link" onclick="mySongFunc()">찜한 음악</button></li>
                         </ul>
 
                         {% if user.is_authenticated %}
-                        <a href="{% url 'account_logout' %}">로그아웃</a>
-                        <a class="btn signup-btn rounded-5" href="{% url 'oauth:profile' %}">마이페이지</a>
+                        <ul class="navbar-nav d-flex">
+                            <li class="nav-item "><a class="nav-link " href="{% url 'oauth:profile' %}">마이페이지</a></li>
+                            <li class="nav-item "><a class="nav-link " href="{% url 'account_logout' %}">로그아웃</a></li>
+                        </ul>
                         {% else %}
                         <form class="d-flex">
-                            <!-- <button class="btn btn-outline-dark" type="submit">
-                                                <i class="bi-cart-fill me-1"></i>
-                                                Cart
-                                                <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-                                            </button> -->
-                            <a class="btn login-btn rounded-5" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                onclick="updateModalText('로그인')">
-                                로그인
-                            </a>
-
-                            <a class="btn signup-btn rounded-5" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                onclick="updateModalText('가입')">
-                                회원가입
-                            </a>
+                            <ul class="navbar-nav d-flex">
+                                <li class="nav-item "><a class="nav-link " data-bs-toggle="modal"
+                                        data-bs-target="#loginModal" onclick="updateModalText('로그인')" href="#">
+                                        로그인
+                                    </a></li>
+                                <li class="nav-item ">
+                                    <a class="nav-link " data-bs-toggle="modal" data-bs-target="#loginModal"
+                                        onclick="updateModalText('가입')" href="#">
+                                        회원가입
+                                    </a>
+                                </li>
+                            </ul>
                         </form>
                         {% endif %}
                     </div>
@@ -165,12 +164,12 @@
 
             function mySongFunc() {
                 {% if user.is_authenticated %}
-                    window.location.href = "{% url 'carts:my_songs' %}"; // Django URL 리버싱 사용
+                window.location.href = "{% url 'carts:my_songs' %}"; // Django URL 리버싱 사용
                 {% else %}
-                    var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
-                        keyboard: false
-                    });
-                    loginModal.show();
+                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
+                    keyboard: false
+                });
+                loginModal.show();
                 {% endif %}
             }
         </script>
