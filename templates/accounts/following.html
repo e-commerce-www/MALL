@@ -16,7 +16,6 @@
 
     }
 
-
 </style>
 
 {% endblock extra-style %}
@@ -53,9 +52,9 @@
                 <td>&nbsp;</td>
             </tr>
             <tr>
-                <td>No. {{ forloop.counter }}</td>
-                <td><a href = "#">{{ follow.following.username }}</a></td>
-                <td>
+                <td class = "text-white">No. {{ forloop.counter }}</td>
+                <td><a href = "#" class = "text-white">{{ follow.following.username }}</a></td>
+                <td class = "text-white">
                     {% if follow.recent_songs %}
                         {{follow.recent_songs.0.title}}을 등록하셨습니다.
                     {% else %}
@@ -65,7 +64,7 @@
                 <td>
                     <form action = "{% url 'oauth:unfollow' pk=follow.id %}" method="post"> 
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-secondary btn-sm">팔로우 취소</button>
+                        <button type="submit" class="btn btn-outline-light me-2">팔로우 취소</button>
                     </form>
                 </td>
             </tr>
@@ -73,7 +72,6 @@
         </tbody>
     </table>
 </div>
-
 
 
 {% endblock content %}

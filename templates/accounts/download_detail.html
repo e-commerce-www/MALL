@@ -41,7 +41,7 @@
         <form class="d-flex" method="POST" action="{% url 'oauth:download' %}">
             {% csrf_token %}        
             <input class="form-control me-2" type="search" placeholder="내 다운로드 내역에서 찾으시는 콘텐츠를 키워드(제목, 뮤지션명)로 검색해보세요" name="searched" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit"> Search </button>
+            <button class="btn btn-secondary my-2 my-sm-0" type="submit"> Search </button>
         </form>
     </div>
 
