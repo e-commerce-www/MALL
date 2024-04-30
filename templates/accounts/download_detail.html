@@ -23,7 +23,8 @@
 
 {% endblock extra-style %}
 
-{% block header %}
+
+{% block content %}
 
 <div class = "container mt-5">
     <h2 style = "padding-left:30px">마이페이지</h2>
@@ -38,10 +39,6 @@
     </div>
 
 </div>
-
-{% endblock %}
-
-{% block content %}
 
 <div class = "download">
     <div class = "musicSearch">
@@ -73,7 +70,7 @@
                             Your browser does not support the audio element.
                         </audio>
                     </td>
-                    <td>{{ order.song.seller }}</td>
+                    <td>{{ order.song.seller.user }}</td>
                     <td>{{ order.amount|intcomma }}원</td>
                 </tr>
                 {% endfor %}
@@ -83,4 +80,4 @@
     </div>
 </div>
 
-{% endblock %}
+{% endblock content %}

@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from apps.orders.models import Order
 from .forms import UserEditForm
     
-
 # Create your views here.
 def profile(request):
     if request.method == 'POST':
@@ -29,7 +28,7 @@ def sales(request):
 
 def download(request):
     orders = Order.objects.filter(user=request.user,payment__is_paid=True).order_by('-id')
-    
+
     return render(request, 'accounts/download_detail.html', context={'orders': orders})
 
 def following(request):

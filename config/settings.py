@@ -32,7 +32,7 @@ DEBUG = config('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
-SITE_ID = 5
+SITE_ID = 6
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     # apps
     'apps.payments',
     'apps.follows',
+    'apps.sellers',
     'apps.orders',
     'apps.oauth',
     'apps.songs',
