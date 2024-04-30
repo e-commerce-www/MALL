@@ -1,4 +1,5 @@
 {% load socialaccount %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,7 +12,7 @@
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
     <!-- Bootstrap icons-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -52,11 +53,16 @@
             font-size: 12px;
         }
 
-        .modal-header, .modal-body, .modal-footer {
-            border-color: #444; /* 헤더와 푸터의 구분선 색상을 변경 */
+        .modal-header,
+        .modal-body,
+        .modal-footer {
+            border-color: #444;
+            /* 헤더와 푸터의 구분선 색상을 변경 */
         }
+
         .btn-close {
-            filter: invert(1); /* 닫기 버튼을 밝게 조정 */
+            filter: invert(1);
+            /* 닫기 버튼을 밝게 조정 */
         }
     </style>
     <!-- CSS-->
@@ -134,17 +140,17 @@
         <script>
             function updateModalText(action) {
                 const modalKind = document.getElementById('loginModalLabel');
-                const googleButton = document.getElementById('googleAuthAction');
-                const naverLink = document.getElementById('naverAuthAction');
-
-
+                const googleButton = document.getElementById('google-modal-text');
+                const naverButton = document.getElementById('naver-modal-text');
                 if (action === '가입') {
                     modalKind.textContent = `회원${action}`;
                 } else {
                     modalKind.textContent = `${action}`;
+
                 }
-                googleButton.textContent = `구글 계정으로 ${action}`;
-                naverLink.textContent = `네이버 계정으로 ${action}`;
+                googleButton.textContent = `구글로 ${action}`;
+                naverButton.textContent = `네이버로 ${action}`;
+                
             }
 
             function mySongFunc() {
@@ -167,15 +173,29 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark ">
                 <div class="modal-header">
-                    <h5 class="modal-title text-white " id="loginModalLabel">Login</h5>
+                    <h5 class="modal-title text-white " id="loginModalLabel">로그인</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{% provider_login_url 'google' %}" method='post'>
+                    <form action="{% provider_login_url 'google' %}" method='post' class="mb-3 ">
                         {% csrf_token %}
-                        <button id="googleAuthAction" class="btn text-white">구글 계정으로 로그인</button>
+                        <!-- <button  class="btn text-white">구글 계정으로 로그인</button> -->
+                        <button class="btn btn-danger  w-100 ">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="20" fill="currentColor"
+                                class="bi bi-google" viewBox="0 0 16 16">
+                                <path
+                                    d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z" />
+                            </svg>
+                            <span id="google-modal-text">구글로 로그인</span>
+                        </button>
                     </form>
-                    <a id="naverAuthAction" class="btn text-white" href="{% provider_login_url 'naver' %}">네이버 계정으로 로그인</a>
+
+                    <a href="{% provider_login_url 'naver' %}" class=" w-100">
+                        <button class="btn btn-success  w-100">
+                            <svg width="40" height="25" viewBox="-32 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="M16 32C11.8333 32 8.125 33.5833 4.875 36.75C1.625 39.9167 0 43.6667 0 48V464C0 468.333 1.625 472.083 4.875 475.25C8.125 478.417 11.8333 480 16 480H432C436.167 480 439.875 478.417 443.125 475.25C446.375 472.083 448 468.333 448 464V48C448 43.6667 446.375 39.9167 443.125 36.75C439.875 33.5833 436.167 32 432 32H16ZM100.25 144H186.5L261.5 256V144H347.75V368H261.5L186.5 256V368H100.25V144Z"></path></svg>
+                            <span id="naver-modal-text">네이버로 로그인</span>
+                        </button>
+                    </a>
                 </div>
             </div>
         </div>
