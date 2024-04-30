@@ -1,5 +1,5 @@
 {% load socialaccount %}
-{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -179,7 +179,6 @@
                 <div class="modal-body">
                     <form action="{% provider_login_url 'google' %}" method='post' class="mb-3 ">
                         {% csrf_token %}
-                        <!-- <button  class="btn text-white">구글 계정으로 로그인</button> -->
                         <button class="btn btn-danger  w-100 ">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="20" fill="currentColor"
                                 class="bi bi-google" viewBox="0 0 16 16">
