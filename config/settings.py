@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     # apps
     'apps.payments',
     'apps.follows',
+    'apps.sellers',
     'apps.orders',
     'apps.oauth',
     'apps.songs',

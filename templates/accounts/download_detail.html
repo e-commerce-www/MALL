@@ -73,7 +73,7 @@
                             Your browser does not support the audio element.
                         </audio>
                     </td>
-                    <td>{{ order.song.seller }}</td>
+                    <td>{{ order.song.seller.user }}</td>
                     <td>{{ order.amount|intcomma }}원</td>
                 </tr>
                 {% endfor %}
