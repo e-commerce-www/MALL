@@ -4,7 +4,7 @@ from iamport import Iamport
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import Http404
-from apps.songs.models import Song
+from apps.orders.models import Order
 import logging
 
 User = get_user_model()
@@ -13,14 +13,13 @@ logger = logging.getLogger("portone")
 
 class Payment(models.Model):
     
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     uid = models.UUIDField(default=uuid4, editable=False)
 
     @property
     def merchant_uid(self):
         return self.uid
 
-    song = models.ForeignKey(Song, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     amount = models.PositiveIntegerField()
 

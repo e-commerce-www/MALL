@@ -5,8 +5,8 @@
     .remenu {
         margin-top: 15px;
         padding-top: 10px;
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
+        border-top: 1px solid white;
+        border-bottom: 1px solid white;
     }
 
     .remenu li {
@@ -32,11 +32,11 @@
     <h2 style = "padding-left:30px">마이페이지</h2>
     <div class = "remenu">
         <ul>
-            <li><a href = "{% url 'oauth:profile' %}" class="text-decoration-none text-black">홈</a></li>
-            <li><a href = "{% url 'oauth:purchase' %}" class="text-decoration-none text-black">구매내역</a></li>
-            <li><a href = "{% url 'oauth:sales' %}" class="text-decoration-none text-black">판매내역</a></li>
-            <li><a href = "{% url 'oauth:download' %}" class="text-decoration-none text-black">음악 다운로드</a></li>
-            <li><a href = "{% url 'oauth:following' %}" class="text-decoration-none text-black">뮤지션 팔로우</a></li>
+            <li><a href = "{% url 'oauth:profile' %}" class="text-decoration-none text-white">홈</a></li>
+            <li><a href = "{% url 'oauth:purchase' %}" class="text-decoration-none text-white">구매내역</a></li>
+            <li><a href = "{% url 'oauth:sales' %}" class="text-decoration-none text-white">판매내역</a></li>
+            <li><a href = "{% url 'oauth:download' %}" class="text-decoration-none text-white">음악 다운로드</a></li>
+            <li><a href = "{% url 'oauth:following' %}" class="text-decoration-none text-white">뮤지션 팔로우</a></li>
         </ul>
     </div>
 </div>

@@ -1,0 +1,27 @@
+{%extends "base.html"%}
+
+{%block title%}Post_Search.html{%endblock%}
+{%block content%}
+<h1>노래 검색</h1>
+<br>
+<form action="." method="post">
+    {%csrf_token%}
+    {{form.as_table}}
+        <!-- <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" /> -->
+        <button type="submit" class="btn btn-outline-primary">search</button>
+</form>
+<br>
+{%if object_list%}
+    {%for post in object_list%}
+        <h2><a href="{{post.get_absolute_url}}">{{post.title}}</a></h2>
+        {{post.modify_date|date:"Y N d"}}
+        <p>{{post.content}}</p>
+    {%endfor%}
+{%elif search_term%}
+<b>Search Word: <i>{{search_term}}
+<br>
+</i>검색 결과가 없습니다.</b>
+{%endif%}
+<!-- {{search_term}}  내가 입력한 검색어 
+{{object_list}} -->
+{%endblock%}

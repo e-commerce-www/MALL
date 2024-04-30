@@ -2,9 +2,10 @@ from django.db import models
 from taggit.managers import TaggableManager
 
 
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 
-User = get_user_model()
+# User = get_user_model()
+from apps.sellers.models import Seller
 
 # Create your models here.
 class Song(models.Model):
@@ -39,7 +40,11 @@ class Song(models.Model):
         ('faster', '아주 빠름')
     )
     tempo = models.CharField(max_length=20, choices=TEMPO_CHOICES, default='normal')
-    thumbnail = models.ImageField(upload_to='thumbnail/')
+    thumbnail = models.ImageField(upload_to='thumbnail/', blank=False)
+    mp3 = models.FileField(upload_to='mp3/', blank=False)
     price = models.PositiveIntegerField()
-    seller = models.ForeignKey(User, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    
+    def __str__(self) -> str:
+        return self.title
     

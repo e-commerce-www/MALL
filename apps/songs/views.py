@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.core.paginator import Paginator
 from apps.songs.models import Song
+from django.http import StreamingHttpResponse
+from django.conf import settings
+import os
 
 
 def song_list(request):
@@ -34,3 +37,21 @@ def song_detail(request, pk):
     request.session['viewed_songs'] = viewed_songs
 
     return render(request, "songs/song_detail.html", context={"song": song})
+
+
+def song_stream(request, pk):
+    song = get_object_or_404(Song, pk=pk)
+    file_path = os.path.join(settings.MEDIA_ROOT, song.mp3.name)
+
+    def file_iterator(file_name, chunk_size=8192):
+        with open(file_name, mode='rb') as file:
+            while True:
+                data = file.read(chunk_size)
+                if not data:
+                    break
+                yield data
+
+    response = StreamingHttpResponse(file_iterator(file_path))
+    response['Content-Type'] = 'audio/mpeg'
+    response['Content-Disposition'] = 'inline; filename="{}"'.format(os.path.basename(file_path))
+    return response

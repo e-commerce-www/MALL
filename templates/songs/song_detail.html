@@ -1,3 +1,58 @@
-<h1>노래 상세</h1>
+{% extends "base.html" %}
 
-{{ song }}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Left column for the song image -->
+        <div class="col-md-4 text-center">
+            <img src="{{ song.thumbnail.url }}" alt="{{ song.title }}" class="img-fluid rounded" style="max-width: 100%; height: auto;">
+        </div>
+
+        <!-- Right column for the song details -->
+        <div class="col-md-8">
+            <h3 class="card-title">{{ song.title }}</h3>
+            <h6 class="card-subtitle text-muted mb-2">노래 설명</h6>
+            <audio controls class="w-100" controlsList="nodownload">
+                <source src="{% url 'songs:song_stream' song.id %}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group me-2" role="group" aria-label="First group">
+                    <button type="button" class="btn btn-outline-primary">찜</button>
+                    <button type="button" class="btn btn-outline-secondary">좋아요</button>
+                </div>
+                <div class="btn-group me-2" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-outline-info">{{ song.genre }}</button>
+                </div>
+                <div class="btn-group" role="group" aria-label="Third group">
+                    <button type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        태그
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% for tag in song.tags.all %}
+                        <li><a class="dropdown-item" href="#">{{ tag.name }}</a></li>
+                        {% empty %}
+                        <li><a class="dropdown-item" href="#">No tags</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <button type="button" class="btn btn-outline-success">{{ song.tempo }}</button>
+                <button type="button" class="btn btn-outline-danger">팔로우</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments section -->
+    <div class="card my-4">
+        <h5 class="card-header">댓글을 남겨보세요!</h5>
+        <div class="card-body">
+            <form>
+                <div class="mb-3">
+                    <textarea class="form-control" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">작성완료</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content%}

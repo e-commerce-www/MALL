@@ -67,7 +67,7 @@
         <div>
             <div class="content">
                 <h3>타이틀: {{ my_song.song.title }}</h3>
-                <p>아티스트: {{ my_song.song.seller }}</p>
+                <p>아티스트: {{ my_song.song.seller.user }}</p>
             </div>
             <form action="{% url 'payments:payment_pay' my_song.song.id %}" method="post">
                 {% csrf_token %}
@@ -100,7 +100,7 @@
                         <div>
                             <div class="content">
                                 <h3>{{ song.title }}</h3>
-                                <p>{{ song.seller }}</p>
+                                <p>{{ song.seller.user }}</p>
                             </div>
                             <form action="{% url 'payments:payment_pay' song.id %}" method="post">
                                 {% csrf_token %}

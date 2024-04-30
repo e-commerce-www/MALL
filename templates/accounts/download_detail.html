@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block extra-style %} 
 <style>
     .remenu {
         margin-top: 15px;
         padding-top: 10px;
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
+        border-top: 1px solid white;
+        border-bottom: 1px solid white;
     }
 
     .remenu li {
@@ -15,7 +16,6 @@
         margin-right: 20px;
 
     }
-
 </style>
 
 {% endblock extra-style %}
@@ -27,11 +27,11 @@
     <h2 style = "padding-left:30px">마이페이지</h2>
     <div class = "remenu">
         <ul>
-            <li><a href = "{% url 'oauth:profile' %}" class="text-decoration-none text-black">홈</a></li>
-            <li><a href = "{% url 'oauth:purchase' %}" class="text-decoration-none text-black">구매내역</a></li>
-            <li><a href = "{% url 'oauth:sales' %}" class="text-decoration-none text-black">판매내역</a></li>
-            <li><a href = "{% url 'oauth:download' %}" class="text-decoration-none text-black">음악 다운로드</a></li>
-            <li><a href = "{% url 'oauth:following' %}" class="text-decoration-none text-black">뮤지션 팔로우</a></li>
+            <li><a href = "{% url 'oauth:profile' %}" class="text-decoration-none text-white">홈</a></li>
+            <li><a href = "{% url 'oauth:purchase' %}" class="text-decoration-none text-white">구매내역</a></li>
+            <li><a href = "{% url 'oauth:sales' %}" class="text-decoration-none text-white">판매내역</a></li>
+            <li><a href = "{% url 'oauth:download' %}" class="text-decoration-none text-white">음악 다운로드</a></li>
+            <li><a href = "{% url 'oauth:following' %}" class="text-decoration-none text-white">뮤지션 팔로우</a></li>
         </ul>
     </div>
 </div>
@@ -56,15 +56,19 @@
                 </tr>
             </thead>
             <tbody>
+
+                {% for order in orders %}
                 <tr>
                     <td>노래제목 상세</td>
                     <td><audio src="sound.mp3" autoplay loop controls id="myAudio"></audio></td>
                     <td>판매자 상세</td>
                     <td>다운로드</td>
                 </tr>
+                {% endfor %}
+                
             </tbody>
         </table>
     </div>
 </div>
 
-{% endblock %}
+{% endblock content %}

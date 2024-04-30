@@ -7,6 +7,7 @@ from .forms import UserEditForm
 from apps.orders.models import Order
 from apps.follows.models import Follows
 from apps.songs.models import Song
+from apps.sellers.models import Seller
 
 
 # Create your views here.
@@ -24,6 +25,7 @@ def profile(request):
     
     return render(request, 'accounts/profile.html', {'form': form})
 
+
 @login_required
 def purchase(request):
     orders = Order.objects.filter(user=request.user).order_by('-id')
@@ -34,12 +36,10 @@ def sales(request):
     return render(request, 'accounts/sales_detail.html')
 
 def download(request):
-    return render(request, 'accounts/download_detail.html')
+    orders = Order.objects.filter(user=request.user,payment__is_paid=True).order_by('-id')
 
-# @login_required
-# def following(request):
-#     follows = Follows.objects.filter(follower=request.user)
-#     return render(request, 'accounts/following.html', context= {'follows':follows})
+    return render(request, 'accounts/download_detail.html', context={'orders': orders})
+
 
 @login_required
 def follow(request):
@@ -47,7 +47,8 @@ def follow(request):
 
     for se_follow in myfollow:
         # 각 팔로우한 유저 최근 음악 1개 가져오기
-        se_follow.recent_songs = Song.objects.filter(seller=se_follow.following).order_by('-id')[:1]
+        seller_of_following = Seller.objects.get(user=se_follow.following)
+        se_follow.recent_songs = Song.objects.filter(seller=seller_of_following).order_by('-id')[:1]
 
     return render(request, 'accounts/following.html', context = {'myfollow' : myfollow})
 
