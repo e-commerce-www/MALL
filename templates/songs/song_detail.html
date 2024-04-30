@@ -1,3 +1,66 @@
-<h1>노래 상세</h1>
+{% extends "base.html" %}
 
-{{ song }}
+{% block content %}
+<div class="card">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-sm-3">
+                <img src="{{song.thumbnail.url}}" alt="{{ song.title }}" width="200px;"/>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="row">
+                <div class="col-10 col-sm-6">
+                    <h4 class="card-title">{{song.title}}</h4>
+                    <h6 class="card-subtitle text-muted">노래 설명</h6>
+                    <audio controls class="me-3" controlsList="nodownload">
+                        <source src="{% url 'songs:song_stream' song.id %}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                    <p class="card-text">노래길이</p>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary">찜</button>
+                        <button type="button" class="btn btn-primary">좋아요</button>
+                    </div>
+                </div>
+                <div class="col-2 col-sm-6">
+                    <div class="btn-group-vertical">
+                        <button type="button" class="btn btn-primary">{{ song.genre }}</button>
+                        <div class="btn-group dropend" role="group">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                tags
+                            </button>
+                            <ul class="dropdown-menu">
+                                {% if song.tags %}
+                                <li>
+                                    {% for tag in song.tags.all %}
+                                    <button class="btn btn-primary" id="tag-{{ tag.id }}">{{ tag.name }}</button>
+                                    {% endfor %}
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <button type="button" class="btn btn-primary">{{ song.tempo }}</button>
+                        <button type="button" class="btn btn-primary">팔로우</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="comment-area">
+    <div class="card my-4">
+        <h5 class="card-header"> 댓글을 남겨보세요!</h5>
+        <div class="card-body">
+            <form>
+                <div class="form-group">
+                    <textarea class="form-control" row="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">작성완료</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

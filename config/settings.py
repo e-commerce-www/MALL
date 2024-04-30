@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     # apps
     'apps.payments',
     'apps.follows',
+    'apps.sellers',
     'apps.orders',
     'apps.oauth',
     'apps.songs',
@@ -194,4 +195,5 @@ ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
+ACCOUNT_LOGOUT_ON_GET = True
 SOCIALACCOUNT_ONLY = True

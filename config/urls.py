@@ -28,11 +28,13 @@ urlpatterns = [
     path('', views.home, name='index'),
     path('home/', views.home, name='home'),
     path('songs/', include('apps.songs.urls')),
-    path('accounts/signup/', RedirectView.as_view(pattern_name='account_login', permanent=True)),
+    path('accounts/', views.home, name='home'),
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('apps.oauth.urls')),
+    path('sellers/', include('apps.sellers.urls')),
     path('orders/', include('apps.orders.urls')),
     path('mySongs/', include('apps.carts.urls')),
+    path('search/', views.SearchFormView.as_view(), name='search'),
     path('payments/', include('apps.payments.urls')),
-
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
