@@ -25,9 +25,10 @@
 
 {% endblock extra-style %}
 
-{% block header %}
 
-<div class = "container mt-5">
+{% block content %}
+
+<div class = "mypageNav mt-5">
     <h2 style = "padding-left:30px">마이페이지</h2>
     <div class = "remenu">
         <ul>
@@ -38,14 +39,9 @@
             <li><a href = "{% url 'oauth:following' %}" class="text-decoration-none text-black">뮤지션 팔로우</a></li>
         </ul>
     </div>
-
 </div>
 
-{% endblock %}
-
-{% block content %}
-
-<div class = "container-fluid">
+<div class = "salesDetail mt-5">
     <table class ="container-fluid">
         <thead>
             <tr>

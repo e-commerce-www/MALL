@@ -20,9 +20,10 @@
 
 {% endblock extra-style %}
 
-{% block header %}
 
-<div class = "container mt-5">
+{% block content %}
+
+<div class = "mypageNav mt-5">
     <h2 style = "padding-left:30px">마이페이지</h2>
     <div class = "remenu">
         <ul>
@@ -33,14 +34,9 @@
             <li><a href = "{% url 'oauth:following' %}" class="text-decoration-none text-black">뮤지션 팔로우</a></li>
         </ul>
     </div>
-
 </div>
 
-{% endblock %}
-
-{% block content %}
-
-<div class = "download">
+<div class = "downloadDetail mt-5">
     <div class = "musicSearch">
         <form class="d-flex" method="POST" action="{% url 'oauth:download' %}">
             {% csrf_token %}        

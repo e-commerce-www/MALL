@@ -26,26 +26,21 @@
 {% endblock extra-style %}
 
 
-{% block header %}
-
-<div class = "container mt-5">
-    <h2 style="padding-left:30px;">마이페이지</h2>
+{% block content %}
+<div class = "mypageNav mt-5">
+    <h2 style = "padding-left:30px">마이페이지</h2>
     <div class = "remenu">
         <ul>
-            <li><a href = "{% url 'oauth:profile' %}" class = "text-decoration-none text-black">홈</a></li>
-            <li><a href = "{% url 'oauth:purchase' %}" class = "text-decoration-none text-black">구매내역</a></li>
-            <li><a href = "{% url 'oauth:sales' %}" class = "text-decoration-none text-black">판매내역</a></li>
-            <li><a href = "{% url 'oauth:download' %}" class = "text-decoration-none text-black">음악 다운로드</a></li>
-            <li><a href = "{% url 'oauth:following' %}" class = "text-decoration-none text-black">뮤지션 팔로우</a></li>
+            <li><a href = "{% url 'oauth:profile' %}" class="text-decoration-none text-black">홈</a></li>
+            <li><a href = "{% url 'oauth:purchase' %}" class="text-decoration-none text-black">구매내역</a></li>
+            <li><a href = "{% url 'oauth:sales' %}" class="text-decoration-none text-black">판매내역</a></li>
+            <li><a href = "{% url 'oauth:download' %}" class="text-decoration-none text-black">음악 다운로드</a></li>
+            <li><a href = "{% url 'oauth:following' %}" class="text-decoration-none text-black">뮤지션 팔로우</a></li>
         </ul>
     </div>
-
 </div>
 
-{% endblock %}
-
-{% block content %}
-<div class = "container-fluid">
+<div class = "purchaseDetail mt-5">
     <table class ="container-fluid">
         <thead>
             <tr>
@@ -64,7 +59,7 @@
                 <td><a href="{% url 'payments:payment_detail' order.song.id %}">{{ order.created_at }}</a></td>
                 <td>{{ order.song.title }}</td>
                 <td>{{ order.song.seller }}</td>
-                <td>{{ order.amount }}원</td>
+                <td>{{ order.amount|intcomma  }}원</td>
             </tr>
             {% endfor %}
 

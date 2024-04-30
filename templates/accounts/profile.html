@@ -20,9 +20,10 @@
 
 {% endblock extra-style %}
 
-{% block header %}
 
-<div class = "container mt-5">
+{% block content %}
+
+<div class = "mypageNav mt-5">
     <h2 style = "padding-left:30px">마이페이지</h2>
     <div class = "remenu">
         <ul>
@@ -33,22 +34,25 @@
             <li><a href = "{% url 'oauth:following' %}" class="text-decoration-none text-black">뮤지션 팔로우</a></li>
         </ul>
     </div>
-
 </div>
 
-{% endblock %}
-
-
-{% block content %}
-
-<div class = "container">
+<div class = "profielDetail mt-5">
     <div class = "row">
         <div class = "col-md-4 left-section" style="border: 1px solid #000;">
-            <h2>내 정보</h2>
-            <div>프로필 이미지 : <img src="{{ user.profile.url }}" alt="{{user.username}}" width="200px;"></div>
-            <div>닉네임: {{ user.username }}</div>
-            <div>이메일: {{ user.email }}</div>
-
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h2>내 정보</h2>
+                <div><img src="{{ user.profile.url }}" alt="{{user.username}}" width="200px;"></div>
+                프로필 이미지: <input type="file" name="{{ form.profile.name }}" id="{{ form.profile.id_for_label }}" accept="image/png, image/jpeg, image/gif">
+                <div>닉네임: {{ form.username }} </div>
+                {% if form.username.errors %}
+                    {% for error in form.username.errors %}
+                        <div class="alert alert-danger">이미 존재하는 닉네임입니다. 다른 닉네임으로 변경해주세요.</div>
+                    {% endfor %}
+                {% endif %}
+                <div>이메일: {{ user.email }}</div>
+                <button type="submit">저장</button>
+            </form>
         </div>
 
         <div class = "col-md-8">
@@ -64,7 +68,7 @@
             </div>
         </div>
     </div>
- 
+
 </div>
 
 
