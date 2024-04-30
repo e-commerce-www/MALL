@@ -27,51 +27,36 @@
 
         }
 
+        .navbar-bg {
+            background-color: #000;
+        }
+
         .wrapper {
             display: flex;
             flex-direction: column;
             height: 100%;
+            background-color: #000;
         }
 
         .main-content {
             flex: 1;
-            background-color: rgb(245, 245, 247);
+            background-color: #000;
         }
 
         footer {
             padding: 20px 0;
-            background: #f6f6f6;
+            background: #111;
         }
 
         .top-bar {
             font-size: 12px;
         }
 
-        .login-btn {
-            background-color: white;
-            border: 1px solid rgb(234, 234, 236);
-            color: black;
+        .modal-header, .modal-body, .modal-footer {
+            border-color: #444; /* 헤더와 푸터의 구분선 색상을 변경 */
         }
-
-        .login-btn:hover {
-            background-color: rgb(234, 234, 236);
-            border: 1px solid rgb(234, 234, 236);
-            color: black;
-        }
-
-        .signup-btn {
-            background-color: rgb(109, 85, 255);
-            border: 1px solid rgb(109, 85, 255);
-            color: white;
-            margin-left: 8px;
-        }
-
-        .signup-btn:hover {
-            border-color: rgb(109, 85, 255);
-            /* 마우스 오버 시 테두리 색상 변경 */
-            box-shadow: 0 0 8px rgb(109, 85, 255);
-            /* 빛나는 효과 */
-            color: rgb(109, 85, 255);
+        .btn-close {
+            filter: invert(1); /* 닫기 버튼을 밝게 조정 */
         }
     </style>
     <!-- CSS-->
@@ -82,7 +67,7 @@
     <div class="wrapper">
         <!-- Navigation-->
         <div class="container px-4 px-lg-5">
-            <nav class="navbar navbar-expand-sm navbar-light bg-white ">
+            <nav class="navbar navbar-expand-sm navbar-dark  ">
                 <div class="container">
                     <a class="navbar-brand" href="{% url 'home' %}">MVP 로고</a>
                     <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
@@ -90,9 +75,9 @@
                         aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <div class="collapse navbar-collapse" id="collapsibleNavId">
+                    <div class="collapse navbar-collapse " id="collapsibleNavId">
                         <ul class="navbar-nav me-auto mt-2 mt-lg-0">
-                            <li class="nav-item"><a class="nav-link" href="{% url 'songs:song_list' %}">음악</a></li>
+                            <li class="nav-item "><a class="nav-link" href="{% url 'songs:song_list' %}">음악</a></li>
                             <li class="nav-item"><button class="nav-link" onclick="mySongFunc()">찜한 음악</button></li>
                         </ul>
 
@@ -136,7 +121,7 @@
         </div>
 
         <!-- Footer-->
-        <footer class="py-5 bg-white ">
+        <footer class="py-5">
             <div class="container">
                 {% block footer %} {% endblock footer %}
             </div>
@@ -180,17 +165,17 @@
     <!--로그인 모달-->
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content bg-dark ">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <h5 class="modal-title text-white " id="loginModalLabel">Login</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form action="{% provider_login_url 'google' %}" method='post'>
                         {% csrf_token %}
-                        <button id="googleAuthAction" class="btn">구글 계정으로 로그인</button>
+                        <button id="googleAuthAction" class="btn text-white">구글 계정으로 로그인</button>
                     </form>
-                    <a id="naverAuthAction" class="btn" href="{% provider_login_url 'naver' %}">네이버 계정으로 로그인</a>
+                    <a id="naverAuthAction" class="btn text-white" href="{% provider_login_url 'naver' %}">네이버 계정으로 로그인</a>
                 </div>
             </div>
         </div>
