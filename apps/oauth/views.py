@@ -43,17 +43,17 @@ def unfollow(request, pk):
         return HttpResponseNotAllowed(['POST'])
     
 
-@login_required
-def recent_activity(request):
-    following_users = request.user.following_set.all()
+# @login_required
+# def recent_activity(request):
+#     following_users = request.user.following_set.all()
 
-    # 각 사용자별로 올린 최근 노래
-    recent_songs = []
-    for user in following_users:
-        latest_song_date = user.song_set.aggregate(latest_date = Max('created_at'))['latest_date']
-        recent_song = user.song_set.filter(created_at = latest_song_date).first()
+#     # 각 사용자별로 올린 최근 노래
+#     recent_songs = []
+#     for user in following_users:
+#         latest_song_date = user.song_set.aggregate(latest_date = Max('created_at'))['latest_date']
+#         recent_song = user.song_set.filter(created_at = latest_song_date).first()
 
-        if recent_songs:
-            recent_songs.append(recent_song)
+#         if recent_songs:
+#             recent_songs.append(recent_song)
 
-    return render(request, 'accounts/following.html', context = {'recent_song' : recent_song})
+#     return render(request, 'accounts/following.html', context = {'recent_song' : recent_song})
