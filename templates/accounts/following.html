@@ -54,7 +54,7 @@
             </tr>
             <tr>
                 <td>No. {{ forloop.counter }}</td>
-                <td>{{ follow.following.username }}</td>
+                <td><a href = "#">{{ follow.following.username }}</a></td>
                 <td>
                     {% if follow.recent_songs %}
                         {{follow.recent_songs.0.title}}을 등록하셨습니다.
