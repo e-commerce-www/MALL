@@ -1,85 +1,139 @@
 {% extends 'base.html' %}
 
-{% block extra-style %} 
+{% block extra-style %}
 <style>
     .remenu {
         margin-top: 15px;
         padding-top: 10px;
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
     }
-    a {
+
+    .remenu a {
         text-decoration: none;
-        color: black;
+        color: #333;
+        font-weight: 500;
     }
+
     .remenu li {
         display: inline;
-        margin-left: 20px;
-        margin-right: 20px;
-
+        margin: 0 20px;
     }
 
-</style>
+    .container {
+        padding-top: 30px;
+    }
 
+    .left-section,
+    .right-top,
+    .right-bottom {
+        border: 1px solid #ccc;
+        padding: 20px;
+        background-color: #f9f9f9;
+    }
+
+    .left-section h2,
+    .right-top h2,
+    .right-bottom h2 {
+        margin-bottom: 20px;
+    }
+
+    .profile-img {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+        border-radius: 50%;
+    }
+
+    button {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .file-input {
+        width: 50%;
+        /* 입력 필드의 길이를 조절 */
+    }
+</style>
 {% endblock extra-style %}
 
-{% block header %}
-
-<div class = "container mt-5">
-    <h2 style = "padding-left:30px">마이페이지</h2>
-    <div class = "remenu">
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">마이페이지</h2>
+    <div class="remenu mb-4">
         <ul>
-            <li><a href = "{% url 'oauth:profile' %}">홈</a></li>
-            <li><a href = "{% url 'oauth:purchase' %}">구매내역</a></li>
-            <li><a href = "{% url 'oauth:sales' %}">판매내역</a></li>
-            <li><a href = "{% url 'oauth:download' %}">음악 다운로드</a></li>
-            <li><a href = "{% url 'oauth:following' %}">뮤지션 팔로우</a></li>
+            <li><a href="{% url 'oauth:profile' %}">홈</a></li>
+            <li><a href="{% url 'oauth:purchase' %}">구매내역</a></li>
+            <li><a href="{% url 'oauth:sales' %}">판매내역</a></li>
+            <li><a href="{% url 'oauth:download' %}">음악 다운로드</a></li>
+            <li><a href="{% url 'oauth:following' %}">뮤지션 팔로우</a></li>
         </ul>
     </div>
-
-</div>
-
-{% endblock %}
-
-
-{% block content %}
-
-<div class = "container">
-    <div class = "row">
-        <div class = "col-md-4 left-section" style="border: 1px solid #000;">
+    <div class="row">
+        <div class="col-md-4 left-section text-center">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <h2>내 정보</h2>
-                <div><img src="{{ user.profile.url }}" alt="{{user.username}}" width="200px;"></div>
-                프로필 이미지: <input type="file" name="{{ form.profile.name }}" id="{{ form.profile.id_for_label }}" accept="image/png, image/jpeg, image/gif">
-                <div>닉네임: {{ form.username }} </div>
-                {% if form.username.errors %}
+                <img src="{{ user.profile.url }}" alt="{{ user.username }}" class="profile-img mb-2">
+                <div class="mb-3 ">
+                    <input class="file-input" type="file" name="{{ form.profile.name }}"
+                        id="{{ form.profile.id_for_label }}" accept="image/png, image/jpeg, image/gif" onchange="previewFile()"/>
+                </div>
+                <div class="mb-3">
+                    닉네임: {{ form.username }}
+                    {% if form.username.errors %}
                     {% for error in form.username.errors %}
-                        <div class="alert alert-danger">이미 존재하는 닉네임입니다. 다른 닉네임으로 변경해주세요.</div>
+                    <div class="alert alert-danger mt-2">이미 존재하는 닉네임입니다. 다른 닉네임으로 변경해주세요.</div>
                     {% endfor %}
-                {% endif %}
-                <div>이메일: {{ user.email }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    이메일: {{ user.email }}
+                </div>
                 <button type="submit">저장</button>
             </form>
         </div>
-
-        <div class = "col-md-8">
-            <div class ="row">
-                <div class = "col-md-12 right-top" style="border: 1px solid #000; margin-left: 20px;">
+        <div class="col-md-8">
+            <div class="row mb-3">
+                <div class="col-md-12 right-top">
                     <h2>다운로드 내역</h2>
                 </div>
             </div>
-            <div class = "row">
-                <div class = "col-md-12 right-bottom" style="border: 1px solid #000; margin-top: 20px; margin-left:20px;">
+            <div class="row">
+                <div class="col-md-12 right-bottom">
                     <h2>찜한 내역</h2>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
-
-
-
-
 {% endblock %}
+
+{% block extra-script %}
+
+<script>
+    function previewFile() {
+        const file = document.querySelector('input[type=file]').files[0];
+        const preview = document.querySelector('.profile-img');
+
+        const reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            // 파일을 읽은 후 src 속성에 결과 데이터 URL을 설정
+            preview.src = reader.result;
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file); // 파일을 읽어 데이터 URL로 변환
+        }
+    }
+</script>
+{% endblock extra-script %}
