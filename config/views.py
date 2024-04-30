@@ -35,6 +35,5 @@ class SearchFormView(FormView):
         return render(self.request, self.template_name, context)
 
 
-def custom_404(request, exception):
-    return render(request, '404.html', status=404)
+
 
