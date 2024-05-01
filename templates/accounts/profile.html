@@ -11,7 +11,13 @@
 
     .remenu a {
         text-decoration: none;
-        color: #333;
+        color: #bcbcbc;
+        font-weight: 500;
+    }
+
+    .remenu a:hover {
+        text-decoration: none;
+        color: white;
         font-weight: 500;
     }
 
@@ -23,9 +29,8 @@
     .left-section,
     .right-top,
     .right-bottom {
-        border: 1px solid #ccc;
+        /* border: 1px solid #ccc; */
         padding: 20px;
-        background-color: #f9f9f9;
     }
 
     .left-section h2,
@@ -41,70 +46,69 @@
         border-radius: 50%;
     }
 
-    button {
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background-color: #0056b3;
-    }
-
     .file-input {
         width: 50%;
         /* 입력 필드의 길이를 조절 */
     }
+
+    .active-link {
+        color: white;
+    }
+
+
+    .remenu a.active {
+        color: white;
+    }
+
+
 </style>
 {% endblock extra-style %}
 
 {% block content %}
 <div class="container">
-    <h2 class="mb-4">마이페이지</h2>
+    <h1 class="fs-2 mb-4 text-white" >마이페이지</h1>
     <div class="remenu mb-4">
         <ul>
-            <li><a href="{% url 'oauth:profile' %}">홈</a></li>
-            <li><a href="{% url 'oauth:purchase' %}">구매내역</a></li>
-            <li><a href="{% url 'oauth:sales' %}">판매내역</a></li>
-            <li><a href="{% url 'oauth:download' %}">음악 다운로드</a></li>
-            <li><a href="{% url 'oauth:following' %}">뮤지션 팔로우</a></li>
+            <li><a href="{% url 'oauth:profile' %}" {% if request.path == '/accounts/profile/' %}class="active"{% endif %}>홈</a></li>
+            <li><a href="{% url 'oauth:purchase' %}" {% if request.path == '/accounts/purchase/' %}class="active"{% endif %}>구매내역</a></li>
+            <li><a href="{% url 'oauth:sales' %}" {% if request.path == '/accounts/sales/' %}class="active"{% endif %}>판매내역</a></li>
+            <li><a href="{% url 'oauth:following' %}" {% if request.path == '/accounts/follow/' %}class="active"{% endif %}>팔로우</a></li>
         </ul>
     </div>
     <div class="row">
-        <div class="col-md-4 left-section text-center">
-            <form method="post" enctype="multipart/form-data">
+        <div class="col-md-4 text-center">
+            <form method="post" enctype="multipart/form-data" class="left-section bg-dark shadow text-white">
                 {% csrf_token %}
-                <h2>내 정보</h2>
+                <h2>프로필</h2>
                 <img src="{{ user.profile.url }}" alt="{{ user.username }}" class="profile-img mb-2">
                 <div class="mb-3 ">
                     <input class="file-input" type="file" name="{{ form.profile.name }}"
                         id="{{ form.profile.id_for_label }}" accept="image/png, image/jpeg, image/gif" onchange="previewFile()"/>
                 </div>
                 <div class="mb-3">
-                    닉네임: {{ form.username }}
+                    닉네임 {{ form.username }}
                     {% if form.username.errors %}
                     {% for error in form.username.errors %}
-                    <div class="alert alert-danger mt-2">이미 존재하는 닉네임입니다. 다른 닉네임으로 변경해주세요.</div>
+                    <div class="alert alert-danger mt-2">이미 존재하는 닉네임입니다.<br>다른 닉네임으로 변경해주세요.</div>
                     {% endfor %}
                     {% endif %}
                 </div>
                 <div class="mb-3">
-                    이메일: {{ user.email }}
+                    이메일 {{ user.email }}
                 </div>
-                <button type="submit">저장</button>
+                <button class="btn btn-outline-light me-2" type="submit">저장</button>
             </form>
         </div>
-        <div class="col-md-8">
-            <div class="row mb-3">
+        <div class="col-md-8" >
+            {% if not user.is_seller %}
+            <div class="row mb-2 text-bg-dark " style="padding-right: 12px;">
                 <div class="col-md-12 right-top">
-                    <h2>다운로드 내역</h2>
+                    <a class="text-bg-dark " href="{% url 'sellers:seller_apply' %}">판매자 신청하러 가기</a>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12 right-bottom">
+            {% endif %}
+            <div class="row text-bg-dark" style="padding-right: 12px;">
+                <div class="col-md-12 right-bottom" >
                     <h2>찜한 내역</h2>
                 </div>
             </div>
@@ -114,7 +118,6 @@
 {% endblock %}
 
 {% block extra-script %}
-
 <script>
     function previewFile() {
         const file = document.querySelector('input[type=file]').files[0];
