@@ -6,67 +6,65 @@
     input[type="radio"].btn-check {
         display: block;
     }
-
     input[type="radio"].btn-check+label.btn {
         cursor: pointer;
         padding: 10px 20px;
         border: 2px solid transparent;
         border-radius: 5px;
         margin-right: 50px;
+        color: #f0f0f0;
     }
-
     input[type="radio"].btn-check:focus+label.btn {
         border-color: #000000;
+        color: rgb(52, 197, 95);
         /* Change border color on focus */
     }
-
-    .musicItem {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        border: 1px solid transparent;
-        border-radius: 10px;
-        margin-bottom: 10px;
-        background-color: #f0f0f0;
-    }
-
     .content {
         flex: 1;
-        margin-right: 10px;
+        margin-right: 0px;
         margin-bottom: 0px; /* 내용과 버튼 사이의 간격 설정 */
     }
-
     .pagination {
         display: flex;
         justify-content: center;
     }
-
     #favoritesMusicList {
         display: block; /* Show Favorites by default */
     }
-
     /* Initially hidden */
-    .musicList {
+    #recentMusicList {
         display: none;
     }
-    .song-list {
-        display: flex; /* 가로로 배치하기 위해 flex 속성 추가 */
-        flex-wrap: wrap; /* 너비를 벗어나면 다음 줄로 넘어감 */
-        gap: 10px; /* 각 항목 사이의 간격 설정 */
-    }
-
     .song-item {
-        width: calc(100%); /* 각 항목의 너비를 반으로 설정하고 간격을 고려 */
-        background-color: #9e9e9e; /* 배경색 설정 */
-        padding: 15px; /* 내부 여백 설정 */
-        border-radius: 30px; /* 모서리 둥글게 */
-        margin-bottom: 10px;
-    }
-
-    .btn
+        display: flex;
+        align-items: center; /* 수직 가운데 정렬 */
+        justify-content: space-between; /* 내부 요소 사이의 간격을 최대로 설정 */
+        width: calc(90%);
+        background-color: #1f1e1e;
+        padding: 10px;
+        border-radius: 25px;
+        margin-bottom: 8px;
+        line-height: 1;
+        }
+    
+        .recent-song-item {
+        display: flex;
+        align-items: center; /* 수직 가운데 정렬 */
+        justify-content: space-between; /* 내부 요소 사이의 간격을 최대로 설정 */
+        width: calc(90%);
+        background-color: #1f1e1e;
+        padding: 10px;
+        border-radius: 25px;
+        margin-bottom: 8px;
+        line-height: 1;
+        }
 
     .purchase-form {
-        margin-right: auto; /* 구매 버튼을 항목의 오른쪽에 배치 */
+        display: flex;
+        align-items: center; /* 수직 가운데 정렬 */
+    }
+    .shopping-cart {
+        color: #f0f0f0;
     }
 </style>
 {% endblock extra-style %}
@@ -75,27 +73,29 @@
 
 
 <div class="shopping-cart">
-    <h2>My Carts</h2>
+    <h2 style="font-weight: bold;">My Carts</h2>
     <div style="margin-bottom: 30px;">
         <input type="radio" class="btn-check" name="options-base" id="favoritesList" autocomplete="off">
         <label class="btn" for="favoritesList">Favorites</label>
         <input type="radio" class="btn-check" name="options-base" id="recentList" autocomplete="off">
-        <label class="btn" for="recentList">최근 본 음악</label>
+        <label class="btn" for="recentList">최근 재생</label>
     </div>
     <div id="favoritesMusicList" class="song-list">
         {% for my_song in page_obj %}
         <div class="song-item">
             <div class="content">
-                <h5>{{ my_song.song.title }}</h5>
+                <h3 style="font-weight: 600;">{{ my_song.song.title }}</h3>
                 <p>produced by: {{ my_song.song.seller }}</p>
+            </div>
+            <div>
+                <a href="{% url 'songs:song_detail' pk=my_song.song.id %}" class="btn btn-danger" role="button" style="margin-right: 10px; border-radius: 50px;">details</a>
             </div>
             <form action="{% url 'payments:payment_pay' my_song.song.id %}" method="post" class="purchase-form">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger">구매</button>
+                <button type="submit" class="btn btn-danger" id="puchase-btn">구매</button>
             </form>
         </div>
-        {% endfor %}
-    </div>
+        {% endfor %}    
     
         <nav aria-label="Page navigation example">
             <ul class="pagination">
@@ -115,26 +115,28 @@
             </ul>
         </nav>
     </div>
-    <div id="recentMusicList" class="musicList">
+
+    <div id="recentMusicList" class="song-list">  
         {% for song_id in request.session.viewed_songs %}
                 {% with song=song_id|get_song %}
+                <div class="song-item">
                     {% if song %}
-                        <div>
-                            <div class="content">
-                                <h3>{{ song.title }}</h3>
-                                <p>{{ song.seller }}</p>
-                            </div>
-                            <form action="{% url 'payments:payment_pay' song.id %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger">구매</button>
-                            </form>
+                        <div class="content">
+                            <h3 style="font-weight: 600;">{{ song.title }}</h3>
+                            <p>produced by: {{ song.seller }}</p>
                         </div>
+                        <div>
+                            <a href="{% url 'songs:song_detail' pk=song.id %}" class="btn btn-danger" role="button" style="margin-right: 10px; border-radius: 50px;">details</a>
+                        </div>
+                        <form action="{% url 'payments:payment_pay' song.id %}" method="post" class="purchase-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">구매</button>
+                        </form>
                     {% endif %}
+                </div>
                 {% endwith %}
         {% endfor %}
     </div>
-</div>
-
 
 
 {% endblock content %}

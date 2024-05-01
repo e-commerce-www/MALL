@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block extra-style %} 
 <style>
@@ -62,12 +63,21 @@
                 </tr>
             </thead>
             <tbody>
+
+                {% for order in orders %}
                 <tr>
-                    <td>노래제목 상세</td>
-                    <td><audio src="sound.mp3" autoplay loop controls id="myAudio"></audio></td>
-                    <td>판매자 상세</td>
-                    <td>가격 상세</td>
+                    <td>{{ order.song.title }}</td>
+                    <td>
+                        <audio controls class="me-3">
+                            <source src="{% url 'songs:song_stream' order.song.id %}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </td>
+                    <td>{{ order.song.seller }}</td>
+                    <td>{{ order.amount|intcomma }}원</td>
                 </tr>
+                {% endfor %}
+                
             </tbody>
         </table>
     </div>
