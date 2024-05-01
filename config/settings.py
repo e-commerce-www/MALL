@@ -200,6 +200,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+LOGIN_URL = 'home'
 LOGIN_REDIRECT_URL = 'home'
 
 ACCOUNT_USERNAME_REQUIRED = False

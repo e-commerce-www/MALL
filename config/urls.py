@@ -28,7 +28,7 @@ urlpatterns = [
     path('', views.home, name='index'),
     path('home/', views.home, name='home'),
     path('songs/', include('apps.songs.urls')),
-    path('accounts/', views.home, name='home'),
+    path('accounts/', RedirectView.as_view(url='/home'), name='home_redirect'),
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('apps.oauth.urls')),
     path('sellers/', include('apps.sellers.urls')),

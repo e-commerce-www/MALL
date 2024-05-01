@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from utils.generate_code import generate_verification_code
 from django.contrib import messages
 from django.conf import settings
 from twilio.rest import Client
@@ -34,7 +33,7 @@ def seller_apply(request):
     
     return render(request, 'sellers/apply.html', {'form': form})
 
-
+@login_required
 def seller_verify(request):
     if request.method == 'POST':
         verify_code = request.POST['verification_code']
@@ -45,9 +44,8 @@ def seller_verify(request):
             
             request.user.is_seller = True
             request.user.save()
-            
-            messages.success(request, '판매자 등록이 정상적으로 완료되었습니다.')
-            return redirect('home')  # 가입 성공 후 리다이렉트할 URL
+
+            return render(request, 'sellers/verify.html', context={'code_valid': '판매자 등록이 정상적으로 완료되었습니다.'})
         else:
             return render(request, 'sellers/verify.html', context={'code_invalid': '인증코드가 일치하지 않습니다.'})
     else:

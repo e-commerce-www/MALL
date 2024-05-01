@@ -23,6 +23,15 @@
 </script>
 {% endif %}
 
+{% if code_valid %}
+<script>
+    alert("{{ code_valid }}");
+    (function () {
+        window.location.href = '{% url "home" %}';
+    })();
+</script>
+{% endif %}
+
 {% endblock extra-script %}
 
 <li><img src="{son}"></li>
