@@ -44,21 +44,21 @@ def search(request):
         return JsonResponse({'error': 'Invalid request method'})
 
       
-class SearchFormView(FormView): 
-    form_class = PostSearchForm 
-    template_name = 'search/post_search.html' 
+# class SearchFormView(FormView): 
+#     form_class = PostSearchForm 
+#     template_name = 'search/post_search.html' 
 
-    def form_valid(self, form):
-        #검색어 확인
-        searchWord = form.cleaned_data['search_word']
-        #Q를 통해 검색하고
-        post_list = Song.objects.filter(Q(title__icontains=searchWord)).distinct()
-        #결과를 담아
-        #페이지에 전달
-        context = {} 
-        context['form'] = form 
-        context['search_term'] = searchWord
-        context['object_list'] = post_list 
+#     def form_valid(self, form):
+#         #검색어 확인
+#         searchWord = form.cleaned_data['search_word']
+#         #Q를 통해 검색하고
+#         post_list = Song.objects.filter(Q(title__icontains=searchWord)).distinct()
+#         #결과를 담아
+#         #페이지에 전달
+#         context = {} 
+#         context['form'] = form 
+#         context['search_term'] = searchWord
+#         context['object_list'] = post_list 
 
-        return render(self.request, self.template_name, context)
+#         return render(self.request, self.template_name, context)
 
