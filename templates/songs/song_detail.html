@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card">
-    <div class="container text-center">
+
+    <div class="container text-center" style="background-color: rgb(53, 53, 53); border-radius: 40px;">
         <div class="row">
             <div class="col-sm-3">
-                <img src="{{song.thumbnail.url}}" alt="{{ song.title }}" width="200px;"/>
+                <img src="{{song.thumbnail.url}}" alt="{{ song.title }}" width="150px;" style="margin-top: 30px; border-radius: 40px;">
             </div>
         </div>
         <div class="col-sm-9">
@@ -17,7 +17,6 @@
                         <source src="{% url 'songs:song_stream' song.id %}" type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
-                    <p class="card-text">노래길이</p>
                     <div class="btn-group">
                         <button type="button" class="btn btn-primary">찜</button>
                         <button type="button" class="btn btn-primary">좋아요</button>
@@ -35,7 +34,7 @@
                                 {% if song.tags %}
                                 <li>
                                     {% for tag in song.tags.all %}
-                                    <button class="btn btn-primary" id="tag-{{ tag.id }}">{{ tag.name }}</button>
+                                    <button class="btn btn-primary" id="tag-{{ tag.id }}"> #{{ tag.name }}</button>
                                     {% endfor %}
                                 </li>
                                 {% endif %}
@@ -48,10 +47,10 @@
             </div>
         </div>
     </div>
-</div>
+
 <div id="comment-area">
     <div class="card my-4">
-        <h5 class="card-header"> 댓글을 남겨보세요!</h5>
+        <h5 class="card-header"> Comments </h5>
         <div class="card-body">
             <form>
                 <div class="form-group">
