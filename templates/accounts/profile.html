@@ -111,7 +111,7 @@
                 {% if user.is_seller %}
                 <div class="row text-bg-dark" style="margin-right: 2px;">
                     <div class="col-md-12 mb-3 mt-3" >
-                        <h2>음악 업로드</h2>
+                        <a href="{% url 'sellers:seller_upload' %}">음악 업로드</a>
                     </div>
                 </div>
                 {% endif %}
