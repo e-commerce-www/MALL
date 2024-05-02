@@ -29,7 +29,7 @@ class SearchFormView(FormView):
         #페이지에 전달
         context = {} 
         context['form'] = form 
-        context['search_term'] = searchWord 
+        context['search_term'] = searchWord
         context['object_list'] = post_list 
 
         return render(self.request, self.template_name, context)

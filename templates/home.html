@@ -1,54 +1,65 @@
 {% extends 'base.html' %}
+{% load thumbnail %}
 
 {% block content %}
-<h1 style="color: rgb(255, 255, 255);">Home</h1>
-<br>
-<div class="row">
-    <div class="col-12">
-        <h3 style="color: rgb(255, 255, 255);">Brand New</h3>
-        <div class="row">
-        {% for song in object%}
-        <div class="col-sm-6 col-md-3 mb-4">
-            <div class="card">
-                <a href="{%url 'songs:song_detail' pk=song.id%}">
-                    <img src="{{ song.thumbnail.url }}" class="card-img-top food-image" alt="{{ song.title }}">
-                    <div class="card-body row">
-                        <h5 class="card-title">{{ song.title }}</h5>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="fs-2 text-white ">신곡</h1>
+            <div class="row">
+                {% for song in object%}
+                <div class="col-sm-6 col-md-3 mb-4">
+                    <div class="card">
+                        {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
+                        <a href="{%url 'songs:song_detail' pk=song.id%}">
+                            <img src="{{ thumb.url }}" class="card-img-top food-image" alt="{{ song.title }}">
+                            <div class="card-body row">
+                                <h5 class="card-title">{{ song.title }}</h5>
+                            </div>
+                        </a>
+                        {% endthumbnail %}
                     </div>
-                </a>
-              </div>
-          </div>
-        {% endfor %}
-
-        </div>
-    </div>
-
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12">
-          <h3>TOP 10</h3>
-          <div class="row">
-            {% for song in object %}
-            <div class="card mb-3" style="max-width: 100%;">
-              <div class="card-header"><span class="rank">{{ forloop.counter }}.</span> {{ song.title }}</div>
-              <div class="row g-0">
-                <div class="col-md-4">
-                  <a href="{%url 'songs:song_detail' pk=song.id%}">
-                    <img src="{{ song.thumbnail.url }}" class="card-img-top food-image" style="object-fit: cover; width: 100%; height: 200px;" alt="{{ song.title }}">
-                    <div class="card-body row">
-                      <h5 class="card-title">{{ song.title }}</h5>
-                    </div>
-                  </a>
                 </div>
-                <div class="col-md-8">
-                  <div class="card-body">
-                  </div>
-                </div>
-              </div>
+                {% endfor %}
+
             </div>
-            {% endfor %}
-          </div>
         </div>
-      </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="fs-2 text-white ">TOP 10</h1>
+                    <div class="container ">
+                        <div class="row">
+                            {% for song in object %}
+                            <div class="card mb-3">
+                                <div class="card-header"><span class="rank">{{ forloop.counter }}.</span> {{ song.title }}
+                                </div>
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                        {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
+                                        <a href="{%url 'songs:song_detail' pk=song.id%}">
+                                            <img src="{{ thumb.url }}" class="card-img-top food-image"
+                                                style="object-fit: cover;" alt="{{ song.title }}">
+                                            <div class="card-body row">
+                                                <h5 class="card-title">{{ song.title }}</h5>
+                                            </div>
+                                        </a>
+                                        {% endthumbnail %}
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
     </div>
-{%endblock%}
+</div>
+{%endblock content%}

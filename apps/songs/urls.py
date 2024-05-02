@@ -8,4 +8,6 @@ urlpatterns = [
     path("chart/", views.song_list, name="song_list"),
     path("<int:pk>/detail/", views.song_detail, name="song_detail"),
     path('<int:pk>/stream/', views.song_stream, name='song_stream'),
+    path('lyrics/', views.song_lyrics, name='song_lyrics'),
+    path('recent/', views.song_recent, name='song_recent'),
 ]
