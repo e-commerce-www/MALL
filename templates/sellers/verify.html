@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-4">
+        <label class="text-bg-dark">판매자 인증 코드</label>
+        <input type="text" name="verification_code" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-outline-light">제출</button>
+</form>
+
+<a href="{% url 'sellers:seller_apply' %}">코드가 오지 않습니다.</a>
+
+{% endblock content %}
+
+{% block extra-script %}
+
+{% if code_invalid %}
+<script>
+    alert("{{ code_invalid }}");
+</script>
+{% endif %}
+
+{% if code_valid %}
+<script>
+    alert("{{ code_valid }}");
+    (function () {
+        window.location.href = '{% url "home" %}';
+    })();
+</script>
+{% endif %}
+
+{% endblock extra-script %}
+
+<li><img src="{son}"></li>

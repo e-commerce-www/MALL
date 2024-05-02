@@ -6,70 +6,73 @@
     .remenu {
         margin-top: 15px;
         padding-top: 10px;
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
-    }
-    .remenu li {
-        display: inline;
-        margin-left: 20px;
-        margin-right: 20px;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
     }
 
-    /* table, th, td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    } */
-    
+    .remenu a {
+        text-decoration: none;
+        color: #bcbcbc;
+        font-weight: 500;
+    }
+
+    .remenu a:hover {
+        text-decoration: none;
+        color: white;
+        font-weight: 500;
+    }
+
+    .remenu li {
+        display: inline;
+        margin: 0 20px;
+    }
+
+    .remenu a.active {
+        color: white;
+    }
 
 </style>
 
 {% endblock extra-style %}
 
 
-{% block header %}
-
-<div class = "container mt-5">
-    <h2 style="padding-left:30px;">마이페이지</h2>
-    <div class = "remenu">
+{% block content %}
+<div class="container">
+    <h1 class="fs-2  mb-4 text-white">구매내역</h1>
+    <div class="remenu mb-4">
         <ul>
-            <li><a class="text-decoration-none " href = "{% url 'oauth:profile' %}">홈</a></li>
-            <li><a class="text-decoration-none text-black " href = "{% url 'oauth:purchase' %}">구매내역</a></li>
-            <li><a href = "{% url 'oauth:sales' %}">판매내역</a></li>
-            <li><a href = "{% url 'oauth:download' %}">음악 다운로드</a></li>
-            <li><a href = "{% url 'oauth:following' %}">뮤지션 팔로우</a></li>
+            <li><a href="{% url 'oauth:profile' %}" {% if request.path == '/accounts/profile/' %}class="active"{% endif %}>홈</a></li>
+            <li><a href="{% url 'oauth:purchase' %}" {% if request.path == '/accounts/purchase/' %}class="active"{% endif %}>구매내역</a></li>
+            <li><a href="{% url 'oauth:sales' %}" {% if request.path == '/accounts/sales/' %}class="active"{% endif %}>판매내역</a></li>
+            <li><a href="{% url 'oauth:following' %}" {% if request.path == '/accounts/follow/' %}class="active"{% endif %}>팔로우</a></li>
         </ul>
     </div>
 
+    <div class="container-fluid px-5 ">
+        <table class="container-fluid">
+            <thead>
+                <tr>
+                    <th scope="col">No.</th>
+                    <th scope="col">구매날짜</th>
+                    <th scope="col">노래제목</th>
+                    <th scope="col">판매자</th>
+                    <th scope="col">가격</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for order in orders %}
+                <tr>
+                    <td>No. {{order.id}}</td>
+                    <td><a href="{% url 'payments:payment_detail' order.song.id %}">{{ order.created_at }}</a></td>
+                    <td>{{ order.song.title }}</td>
+                    <td>{{ order.song.seller.user }}</td>
+                    <td>{{ order.amount|intcomma }}원</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
 </div>
-
-{% endblock %}
-
-{% block content %}
-<div class = "container-fluid">
-    <table class ="container-fluid">
-        <thead>
-            <tr>
-                <th scope="col">No.</th>
-                <th scope="col">구매날짜</th>
-                <th scope="col">노래제목</th>
-                <th scope="col">판매자</th>
-                <th scope="col">가격</th>
-            </tr>
-        </thead>
-        <tbody>
-
-            {% for order in orders %}
-            <tr>
-                <td>No. {{order.id}}</td>
-                <td><a href="{% url 'payments:payment_detail' order.song.id %}">{{ order.created_at }}</a></td>
-                <td>{{ order.song.title }}</td>
-                <td>{{ order.song.seller }}</td>
-                <td>{{ order.amount|intcomma }}원</td>
-            </tr>
-            {% endfor %}
-
-        </tbody>
-    </table>
-</div>
-
 {% endblock %}

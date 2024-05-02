@@ -1,17 +1,18 @@
 {% load socialaccount %}
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Shop Homepage - Start Bootstrap Template</title>
+    <title>MVP:Music Value Platform</title>
 
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
     <!-- Bootstrap icons-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -27,11 +28,15 @@
 
         }
 
+        .navbar-bg {
+            background-color: #000;
+        }
+
         .wrapper {
             display: flex;
             flex-direction: column;
             height: 100%;
-            background-color: rgb(75, 95, 124);
+            background-color: #000;
         }
 
         .main-content {
@@ -48,31 +53,16 @@
             font-size: 12px;
         }
 
-        .login-btn {
-            background-color: white;
-            border: 1px solid rgb(234, 234, 236);
-            color: black;
+        .modal-header,
+        .modal-body,
+        .modal-footer {
+            border-color: #444;
+            /* 헤더와 푸터의 구분선 색상을 변경 */
         }
 
-        .login-btn:hover {
-            background-color: rgb(234, 234, 236);
-            border: 1px solid rgb(234, 234, 236);
-            color: black;
-        }
-
-        .signup-btn {
-            background-color: rgb(109, 85, 255);
-            border: 1px solid rgb(109, 85, 255);
-            color: white;
-            margin-left: 8px;
-        }
-
-        .signup-btn:hover {
-            border-color: rgb(109, 85, 255);
-            /* 마우스 오버 시 테두리 색상 변경 */
-            box-shadow: 0 0 8px rgb(109, 85, 255);
-            /* 빛나는 효과 */
-            color: rgb(109, 85, 255);
+        .btn-close {
+            filter: invert(1);
+            /* 닫기 버튼을 밝게 조정 */
         }
     </style>
     <!-- CSS-->
@@ -82,47 +72,43 @@
 <body>
     <div class="wrapper">
         <!-- Navigation-->
-        <div class="container px-4 px-lg-5">
-            <nav class="navbar navbar-expand-sm navbar-light bg-white ">
-                <div class="container">
-                    <a class="navbar-brand" href="{% url 'home' %}">MVP 로고</a>
-                    <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
-                        aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="collapsibleNavId">
-                        <ul class="navbar-nav me-auto mt-2 mt-lg-0">
-                            <li class="nav-item"><a class="nav-link" href="#!">검색</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'songs:song_list' %}">음악</a></li>
-                            <li class="nav-item"><button class="nav-link" onclick="mySongFunc()">찜한 음악</button></li>
+        <nav class="navbar navbar-expand-sm navbar-dark  ">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'home' %}">MVP 로고</a>
+                <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavId">
+                    <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+                        <li class="nav-item "><a class="nav-link" href="{% url 'songs:song_list' %}">음악</a></li>
+                        <li class="nav-item"><button class="nav-link" onclick="mySongFunc()">찜한 음악</button></li>
+                    </ul>
+
+                    {% if user.is_authenticated %}
+                    <ul class="navbar-nav d-flex">
+                        <li class="nav-item "><a class="nav-link " href="{% url 'oauth:profile' %}">마이페이지</a></li>
+                        <li class="nav-item "><a class="nav-link " href="{% url 'account_logout' %}">로그아웃</a></li>
+                    </ul>
+                    {% else %}
+                    <form class="d-flex">
+                        <ul class="navbar-nav d-flex">
+                            <li class="nav-item "><a class="nav-link " data-bs-toggle="modal"
+                                    data-bs-target="#loginModal" onclick="updateModalText('로그인')" href="#">
+                                    로그인
+                                </a></li>
+                            <li class="nav-item ">
+                                <a class="nav-link " data-bs-toggle="modal" data-bs-target="#loginModal"
+                                    onclick="updateModalText('가입')" href="#">
+                                    회원가입
+                                </a>
+                            </li>
                         </ul>
-
-                        {% if user.is_authenticated %}
-                        <a href="{% url 'account_logout' %}">로그아웃</a>
-                        <a class="btn signup-btn rounded-5" href="{% url 'oauth:profile' %}">마이페이지</a>
-                        {% else %}
-                        <form class="d-flex">
-                            <!-- <button class="btn btn-outline-dark" type="submit">
-                                                <i class="bi-cart-fill me-1"></i>
-                                                Cart
-                                                <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-                                            </button> -->
-                            <a class="btn login-btn rounded-5" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                onclick="updateModalText('로그인')">
-                                로그인
-                            </a>
-
-                            <a class="btn signup-btn rounded-5" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                onclick="updateModalText('가입')">
-                                회원가입
-                            </a>
-                        </form>
-                        {% endif %}
-                    </div>
+                    </form>
+                    {% endif %}
                 </div>
-            </nav>
-        </div>
+            </div>
         </nav>
 
         <!-- Header-->
@@ -131,14 +117,14 @@
         <div class="main-content">
             <!-- Section-->
             <section class="py-5">
-                <div class="container px-4 px-lg-5 mt-5">
+                <div class="container px-4 px-lg-5">
                     {% block content %} {% endblock content %}
                 </div>
             </section>
         </div>
 
         <!-- Footer-->
-        <footer class="py-5 bg-white ">
+        <footer class="py-5">
             <div class="container">
                 {% block footer %} {% endblock footer %}
             </div>
@@ -148,30 +134,31 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
+        
         <script>
             function updateModalText(action) {
                 const modalKind = document.getElementById('loginModalLabel');
-                const googleButton = document.getElementById('googleAuthAction');
-                const naverLink = document.getElementById('naverAuthAction');
-
-
+                const googleButton = document.getElementById('google-modal-text');
+                const naverButton = document.getElementById('naver-modal-text');
                 if (action === '가입') {
                     modalKind.textContent = `회원${action}`;
                 } else {
                     modalKind.textContent = `${action}`;
+
                 }
-                googleButton.textContent = `구글 계정으로 ${action}`;
-                naverLink.textContent = `네이버 계정으로 ${action}`;
+                googleButton.textContent = `구글로 ${action}`;
+                naverButton.textContent = `네이버로 ${action}`;
+
             }
 
             function mySongFunc() {
                 {% if user.is_authenticated %}
-                    window.location.href = "{% url 'carts:my_songs' %}"; // Django URL 리버싱 사용
+                window.location.href = "{% url 'carts:my_songs' %}"; // Django URL 리버싱 사용
                 {% else %}
-                    var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
-                        keyboard: false
-                    });
-                    loginModal.show();
+                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
+                    keyboard: false
+                });
+                loginModal.show();
                 {% endif %}
             }
         </script>
@@ -182,21 +169,55 @@
     <!--로그인 모달-->
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content bg-dark ">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <h5 class="modal-title text-white " id="loginModalLabel">로그인</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{% provider_login_url 'google' %}" method='post'>
+                    <form action="{% provider_login_url 'google' %}" method='post' class="mb-3 ">
                         {% csrf_token %}
-                        <button id="googleAuthAction" class="btn">구글 계정으로 로그인</button>
+                        <button class="btn btn-danger  w-100 ">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="20" fill="currentColor"
+                                class="bi bi-google" viewBox="0 0 16 16">
+                                <path
+                                    d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z" />
+                            </svg>
+                            <span id="google-modal-text">구글로 로그인</span>
+                        </button>
                     </form>
-                    <a id="naverAuthAction" class="btn" href="{% provider_login_url 'naver' %}">네이버 계정으로 로그인</a>
+
+                    <a href="{% provider_login_url 'naver' %}" class=" w-100">
+                        <button class="btn btn-success  w-100">
+                            <svg width="40" height="25" viewBox="-32 0 512 512" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill="#ffffff"
+                                    d="M16 32C11.8333 32 8.125 33.5833 4.875 36.75C1.625 39.9167 0 43.6667 0 48V464C0 468.333 1.625 472.083 4.875 475.25C8.125 478.417 11.8333 480 16 480H432C436.167 480 439.875 478.417 443.125 475.25C446.375 472.083 448 468.333 448 464V48C448 43.6667 446.375 39.9167 443.125 36.75C439.875 33.5833 436.167 32 432 32H16ZM100.25 144H186.5L261.5 256V144H347.75V368H261.5L186.5 256V368H100.25V144Z">
+                                </path>
+                            </svg>
+                            <span id="naver-modal-text">네이버로 로그인</span>
+                        </button>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- 가사 모달 -->
+    <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title text-white" id="lyricsModalLabel">가사</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-white" id="lyricsContent">
+                    <!-- 여기에 JavaScript를 통해 동적으로 가사 내용을 채울 예정 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>
