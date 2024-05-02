@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<h1 class = "text-white">{{follow.following.username}} 님 음악리스트</h1>
+
+<div class = "container-fluid p-0 mt-3">
+    {% for song in songs %}
+    <div class="row justify-content-between align-items-center bg-dark p-3 shadow">
+        <div class="col-auto">
+            <a href="#"> <!-- 노래 세부 내용 페이지로 링크 -->
+                <h5 class="text-white mb-0">노래 제목 : {{ song.title }}</h5>
+                <small class="text-secondary text-white">작곡가: {{ song.seller.user.username }}</small>
+            </a>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}

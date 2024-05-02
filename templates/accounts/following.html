@@ -53,7 +53,7 @@
             </tr>
             <tr>
                 <td class = "text-white">No. {{ forloop.counter }}</td>
-                <td><a href = "#" class = "text-white">{{ follow.following.username }}</a></td>
+                <td><a href = "{% url 'follows:following' pk=follow.id %}" class = "text-white">{{ follow.following.username }}</a></td>
                 <td class = "text-white">
                     {% if follow.recent_songs %}
                         {{follow.recent_songs.0.title}}을 등록하셨습니다.
