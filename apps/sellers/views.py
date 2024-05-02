@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.conf import settings
 from twilio.rest import Client
 from .forms import SellerApplyForm
+from apps.songs.forms import SongUploadForm
 from .models import Seller
 from apps.songs.models import Song
 
@@ -52,8 +53,25 @@ def seller_verify(request):
     else:
         return render(request, 'sellers/verify.html')
 
+@login_required
 def seller_detail(request, pk):
     seller = Seller.objects.get(user_id=pk)
     songs = Song.objects.filter(seller=seller)
     
     return render(request, 'sellers/seller_detail.html', context={'seller': seller, 'songs': songs})
+
+@login_required
+def seller_upload(request):
+    if request.method == 'POST':
+        form = SongUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            song = form.save(commit=False)
+            seller_instance = request.user.seller_set.first()
+            song.seller = seller_instance
+            song.save()
+            return render(request, 'sellers/seller_upload.html', context={'form': form, 'success': True})
+        else:
+            return render(request, 'sellers/seller_upload.html', context={'form': form})
+    else:
+        form = SongUploadForm()
+    return render(request, 'sellers/seller_upload.html', context={'form': form})
