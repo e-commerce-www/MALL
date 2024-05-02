@@ -72,9 +72,12 @@
 {% block content %}
 
 
-<div class="shopping-cart">
-    <h2 style="font-weight: bold;">My Carts</h2>
-    <div style="margin-bottom: 30px;">
+
+<div class="container ">
+    <div style=" border-bottom: 1px solid #ccc; padding-bottom: 24px;" class="mb-3">
+        <h1 id="chart-title" class="fs-2 text-white m-0 ">찜한 음악</h1>
+    </div>
+    <div>
         <input type="radio" class="btn-check" name="options-base" id="favoritesList" autocomplete="off">
         <label class="btn" for="favoritesList">Favorites</label>
         <input type="radio" class="btn-check" name="options-base" id="recentList" autocomplete="off">
@@ -82,10 +85,10 @@
     </div>
     <div id="favoritesMusicList" class="song-list">
         {% for my_song in page_obj %}
-        <div class="song-item">
+        <div id="cart-{{my_song.song.id}}">
             <div class="content">
-                <h3 style="font-weight: 600;">{{ my_song.song.title }}</h3>
-                <p>produced by: {{ my_song.song.seller }}</p>
+                <h3>타이틀: {{ my_song.song.title }}</h3>
+                <p>아티스트: {{ my_song.song.seller.user }}</p>
             </div>
             <div>
                 <a href="{% url 'songs:song_detail' pk=my_song.song.id %}" class="btn btn-danger" role="button" style="margin-right: 10px; border-radius: 50px;">details</a>
@@ -94,6 +97,7 @@
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger" id="puchase-btn">구매</button>
             </form>
+            <button class="btn btn-outline-danger me-2" onclick="removeFromCart('{{my_song.song.id}}');">찜 취소</button>
         </div>
         {% endfor %}    
     
@@ -126,7 +130,14 @@
                             <p>produced by: {{ song.seller }}</p>
                         </div>
                         <div>
-                            <a href="{% url 'songs:song_detail' pk=song.id %}" class="btn btn-danger" role="button" style="margin-right: 10px; border-radius: 50px;">details</a>
+                            <div class="content">
+                                <h3>{{ song.title }}</h3>
+                                <p>{{ song.seller.user }}</p>
+                            </div>
+                            <form action="{% url 'payments:payment_pay' song.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">구매</button>
+                            </form>
                         </div>
                         <form action="{% url 'payments:payment_pay' song.id %}" method="post" class="purchase-form">
                             {% csrf_token %}
@@ -142,6 +153,7 @@
 {% endblock content %}
 
 {% block extra-script %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var favBtn = document.getElementById('favoritesList');
@@ -163,5 +175,22 @@
             }
         });
     });
+
+    function removeFromCart(songId) {
+        const mySong = document.getElementById('cart-' + (songId));
+        console.log(mySong)
+        axios({
+            method: 'get',
+            url: '{% url "carts:remove_song" %}',
+            params: {
+                songid: songId
+            }
+        })
+            .then(response => {
+                alert(response.data.success);
+                mySong.style.display = 'none';
+            })
+            .catch(error => console.log(error));
+    }
 </script>
 {% endblock extra-script %}

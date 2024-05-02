@@ -3,12 +3,16 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import UserEditForm
+<<<<<<< HEAD
 from apps.orders.models import Order
 from apps.follows.models import Follows
 from apps.songs.models import Song
 from apps.sellers.models import Seller
 
 
+=======
+
+>>>>>>> f4a4d620f8c1229fbc43e5b7271c93b9b7580109
 @login_required
 def profile(request):
     if request.method == 'POST':
@@ -34,6 +38,7 @@ def purchase(request):
 def sales(request):
     return render(request, 'accounts/sales_detail.html')
 
+<<<<<<< HEAD
 
 def download(request):
     orders = Order.objects.filter(user=request.user,payment__is_paid=True).order_by('-id')
@@ -64,3 +69,8 @@ def unfollow(request, pk):
     else:
         return HttpResponse("error")
 
+=======
+@login_required
+def following(request):
+    return render(request, 'accounts/following.html')
+>>>>>>> f4a4d620f8c1229fbc43e5b7271c93b9b7580109

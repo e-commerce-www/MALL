@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<<<<<<< HEAD
 <div class="container ">
     <div class="row">
         <!-- Left column for the song image -->
@@ -16,6 +17,27 @@
                     <div class="btn-group me-2" role="group" aria-label="First group">
                     <button type="button" class="btn btn-outline-primary">❣️</button>
                     <button type="button" class="btn btn-outline-secondary">👍</button>
+=======
+<div class="container mt-4">
+    <div class="row">
+        <!-- Left column for the song image -->
+        <div class="col-md-4 text-center">
+            <img src="{{ song.thumbnail.url }}" alt="{{ song.title }}" class="img-fluid rounded" style="max-width: 100%; height: auto;">
+        </div>
+
+        <!-- Right column for the song details -->
+        <div class="col-md-8">
+            <h3 class="card-title">{{ song.title }}</h3>
+            <h6 class="card-subtitle text-muted mb-2">노래 설명</h6>
+            <audio controls class="w-100" controlsList="nodownload">
+                <source src="{% url 'songs:song_stream' song.id %}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group me-2" role="group" aria-label="First group">
+                    <button type="button" class="btn btn-outline-primary">찜</button>
+                    <button type="button" class="btn btn-outline-secondary">좋아요</button>
+>>>>>>> f4a4d620f8c1229fbc43e5b7271c93b9b7580109
                 </div>
                 <div class="btn-group me-2" role="group" aria-label="Second group">
                     <button type="button" class="btn btn-outline-info">{{ song.genre }}</button>
@@ -41,7 +63,11 @@
             </audio>
         </div>
     </div>
+<<<<<<< HEAD
 </div>
+=======
+
+>>>>>>> f4a4d620f8c1229fbc43e5b7271c93b9b7580109
     <!-- Comments section -->
     <div class="card my-4">
         <h5 class="card-header">댓글을 남겨보세요!</h5>
@@ -54,5 +80,9 @@
             </form>
         </div>
     </div>
+<<<<<<< HEAD
 
+=======
+</div>
+>>>>>>> f4a4d620f8c1229fbc43e5b7271c93b9b7580109
 {% endblock content%}

@@ -72,6 +72,7 @@
 <body>
     <div class="wrapper">
         <!-- Navigation-->
+<<<<<<< HEAD
         <div class="container px-4 px-lg-5">
             <nav class="navbar navbar-expand-sm navbar-light bg-secondary-subtle">
                 <div class="container">
@@ -107,6 +108,41 @@
                                 </a>
                             </li>
                         </ul>
+=======
+        <nav class="navbar navbar-expand-sm navbar-dark  ">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'home' %}">MVP 로고</a>
+                <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavId">
+                    <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+                        <li class="nav-item "><a class="nav-link" href="{% url 'songs:song_list' %}">음악</a></li>
+                        <li class="nav-item"><button class="nav-link" onclick="mySongFunc()">찜한 음악</button></li>
+                    </ul>
+
+                    {% if user.is_authenticated %}
+                    <ul class="navbar-nav d-flex">
+                        <li class="nav-item "><a class="nav-link " href="{% url 'oauth:profile' %}">마이페이지</a></li>
+                        <li class="nav-item "><a class="nav-link " href="{% url 'account_logout' %}">로그아웃</a></li>
+                    </ul>
+                    {% else %}
+                    <form class="d-flex">
+                        <ul class="navbar-nav d-flex">
+                            <li class="nav-item "><a class="nav-link " data-bs-toggle="modal"
+                                    data-bs-target="#loginModal" onclick="updateModalText('로그인')" href="#">
+                                    로그인
+                                </a></li>
+                            <li class="nav-item ">
+                                <a class="nav-link " data-bs-toggle="modal" data-bs-target="#loginModal"
+                                    onclick="updateModalText('가입')" href="#">
+                                    회원가입
+                                </a>
+                            </li>
+                        </ul>
+>>>>>>> f4a4d620f8c1229fbc43e5b7271c93b9b7580109
                     </form>
                     {% endif %}
                 </div>
