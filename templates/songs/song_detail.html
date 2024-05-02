@@ -23,21 +23,9 @@
                     <button type="button" class="btn btn-outline-secondary">좋아요</button>
                 </div>
                 <div class="btn-group me-2" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-outline-info">{{ song.genre }}</button>
+                    <button type="button" class="btn btn-outline-info">{{ song.display_genre }}</button>
                 </div>
-                <div class="btn-group" role="group" aria-label="Third group">
-                    <button type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        태그
-                    </button>
-                    <ul class="dropdown-menu">
-                        {% for tag in song.tags.all %}
-                        <li><a class="dropdown-item" href="#">{{ tag.name }}</a></li>
-                        {% empty %}
-                        <li><a class="dropdown-item" href="#">No tags</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <button type="button" class="btn btn-outline-success">{{ song.tempo }}</button>
+                <button type="button" class="btn btn-outline-success">{{ song.display_tempo }}</button>
                 <button type="button" class="btn btn-outline-danger">팔로우</button>
             </div>
         </div>

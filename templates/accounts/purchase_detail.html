@@ -65,7 +65,7 @@
                 {% for order in orders %}
                 <tr>
                     <td>No. {{order.id}}</td>
-                    <td><a href="{% url 'payments:payment_detail' order.song.id %}">{{ order.created_at }}</a></td>
+                    <td><a href="{% url 'payments:payment_detail' order.id %}">{{ order.created_at }}</a></td>
                     <td>{{ order.song.title }}</td>
                     <td>{{ order.song.seller.user }}</td>
                     <td>{{ order.amount|intcomma }}원</td>
