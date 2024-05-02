@@ -73,9 +73,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.naver',
     # 'allauth.socialaccount.providers.kakao',
     # third apps
-    'taggit',
     'sorl.thumbnail',
     'corsheaders',
+    'widget_tweaks',
     # apps
     'apps.payments',
     'apps.follows',

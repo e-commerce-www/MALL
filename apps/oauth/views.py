@@ -26,19 +26,13 @@ def profile(request):
 
 @login_required
 def purchase(request):
-    orders = Order.objects.filter(user=request.user).order_by('-id')
+    orders = Order.objects.filter(payment__is_paid=True, user=request.user)
     
     return render(request, 'accounts/purchase_detail.html', context={'orders': orders})
 
 @login_required
 def sales(request):
     return render(request, 'accounts/sales_detail.html')
-
-
-def download(request):
-    orders = Order.objects.filter(user=request.user,payment__is_paid=True).order_by('-id')
-
-    return render(request, 'accounts/download_detail.html', context={'orders': orders})
 
 
 @login_required

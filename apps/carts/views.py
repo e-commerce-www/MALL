@@ -28,7 +28,7 @@ def my_songs(request):
 def add_song(request):
     song_id = request.GET.get('songid')
     song = Song.objects.get(pk=song_id)
-    cart = Cart.objects.create(
+    cart = Cart.objects.get_or_create(
         user=request.user,
         song=song
     )
