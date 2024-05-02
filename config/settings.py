@@ -39,7 +39,7 @@ DEBUG = config('DEBUG')
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 
-SITE_ID = 5
+SITE_ID = 6
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
