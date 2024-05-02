@@ -73,11 +73,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.naver',
     # 'allauth.socialaccount.providers.kakao',
     # third apps
-    'taggit',
     'sorl.thumbnail',
     'corsheaders',
-    'crispy_forms',
-    'crispy_bootstrap5',
     'widget_tweaks',
     # apps
     'apps.payments',
@@ -194,9 +191,6 @@ MEDIA_URL = '/uploads/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
-CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')

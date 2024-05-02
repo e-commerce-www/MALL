@@ -299,24 +299,6 @@ files = [
 unicode-backport = ["unicodedata2"]
 
 [[package]]
-name = "crispy-bootstrap5"
-version = "2024.2"
-description = "Bootstrap5 template pack for django-crispy-forms"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "crispy-bootstrap5-2024.2.tar.gz", hash = "sha256:7d1fa40c6faf472e30e85c72551a3d2c9eedbf0abfff920683315e4e6f670f2b"},
-    {file = "crispy_bootstrap5-2024.2-py3-none-any.whl", hash = "sha256:3867e320920a6ef156e94f9e0f06a80344c453e1b3bd96cd9dc0522ae9e9afb8"},
-]
-
-[package.dependencies]
-django = ">=4.2"
-django-crispy-forms = ">=2"
-
-[package.extras]
-test = ["pytest", "pytest-django"]
-
-[[package]]
 name = "cryptography"
 version = "42.0.5"
 description = "cryptography is a package which provides cryptographic recipes and primitives to Python developers."
@@ -438,20 +420,6 @@ asgiref = ">=3.6"
 Django = ">=3.2"
 
 [[package]]
-name = "django-crispy-forms"
-version = "2.1"
-description = "Best way to have Django DRY forms"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "django-crispy-forms-2.1.tar.gz", hash = "sha256:4d7ec431933ad4d4b5c5a6de4a584d24613c347db9ac168723c9aaf63af4bb96"},
-    {file = "django_crispy_forms-2.1-py3-none-any.whl", hash = "sha256:d592044771412ae1bd539cc377203aa61d4eebe77fcbc07fbc8f12d3746d4f6b"},
-]
-
-[package.dependencies]
-django = ">=4.2"
-
-[[package]]
 name = "django-storages"
 version = "1.14.2"
 description = "Support for many storage backends in Django"
@@ -473,20 +441,6 @@ google = ["google-cloud-storage (>=1.27)"]
 libcloud = ["apache-libcloud"]
 s3 = ["boto3 (>=1.4.4)"]
 sftp = ["paramiko (>=1.15)"]
-
-[[package]]
-name = "django-taggit"
-version = "5.0.1"
-description = "django-taggit is a reusable Django application for simple tagging."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "django-taggit-5.0.1.tar.gz", hash = "sha256:edcd7db1e0f35c304e082a2f631ddac2e16ef5296029524eb792af7430cab4cc"},
-    {file = "django_taggit-5.0.1-py3-none-any.whl", hash = "sha256:a0ca8a28b03c4b26c2630fd762cb76ec39b5e41abf727a7b66f897a625c5e647"},
-]
-
-[package.dependencies]
-Django = ">=4.1"
 
 [[package]]
 name = "django-widget-tweaks"
@@ -1234,4 +1188,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.10.12"
-content-hash = "0c16cb55ecec682f95ceab70c85eed53463a422a608d46203984bf0e0899f492"
+content-hash = "b23c6ef15f4477725bd0d830840ead4cf9bb0149f59391b14876e034062f95fc"
