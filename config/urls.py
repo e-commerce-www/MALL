@@ -23,6 +23,7 @@ from . import views
 
 handler404 = 'config.views.custom_404'
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='index'),
@@ -36,5 +37,6 @@ urlpatterns = [
     path('mySongs/', include('apps.carts.urls')),
     path('payments/', include('apps.payments.urls')),
     path('search/',views.search,name='search'),
+    path('hello/', views.hello_view, name='hello'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

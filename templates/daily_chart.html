@@ -109,6 +109,25 @@
         </div>
     </div>
 
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h3>TOP 10</h3>
+                <div>
+                    <div class="row mt-3 mb-3">
+                        <div class="col">
+                            <div class="btn-group" role="group" aria-label="Sort">
+                                <button type="button" class="btn btn-secondary">일간</button>
+                                <button type="button" class="btn btn-secondary">주간</button>
+                                <button type="button" class="btn btn-secondary">월간</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         {% for song in object %}
         <div class="card mb-3" style="max-width: 100%;">
@@ -132,22 +151,16 @@
         </div>
         {% endfor %}
     </div>
-    <div class="container-fluid">
-      <div class="row mt-4">
-          <div class="col-md-12">
-              <h3>TOP 10</h3>
-              <div>
-                  <div class="row mt-3 mb-3">
-                      <div class="col">
-                          <div class="btn-group" role="group" aria-label="Sort">
-                              <button type="button" class="btn btn-secondary" id="hello-btn">일간</button>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
+    <h1>음악 차트</h1>
+    <div class="row mt-3 mb-3">
+      <div class="col">
+        <div class="btn-group" role="group" aria-label="Sort">
+          <a href="{% url 'daily' %}" class="btn btn-secondary">일간</a>
+          <a href="{% url 'weekly' %}" class="btn btn-secondary">주간</a>
+          <a href="{% url 'monthly' %}" class="btn btn-secondary">월간</a>
+        </div>
       </div>
-  </div>
+    </div>
     
 {%endblock%}
 
@@ -180,24 +193,5 @@
             })
             .catch(error => console.log(error));
     });
-
-    const helloBtn = document.getElementById('hello-btn');
-    helloBtn.addEventListener('click', () => {
-      axios({
-        method: 'post',
-        url: '{%url "hello"%}',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': '{{ csrf_token }}'
-        }
-      })
-      .then(response => {
-        console.log(response.data.message);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-    });
 </script>
-
 {% endblock extra-script %}

@@ -43,3 +43,13 @@ def search(request):
     else:
         return JsonResponse({'error': 'Invalid request method'})
 
+
+def hello_view(request):
+    if request.method == 'POST':
+        message = "hello"
+        search_html += "<h3> hello <h3>"   
+        return JsonResponse({'message':search_html})
+    else:
+        return JsonResponse({'error': 'Invalid request method'})
+
+
