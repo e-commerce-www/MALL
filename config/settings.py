@@ -38,7 +38,7 @@ DEBUG = config('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
-SITE_ID = 3
+SITE_ID = 4
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
