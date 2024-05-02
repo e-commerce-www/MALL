@@ -43,26 +43,3 @@
 
 
 {% endblock content %}
-
-
-{% block extra-script %}
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script>
-    function removeFromCart(songId) {
-        const mySong = document.getElementById('cart-' + (songId));
-        console.log(mySong)
-        axios({
-            method: 'get',
-            url: '{% url "carts:remove_song" %}',
-            params: {
-                songid: songId
-            }
-        })
-            .then(response => {
-                alert(response.data.success);
-                mySong.style.display = 'none';
-            })
-            .catch(error => console.log(error));
-    }
-</script>
-{% endblock extra-script %}
