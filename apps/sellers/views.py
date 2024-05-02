@@ -5,6 +5,7 @@ from django.conf import settings
 from twilio.rest import Client
 from .forms import SellerApplyForm
 from .models import Seller
+from apps.songs.models import Song
 
 CLIENT = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
@@ -50,3 +51,9 @@ def seller_verify(request):
             return render(request, 'sellers/verify.html', context={'code_invalid': '인증코드가 일치하지 않습니다.'})
     else:
         return render(request, 'sellers/verify.html')
+
+def seller_detail(request, pk):
+    seller = Seller.objects.get(user_id=pk)
+    songs = Song.objects.filter(seller=seller)
+    
+    return render(request, 'sellers/seller_detail.html', context={'seller': seller, 'songs': songs})

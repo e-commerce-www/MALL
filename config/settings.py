@@ -37,6 +37,7 @@ TWILIO_SERVICE_SID = config('TWILIO_SERVICE_SID')
 DEBUG = config('DEBUG')
 
 ALLOWED_HOSTS = ['*']
+CORS_ALLOW_ALL_ORIGINS = True
 
 SITE_ID = 3
 
@@ -74,6 +75,7 @@ INSTALLED_APPS = [
     # third apps
     'taggit',
     'sorl.thumbnail',
+    'corsheaders',
     # apps
     'apps.payments',
     'apps.follows',
@@ -95,7 +97,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # oauth
-    'allauth.account.middleware.AccountMiddleware'
+    'allauth.account.middleware.AccountMiddleware',
+    # corsheaders
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
