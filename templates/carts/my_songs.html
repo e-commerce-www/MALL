@@ -6,52 +6,71 @@
     input[type="radio"].btn-check {
         display: block;
     }
-
     input[type="radio"].btn-check+label.btn {
         cursor: pointer;
         padding: 10px 20px;
         border: 2px solid transparent;
         border-radius: 5px;
         margin-right: 50px;
+        color: #f0f0f0;
     }
-
     input[type="radio"].btn-check:focus+label.btn {
         border-color: #000000;
+        color: rgb(52, 197, 95);
         /* Change border color on focus */
     }
-
-    .musicItem {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        border: 1px solid transparent;
-        border-radius: 10px;
-        margin-bottom: 10px;
-        background-color: #f0f0f0;
-    }
-
     .content {
         flex: 1;
-        margin-right: 10px;
+        margin-right: 0px;
+        margin-bottom: 0px; /* 내용과 버튼 사이의 간격 설정 */
     }
-
     .pagination {
         display: flex;
         justify-content: center;
     }
-
     #favoritesMusicList {
         display: block; /* Show Favorites by default */
     }
-
     /* Initially hidden */
-    .musicList {
+    #recentMusicList {
         display: none;
+    }
+    .song-item {
+        display: flex;
+        align-items: center; /* 수직 가운데 정렬 */
+        justify-content: space-between; /* 내부 요소 사이의 간격을 최대로 설정 */
+        width: calc(90%);
+        background-color: #1f1e1e;
+        padding: 10px;
+        border-radius: 25px;
+        margin-bottom: 8px;
+        line-height: 1;
+        }
+    
+        .recent-song-item {
+        display: flex;
+        align-items: center; /* 수직 가운데 정렬 */
+        justify-content: space-between; /* 내부 요소 사이의 간격을 최대로 설정 */
+        width: calc(90%);
+        background-color: #1f1e1e;
+        padding: 10px;
+        border-radius: 25px;
+        margin-bottom: 8px;
+        line-height: 1;
+        }
+
+    .purchase-form {
+        display: flex;
+        align-items: center; /* 수직 가운데 정렬 */
+    }
+    .shopping-cart {
+        color: #f0f0f0;
     }
 </style>
 {% endblock extra-style %}
 
 {% block content %}
+
 
 
 <div class="container ">
@@ -62,22 +81,26 @@
         <input type="radio" class="btn-check" name="options-base" id="favoritesList" autocomplete="off">
         <label class="btn" for="favoritesList">Favorites</label>
         <input type="radio" class="btn-check" name="options-base" id="recentList" autocomplete="off">
-        <label class="btn" for="recentList">최근 본 음악</label>
+        <label class="btn" for="recentList">최근 재생</label>
     </div>
-    <div id="favoritesMusicList" class="musicList">
+    <div id="favoritesMusicList" class="song-list">
         {% for my_song in page_obj %}
         <div id="cart-{{my_song.song.id}}">
             <div class="content">
                 <h3>타이틀: {{ my_song.song.title }}</h3>
                 <p>아티스트: {{ my_song.song.seller.user }}</p>
             </div>
-            <form action="{% url 'payments:payment_pay' my_song.song.id %}" method="post">
+            <div>
+                <a href="{% url 'songs:song_detail' pk=my_song.song.id %}" class="btn btn-danger" role="button" style="margin-right: 10px; border-radius: 50px;">details</a>
+            </div>
+            <form action="{% url 'payments:payment_pay' my_song.song.id %}" method="post" class="purchase-form">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger">구매</button>
+                <button type="submit" class="btn btn-danger" id="puchase-btn">구매</button>
             </form>
             <button class="btn btn-outline-danger me-2" onclick="removeFromCart('{{my_song.song.id}}');">찜 취소</button>
         </div>
-        {% endfor %}
+        {% endfor %}    
+    
         <nav aria-label="Page navigation example">
             <ul class="pagination">
                 {% if page_obj.has_other_pages %}
@@ -96,10 +119,16 @@
             </ul>
         </nav>
     </div>
-    <div id="recentMusicList" class="musicList">
+
+    <div id="recentMusicList" class="song-list">  
         {% for song_id in request.session.viewed_songs %}
                 {% with song=song_id|get_song %}
+                <div class="song-item">
                     {% if song %}
+                        <div class="content">
+                            <h3 style="font-weight: 600;">{{ song.title }}</h3>
+                            <p>produced by: {{ song.seller }}</p>
+                        </div>
                         <div>
                             <div class="content">
                                 <h3>{{ song.title }}</h3>
@@ -110,12 +139,15 @@
                                 <button type="submit" class="btn btn-danger">구매</button>
                             </form>
                         </div>
+                        <form action="{% url 'payments:payment_pay' song.id %}" method="post" class="purchase-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">구매</button>
+                        </form>
                     {% endif %}
+                </div>
                 {% endwith %}
         {% endfor %}
     </div>
-</div>
-
 
 
 {% endblock content %}
