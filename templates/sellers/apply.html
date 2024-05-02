@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block extra-style %}
+<style>
+    .page-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    padding: 20px;
+}
+
+.container-seller {
+    width: 100%; /* 혹은 최대 너비를 설정할 수 있습니다 */
+    max-width: 600px; /* 컨테이너의 최대 너비 */ /* 배경색 추가 */
+    padding: 20px;
+}
+</style>
+{% endblock extra-style %}
+
+{% block content %}
+<div class="page-center">
+    <div class="container-seller justify-content-center bg-dark shadow ">
+        <div class="mb-4 " style="border-bottom: 1px solid #ccc;">
+            <h1 class="fs-2 text-white pb-2 ">판매자 신청</h1>
+        </div>
+        
+
+        <div class="text-white mb-3">
+            <span>닉네임</span> <span>{{ user.username }}</span>
+        </div>
+
+        <div class="text-white mb-3">
+            <span>이메일</span> <span>{{ user.email }}</span>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="text-bg-dark">휴대폰 번호</label>
+                {{ form.phone_number }}
+                {% if form.phone_number.errors %}
+                {% for error in form.phone_number.errors %}
+                    <div class="alert alert-danger mt-3">전화번호는 '01012345678' 형식이어야 합니다.</div>
+                {% endfor %}
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-outline-light">신청하기</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}
