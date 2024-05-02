@@ -11,7 +11,7 @@
         <!-- Right column for the song details -->
         <div class="col-md-8">
             <h3 class="card-title">{{ song.title }}</h3>
-            <a href="{% url 'sellers:seller_detail' song.seller.id %}">{{ song.seller }}</a>
+            <a href="{% url 'sellers:seller_detail' song.seller.user.id %}">{{ song.seller }}</a>
             <h6 class="card-subtitle text-muted mb-2">노래 설명</h6>
             <audio controls class="w-100" controlsList="nodownload">
                 <source src="{% url 'songs:song_stream' song.id %}" type="audio/mpeg">
