@@ -1,88 +1,90 @@
 {% extends "base.html" %}
 
-{% block content %}
-<<<<<<< HEAD
-<div class="container ">
-    <div class="row">
-        <!-- Left column for the song image -->
-        <div class="col-md-4 text-center">
-            <img src="{{ song.thumbnail.url }}" alt="{{ song.title }}" class="img-fluid " style="max-width: 90%; height: auto; border-radius: 5%;">
-        </div>
 
-        <!-- Right column for the song details -->
-        <div class="col-md-8" style="color: rgb(255, 255, 255);">
-            <h3 class="card-title">{{ song.title }}</h3>
-                <p>{{ song.seller }}</p>
-                <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
-                    <div class="btn-group me-2" role="group" aria-label="First group">
-                    <button type="button" class="btn btn-outline-primary">❣️</button>
-                    <button type="button" class="btn btn-outline-secondary">👍</button>
-=======
-<div class="container mt-4">
-    <div class="row">
+{% block extra-style %}
+<style>
+    .heart-white {
+        color: white;
+    }
+
+    .heart-red {
+        color: red;
+    }
+
+    .btn-sm {
+        background-color: rgb(49, 49, 49);
+        padding: auto;
+        line-height: auto; /* 줄간격 조정 */
+        height: auto; /* 버튼 높이 조정 */
+        color: rgb(255, 255, 255);
+    }
+
+    .col-md-5{
+        display: flex; 
+        flex-direction: column; 
+        justify-content: space-between;
+    }
+
+</style>
+{% endblock extra-style %}
+
+{% block content %}
+<div class="container">
+    <div class="row" style="border-radius: 20px;">
         <!-- Left column for the song image -->
-        <div class="col-md-4 text-center">
+        <div class="col-md-4 text-center" style="margin-left: 20%;">
             <img src="{{ song.thumbnail.url }}" alt="{{ song.title }}" class="img-fluid rounded" style="max-width: 100%; height: auto;">
         </div>
 
         <!-- Right column for the song details -->
-        <div class="col-md-8">
-            <h3 class="card-title">{{ song.title }}</h3>
-            <h6 class="card-subtitle text-muted mb-2">노래 설명</h6>
-            <audio controls class="w-100" controlsList="nodownload">
-                <source src="{% url 'songs:song_stream' song.id %}" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-            <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
-                <div class="btn-group me-2" role="group" aria-label="First group">
-                    <button type="button" class="btn btn-outline-primary">찜</button>
-                    <button type="button" class="btn btn-outline-secondary">좋아요</button>
->>>>>>> f4a4d620f8c1229fbc43e5b7271c93b9b7580109
+        <div class="col-md-5">
+            <h3 class="card-title" style="color: rgb(255, 255, 255); margin-bottom: 20px;">{{ song.title }}</h3>
+                <button type="button" id="toggle-info" class="btn" data-bs-toggle="button" style="color: rgb(255, 255, 255); background-color: transparent; border: none; ">
+                    <i class="fas fa-heart heart-white"></i>
+                </button>
+            <div class="d-flex">
+                <div class="me-4">
+                    <h6 style="color: aliceblue;">Made by</h6>
+                    <a href="{% url 'sellers:seller_detail' song.seller.id %}" class="btn btn-sm">{{ song.seller }}</a>
                 </div>
-                <div class="btn-group me-2" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-outline-info">{{ song.genre }}</button>
+                <div>
+                    <h6 style="color: aliceblue;">장르</h6>
+                    <p class="btn btn-sm" style="background-color: rgb(49, 49, 49);">{{ song.genre }}</p>
                 </div>
-                <div class="btn-group" role="group" aria-label="Third group">
-                    <button type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        태그
-                    </button>
-                    <ul class="dropdown-menu">
-                        {% for tag in song.tags.all %}
-                        <li><a class="dropdown-item" href="#">{{ tag.name }}</a></li>
-                        {% empty %}
-                        <li><a class="dropdown-item" href="#">No tags</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <button type="button" class="btn btn-outline-success">{{ song.tempo }}</button>
-                <button type="button" class="btn btn-outline-danger">팔로우</button>
             </div>
-            <audio controls class="w-100" controlsList="nodownload">
+            <audio controls class="w-100" controlsList="nodownload" style="">
                 <source src="{% url 'songs:song_stream' song.id %}" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
         </div>
-    </div>
-<<<<<<< HEAD
-</div>
-=======
-
->>>>>>> f4a4d620f8c1229fbc43e5b7271c93b9b7580109
     <!-- Comments section -->
-    <div class="card my-4">
-        <h5 class="card-header">댓글을 남겨보세요!</h5>
+    <div class="card my-4" style="background-color: rgb(20, 20, 20); border:none">
+        <hr style="border-top: 1px solid white;">
+        <h5 class="card-header" style="color: aliceblue;">Comments:</h5>
+        <hr style="border-top: 1px solid white;">
         <div class="card-body">
             <form>
                 <div class="mb-3">
-                    <textarea class="form-control" rows="3"></textarea>
+                    <textarea class="form-control" rows="3" style="background-color: rgb(46, 46, 46);"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">작성완료</button>
             </form>
         </div>
     </div>
-<<<<<<< HEAD
-
-=======
 </div>
->>>>>>> f4a4d620f8c1229fbc43e5b7271c93b9b7580109
 {% endblock content%}
+
+{% block extra-script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var toggleButton = document.getElementById('toggle-info');
+        var heartIcon = toggleButton.querySelector('.fas.fa-heart');
+
+        toggleButton.addEventListener('click', function () {
+            // 하트 아이콘의 클래스를 토글합니다.
+            heartIcon.classList.toggle('heart-white');
+            heartIcon.classList.toggle('heart-red');
+        });
+    });
+</script>
+{% endblock extra-script %}
