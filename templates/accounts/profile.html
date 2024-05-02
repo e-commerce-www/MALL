@@ -99,19 +99,23 @@
                 <button class="btn btn-outline-light me-2" type="submit">저장</button>
             </form>
         </div>
-        <div class="col-md-8" >
+        <div class="col-md-8">
             {% if not user.is_seller %}
-            <div class="row mb-2 text-bg-dark " style="padding-right: 12px;">
+            <div class="row mb-2 text-bg-dark " style="margin-right: 2px;">
                 <div class="col-md-12 right-top">
                     <a class="text-bg-dark " href="{% url 'sellers:seller_apply' %}">판매자 신청하러 가기</a>
                 </div>
             </div>
             {% endif %}
-            <div class="row text-bg-dark" style="padding-right: 12px;">
-                <div class="col-md-12 right-bottom" >
-                    <h2>찜한 내역</h2>
+            {% if user.is_authenticated %}
+                {% if user.is_seller %}
+                <div class="row text-bg-dark" style="margin-right: 2px;">
+                    <div class="col-md-12 mb-3 mt-3" >
+                        <h2>음악 업로드</h2>
+                    </div>
                 </div>
-            </div>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 </div>

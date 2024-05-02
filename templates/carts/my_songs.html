@@ -54,8 +54,10 @@
 {% block content %}
 
 
-<div class="shopping-cart">
-    <h2>찜한 음악</h2>
+<div class="container ">
+    <div style=" border-bottom: 1px solid #ccc; padding-bottom: 24px;" class="mb-3">
+        <h1 id="chart-title" class="fs-2 text-white m-0 ">찜한 음악</h1>
+    </div>
     <div>
         <input type="radio" class="btn-check" name="options-base" id="favoritesList" autocomplete="off">
         <label class="btn" for="favoritesList">Favorites</label>
@@ -64,7 +66,7 @@
     </div>
     <div id="favoritesMusicList" class="musicList">
         {% for my_song in page_obj %}
-        <div>
+        <div id="cart-{{my_song.song.id}}">
             <div class="content">
                 <h3>타이틀: {{ my_song.song.title }}</h3>
                 <p>아티스트: {{ my_song.song.seller.user }}</p>
@@ -73,6 +75,7 @@
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger">구매</button>
             </form>
+            <button class="btn btn-outline-danger me-2" onclick="removeFromCart('{{my_song.song.id}}');">찜 취소</button>
         </div>
         {% endfor %}
         <nav aria-label="Page navigation example">
@@ -118,6 +121,7 @@
 {% endblock content %}
 
 {% block extra-script %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var favBtn = document.getElementById('favoritesList');
@@ -139,5 +143,22 @@
             }
         });
     });
+
+    function removeFromCart(songId) {
+        const mySong = document.getElementById('cart-' + (songId));
+        console.log(mySong)
+        axios({
+            method: 'get',
+            url: '{% url "carts:remove_song" %}',
+            params: {
+                songid: songId
+            }
+        })
+            .then(response => {
+                alert(response.data.success);
+                mySong.style.display = 'none';
+            })
+            .catch(error => console.log(error));
+    }
 </script>
 {% endblock extra-script %}

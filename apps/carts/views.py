@@ -7,7 +7,7 @@ from apps.songs.models import Song
 
 @login_required
 def my_songs(request):
-    my_song = get_list_or_404(Cart, user=request.user)
+    my_song = Cart.objects.all()
     paginator = Paginator(my_song, 10)
     
     page_number = request.GET.get('page', 1)

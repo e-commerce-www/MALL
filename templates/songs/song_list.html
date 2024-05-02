@@ -62,9 +62,11 @@
                         {% if not purchased %}
                         <!-- 찜 버튼 -->
                         {% if not added %}
-                            <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2" onclick="addToCart('{{song.id}}');">찜하기</button>
+                        <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2"
+                            onclick="addToCart('{{song.id}}');">찜하기</button>
                         {% else %}
-                            <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2" onclick="removeFromCart('{{song.id}}');">찜 취소</button>
+                        <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2"
+                            onclick="removeFromCart('{{song.id}}');">찜 취소</button>
                         {% endif %}
                         <!-- 다운로드 버튼 -->
                         <form action="{% url 'payments:payment_pay' song.id %}"
@@ -169,7 +171,7 @@
 
     function addToCart(songId) {
 
-        const addBtn = document.getElementById('add-btn-'+(songId));
+        const addBtn = document.getElementById('add-btn-' + (songId));
         axios({
             method: 'get',
             url: '{% url "carts:add_song" %}',
@@ -178,17 +180,17 @@
             }
         })
             .then(response => {
-                addBtn.id = 'remove-btn-'+response.data.song_id;  // Change the ID
+                addBtn.id = 'remove-btn-' + response.data.song_id;  // Change the ID
                 addBtn.className = 'btn btn-outline-danger me-2';  // Change the classes
                 addBtn.onclick = () => removeFromCart(songId);  // Change the onclick event
                 addBtn.textContent = '찜 취소';
-                alert(response.data.success + '가 찜 목록에 추가되었습니다.');
+                alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
             })
             .catch(error => console.log(error));
     }
 
     function removeFromCart(songId) {
-        const removeBtn = document.getElementById('remove-btn-'+(songId));
+        const removeBtn = document.getElementById('remove-btn-' + (songId));
         axios({
             method: 'get',
             url: '{% url "carts:remove_song" %}',
@@ -197,7 +199,7 @@
             }
         })
             .then(response => {
-                removeBtn.id = 'add-btn-'+response.data.song_id;  // Change the ID
+                removeBtn.id = 'add-btn-' + response.data.song_id;  // Change the ID
                 removeBtn.className = 'btn btn-outline-light me-2';  // Change the classes
                 removeBtn.onclick = () => addToCart(songId);  // Change the onclick event
                 removeBtn.textContent = '찜하기';
