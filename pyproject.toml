@@ -15,6 +15,11 @@ python-decouple = "^3.8"
 django-allauth = "0.61.1"
 requests = "2.26.0"
 iamport-rest-client = "^0.9.0"
+sorl-thumbnail = "^12.10.0"
+boto3 = "^1.34.95"
+django-storages = "^1.14.2"
+twilio = "^9.0.5"
+django-cors-headers = "^4.3.1"
 
 
 [build-system]

@@ -11,7 +11,6 @@ from apps.songs.models import Song
 from apps.sellers.models import Seller
 
 
-# Create your views here.
 @login_required
 def profile(request):
     if request.method == 'POST':
@@ -27,13 +26,7 @@ def profile(request):
     return render(request, 'accounts/profile.html', {'form': form})
 
 
-# @login_required
-# def purchase(request):
-#     orders = Order.objects.filter(user=request.user).order_by('-id')
-    
-#     return render(request, 'accounts/purchase_detail.html', context={'orders': orders})
-
-
+@login_required
 def purchase(request):
     orders = Order.objects.filter(user=request.user).order_by('-id')
     paginator = Paginator(orders, 10)
@@ -52,13 +45,10 @@ def purchase(request):
 
     return render(request, 'accounts/purchase_detail.html', context={"page_obj": page_obj, 'page_range': page_range})
 
+
+@login_required
 def sales(request):
     return render(request, 'accounts/sales_detail.html')
-
-def download(request):
-    orders = Order.objects.filter(user=request.user,payment__is_paid=True).order_by('-id')
-
-    return render(request, 'accounts/download_detail.html', context={'orders': orders})
 
 
 @login_required
@@ -83,4 +73,4 @@ def unfollow(request, pk):
     
     else:
         return HttpResponse("error")
-    
+

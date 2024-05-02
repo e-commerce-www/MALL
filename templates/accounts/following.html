@@ -1,19 +1,33 @@
 {% extends 'base.html' %}
 
-{% block extra-style %} 
+{% block extra-style %}
 <style>
     .remenu {
         margin-top: 15px;
         padding-top: 10px;
-        border-top: 1px solid white;
-        border-bottom: 1px solid white;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .remenu a {
+        text-decoration: none;
+        color: #bcbcbc;
+        font-weight: 500;
+    }
+    
+    .remenu a:hover {
+        text-decoration: none;
+        color: white;
+        font-weight: 500;
     }
 
     .remenu li {
         display: inline;
-        margin-left: 20px;
-        margin-right: 20px;
+        margin: 0 20px;
+    }
 
+    .remenu a.active {
+        color: white;
     }
 
 </style>
@@ -22,19 +36,24 @@
 
 
 {% block content %}
-
-<div class = "mypageNav mt-5">
-    <h2 style = "padding-left:30px">마이페이지</h2>
-    <div class = "remenu">
+<div class="container">
+    <h1 class="fs-2 mb-4 text-white ">팔로우</h1>
+    <div class="remenu mb-4">
         <ul>
-            <li><a href = "{% url 'oauth:profile' %}" class="text-decoration-none text-white">홈</a></li>
-            <li><a href = "{% url 'oauth:purchase' %}" class="text-decoration-none text-white">구매내역</a></li>
-            <li><a href = "{% url 'oauth:sales' %}" class="text-decoration-none text-white">판매내역</a></li>
-            <li><a href = "{% url 'oauth:download' %}" class="text-decoration-none text-white">음악 다운로드</a></li>
-            <li><a href = "{% url 'oauth:following' %}" class="text-decoration-none text-white">뮤지션 팔로우</a></li>
+            <li><a href="{% url 'oauth:profile' %}" {% if request.path == '/accounts/profile/' %}class="active"{% endif %}>홈</a></li>
+            <li><a href="{% url 'oauth:purchase' %}" {% if request.path == '/accounts/purchase/' %}class="active"{% endif %}>구매내역</a></li>
+            <li><a href="{% url 'oauth:sales' %}" {% if request.path == '/accounts/sales/' %}class="active"{% endif %}>판매내역</a></li>
+            <li><a href="{% url 'oauth:following' %}" {% if request.path == '/accounts/follow/' %}class="active"{% endif %}>팔로우</a></li>
         </ul>
     </div>
-</div>
+
+    <div class="followingDetail">
+        <div class="follow">
+            <ul>
+                <li style="list-style: none;"><a href="#">팔로우 판매자ID</a></li>
+            </ul>
+        </div>
+    </div>
 
 <div class = "followingDetail mt-5">
     <table class = "container-fluid">

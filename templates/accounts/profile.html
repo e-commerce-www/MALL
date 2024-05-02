@@ -1,77 +1,142 @@
 {% extends 'base.html' %}
 
-{% block extra-style %} 
+{% block extra-style %}
 <style>
     .remenu {
         margin-top: 15px;
         padding-top: 10px;
-        border-top: 1px solid white;
-        border-bottom: 1px solid white;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .remenu a {
+        text-decoration: none;
+        color: #bcbcbc;
+        font-weight: 500;
+    }
+
+    .remenu a:hover {
+        text-decoration: none;
+        color: white;
+        font-weight: 500;
     }
 
     .remenu li {
         display: inline;
-        margin-left: 20px;
-        margin-right: 20px;
-
+        margin: 0 20px;
     }
 
-</style>
+    .left-section,
+    .right-top,
+    .right-bottom {
+        /* border: 1px solid #ccc; */
+        padding: 20px;
+    }
 
+    .left-section h2,
+    .right-top h2,
+    .right-bottom h2 {
+        margin-bottom: 20px;
+    }
+
+    .profile-img {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+        border-radius: 50%;
+    }
+
+    .file-input {
+        width: 50%;
+        /* 입력 필드의 길이를 조절 */
+    }
+
+    .active-link {
+        color: white;
+    }
+
+
+    .remenu a.active {
+        color: white;
+    }
+
+
+</style>
 {% endblock extra-style %}
 
-
 {% block content %}
-
-<div class = "mypageNav mt-5">
-    <h2 style = "padding-left:30px">마이페이지</h2>
-    <div class = "remenu">
+<div class="container">
+    <h1 class="fs-2 mb-4 text-white" >마이페이지</h1>
+    <div class="remenu mb-4">
         <ul>
-            <li><a href = "{% url 'oauth:profile' %}" class="text-decoration-none text-white">홈</a></li>
-            <li><a href = "{% url 'oauth:purchase' %}" class="text-decoration-none text-white">구매내역</a></li>
-            <li><a href = "{% url 'oauth:sales' %}" class="text-decoration-none text-white">판매내역</a></li>
-            <li><a href = "{% url 'oauth:download' %}" class="text-decoration-none text-white">음악 다운로드</a></li>
-            <li><a href = "{% url 'oauth:following' %}" class="text-decoration-none text-white">뮤지션 팔로우</a></li>
+            <li><a href="{% url 'oauth:profile' %}" {% if request.path == '/accounts/profile/' %}class="active"{% endif %}>홈</a></li>
+            <li><a href="{% url 'oauth:purchase' %}" {% if request.path == '/accounts/purchase/' %}class="active"{% endif %}>구매내역</a></li>
+            <li><a href="{% url 'oauth:sales' %}" {% if request.path == '/accounts/sales/' %}class="active"{% endif %}>판매내역</a></li>
+            <li><a href="{% url 'oauth:following' %}" {% if request.path == '/accounts/follow/' %}class="active"{% endif %}>팔로우</a></li>
         </ul>
     </div>
-</div>
-
-<div class = "profielDetail mt-5">
-    <div class = "row">
-        <div class = "col-md-4 left-section" style="border: 1px solid #000;">
-            <form method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <form method="post" enctype="multipart/form-data" class="left-section bg-dark shadow text-white">
                 {% csrf_token %}
-                <h2>내 정보</h2>
-                <div><img src="{{ user.profile.url }}" alt="{{user.username}}" width="200px;"></div>
-                프로필 이미지: <input type="file" name="{{ form.profile.name }}" id="{{ form.profile.id_for_label }}" accept="image/png, image/jpeg, image/gif">
-                <div>닉네임: {{ form.username }} </div>
-                {% if form.username.errors %}
+                <h2>프로필</h2>
+                <img src="{{ user.profile.url }}" alt="{{ user.username }}" class="profile-img mb-2">
+                <div class="mb-3 ">
+                    <input class="file-input" type="file" name="{{ form.profile.name }}"
+                        id="{{ form.profile.id_for_label }}" accept="image/png, image/jpeg, image/gif" onchange="previewFile()"/>
+                </div>
+                <div class="mb-3">
+                    닉네임 {{ form.username }}
+                    {% if form.username.errors %}
                     {% for error in form.username.errors %}
-                        <div class="alert alert-danger">이미 존재하는 닉네임입니다. 다른 닉네임으로 변경해주세요.</div>
+                    <div class="alert alert-danger mt-2">이미 존재하는 닉네임입니다.<br>다른 닉네임으로 변경해주세요.</div>
                     {% endfor %}
-                {% endif %}
-                <div>이메일: {{ user.email }}</div>
-                <button type="submit">저장</button>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    이메일 {{ user.email }}
+                </div>
+                <button class="btn btn-outline-light me-2" type="submit">저장</button>
             </form>
         </div>
-
-        <div class = "col-md-8">
-            <div class ="row">
-                <div class = "col-md-12 right-top" style="border: 1px solid #000; margin-left: 20px;">
-                    <h2>다운로드 내역</h2>
+        <div class="col-md-8">
+            {% if not user.is_seller %}
+            <div class="row mb-2 text-bg-dark " style="margin-right: 2px;">
+                <div class="col-md-12 right-top">
+                    <a class="text-bg-dark " href="{% url 'sellers:seller_apply' %}">판매자 신청하러 가기</a>
                 </div>
             </div>
-            <div class = "row">
-                <div class = "col-md-12 right-bottom" style="border: 1px solid #000; margin-top: 20px; margin-left:20px;">
-                    <h2>찜한 내역</h2>
+            {% endif %}
+            {% if user.is_authenticated %}
+                {% if user.is_seller %}
+                <div class="row text-bg-dark" style="margin-right: 2px;">
+                    <div class="col-md-12 mb-3 mt-3" >
+                        <h2>음악 업로드</h2>
+                    </div>
                 </div>
-            </div>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
-
 </div>
-
-
-
-
 {% endblock %}
+
+{% block extra-script %}
+<script>
+    function previewFile() {
+        const file = document.querySelector('input[type=file]').files[0];
+        const preview = document.querySelector('.profile-img');
+
+        const reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            // 파일을 읽은 후 src 속성에 결과 데이터 URL을 설정
+            preview.src = reader.result;
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file); // 파일을 읽어 데이터 URL로 변환
+        }
+    }
+</script>
+{% endblock extra-script %}
