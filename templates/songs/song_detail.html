@@ -26,7 +26,14 @@
                     <button type="button" class="btn btn-outline-info">{{ song.display_genre }}</button>
                 </div>
                 <button type="button" class="btn btn-outline-success">{{ song.display_tempo }}</button>
-                <button type="button" class="btn btn-outline-danger">팔로우</button>
+                
+                <!-- 팔로우 수정 부분-->
+
+                <form action = "{% url 'follows:add_follow' %}" method = "post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger">팔로우</button>
+                </form>
+
             </div>
         </div>
     </div>
