@@ -2,7 +2,6 @@ from django import template
 from apps.songs.models import Song
 from apps.orders.models import Order
 from apps.carts.models import Cart
-from django.contrib.auth import get_user_model
 
 register = template.Library()
 

@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import UserEditForm
+from django.core.paginator import Paginator
+
 from apps.orders.models import Order
 from apps.follows.models import Follows
 from apps.songs.models import Song
@@ -26,9 +28,22 @@ def profile(request):
 
 @login_required
 def purchase(request):
-    orders = Order.objects.filter(payment__is_paid=True, user=request.user)
+    orders = Order.objects.filter(payment__is_paid=True, user=request.user).order_by('-created_at')
+    paginator = Paginator(orders, 10)
+
+    page_number = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_number)
     
-    return render(request, 'accounts/purchase_detail.html', context={'orders': orders})
+    current_page = page_obj.number
+    range_size = 5
+    half_range = range_size // 2
+
+    start_page = max(current_page - half_range, 1)
+    end_page = min(start_page + range_size - 1, paginator.num_pages)
+
+    page_range = range(start_page, end_page + 1)
+
+    return render(request, 'accounts/purchase_detail.html', context={"page_obj": page_obj, 'page_range': page_range})
 
 @login_required
 def sales(request):
