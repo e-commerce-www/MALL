@@ -39,7 +39,7 @@ DEBUG = config('DEBUG')
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 
-SITE_ID = 9 
+SITE_ID = 10 
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     'apps.oauth',
     'apps.songs',
     'apps.carts',
+    'apps.likes',
     'apps',
 ]
 

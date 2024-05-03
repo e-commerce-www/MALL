@@ -72,7 +72,15 @@
 {% block content %}
 <div class="container">
 
+<<<<<<< HEAD
     <form id="search-form" class="search-form mt-4">
+=======
+    {% for song, score in ranking_songs %}
+        {{ song.title }}
+    {% endfor %}
+
+    <form id="search-form" class="search-form">
+>>>>>>> main
         {% csrf_token %}
         <div class="input-group">
             <input type="text" id="search-input" title="title" class="form-control" placeholder="검색어를 입력하세요">
