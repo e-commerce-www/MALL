@@ -35,4 +35,5 @@ def follow_song(request, pk):
     
     return render(request, 'follows/following_song.html', context)
 
-    # return render(request, 'follows/following_song.html', context= {'following_user':following_user,'songs':songs})
+def add_follow(request):
+    pass

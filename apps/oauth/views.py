@@ -4,6 +4,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import UserEditForm
 from django.core.paginator import Paginator
+from django.db.models import Count
 
 from apps.orders.models import Order
 from apps.follows.models import Follows
@@ -50,11 +51,50 @@ def purchase(request):
 
 @login_required
 def sales(request):
-    return render(request, 'accounts/sales_detail.html')
+
+    try:
+        seller = Seller.objects.get(user=request.user)
+    except Seller.DoesNotExist:
+        seller = None
+
+
+    if seller:
+        # 노래별로 주문 수 계산
+        orders_by_song = Order.objects.filter(
+            payment__is_paid=True,
+            song__seller=seller
+        ).values('song__title', 'song__created_at', 'song__price').annotate(order_count=Count('id'))
+    else:
+        orders_by_song = []
+
+
+    # 페이지네이션
+    paginator = Paginator(orders_by_song, 10)
+
+    page_number = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_number)
+    
+    current_page = page_obj.number
+    range_size = 5
+    half_range = range_size // 2
+
+    start_page = max(current_page - half_range, 1)
+    end_page = min(start_page + range_size - 1, paginator.num_pages)
+
+    page_range = range(start_page, end_page + 1)
+
+
+    context={
+        "page_obj": page_obj, 
+        "page_range": page_range,
+    }
+
+    return render(request, 'accounts/sales_detail.html', context)
+
 
 
 @login_required
-def follow(request):
+def follower_recent(request):
     myfollow = Follows.objects.filter(follower=request.user)
 
     for se_follow in myfollow:
