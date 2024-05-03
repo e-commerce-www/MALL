@@ -1,18 +1,27 @@
 {% load session_filters %}
+{% load thumbnail %}
+
 {% for song in page_obj %}
 <div class="container-fluid p-0 mt-1">
     <div class="row justify-content-between align-items-center bg-dark p-3 shadow">
-        <div class="col-auto">
-            {% if forloop.counter <= 3 %} <span style="margin-right: 2px; color: yellow;">New</span>
-                {% endif %}
-                <a class="text-decoration-none" href="{% url 'songs:song_detail' song.id %}">
-                    <h5 class="text-white mb-0">{{ song.title }}</h5>
-                    <small class="fs-6" style="color: #888888;">{{ song.seller }}</small>
-                </a>
+        {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
+            <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
+        {% endthumbnail %}
+        <div class="col">
+            {% if forloop.counter <= 3 %} 
+                <span style="margin-right: 2px; color: yellow;">New</span>
+            {% endif %}
+            <a class="text-decoration-none " href="{% url 'songs:song_detail' song.id %}">
+                <!-- 노래 세부 내용 페이지로 링크 -->
+                <h5 class="text-white mb-0">{{ song.title }}</h5>
+                <small class="fs-6" style="color: #888888;">{{ song.seller }}</small>
+            </a>
         </div>
-        <div class="col-auto">
-            <a class="text-white" style="cursor: pointer;" data-id="{{ song.id }}"
-                onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
+        <div class="col">
+            <div>
+                <a class="text-white" style="cursor: pointer;" data-id="{{ song.id }}"
+                    onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
+            </div>
         </div>
         <div class="col-auto d-flex align-items-center">
             <audio controls class="me-3" controlsList="nodownload">

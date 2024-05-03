@@ -1,7 +1,6 @@
 {% extends 'base.html'%}
 {% load humanize %}
 
-
 {% block extra-style %} 
 <style>
     .remenu {
@@ -61,8 +60,6 @@
             </tr>
         </thead>
         <tbody>
-
-
             {% for order in page_obj %}
                 <tr>
                     <td class = "text-white">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
@@ -72,10 +69,7 @@
                     <td class = "text-white">{{ order.amount|intcomma  }}원</td>
                 </tr>
             {% endfor %}
-
-
         </tbody>
-
     </table>
 </div>
 
