@@ -70,22 +70,18 @@
 
 <!-- 검색 부분 -->
 {% block content %}
-<div class="container ">
+<div class="container">
 
-
-    <form id="search-form" class="search-form">
+    <form id="search-form" class="search-form mt-4">
         {% csrf_token %}
         <div class="input-group">
             <input type="text" id="search-input" title="title" class="form-control" placeholder="검색어를 입력하세요">
-            <button type="submit" class="btn-search btn-primary">검색</button>
+            <button type="submit" class="btn-search btn btn-primary">검색</button>
         </div>
     </form>
     <div class="search-result">
         <div id="display-content"></div>
     </div>
-
-
-
 
     <div class="row">
         <div class="col-12 mb-4">
@@ -109,7 +105,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <!-- <div class="row">
         {% for song in object %}
         <div class="card mb-3" style="max-width: 100%;">
             <div class="card-header"><span class="rank">{{ forloop.counter }}.</span> {{ song.title }}</div>
@@ -131,30 +127,32 @@
             </div>
         </div>
         {% endfor %}
-    </div>
-    <div class="container-fluid">
-      <div class="row mt-4">
-          <div class="col-md-12">
-              <h3>TOP 10</h3>
-              <div>
-                  <div class="row mt-3 mb-3">
-                      <div class="col">
-                          <div class="btn-group" role="group" aria-label="Sort">
-                              <button type="button" class="btn btn-secondary" id="hello-btn">일간</button>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
-    
-{%endblock%}
-
+    </div> -->
+    <button id="daily_chart" class="btn btn-primary">일간</button>
+    <div id="message"></div>
+</div>
+{% endblock %}
 
 {% block extra-script %}
-
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
+    document.getElementById("daily_chart").addEventListener('click', function() {
+        axios({
+            method: 'post',
+            url: '{%url "daily_chart" %}',
+            data: {},
+
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => {
+            document.getElementById('message').innerText = response.data.data;
+        })
+        .catch(error => console.error(error));
+    });
+
     document.getElementById("search-form").addEventListener('submit', function (event) {
         event.preventDefault();
         const search_name_value = document.getElementById('search-input').value;

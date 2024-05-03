@@ -44,12 +44,13 @@ def search(request):
         return JsonResponse({'error': 'Invalid request method'})
 
 
-def hello_view(request):
+def daily_chart(request):
     if request.method == 'POST':
-        message = "hello"
-        search_html += "<h3> hello <h3>"   
-        return JsonResponse({'message':search_html})
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            search_html = "<h3>hello</h3>"
+            return JsonResponse({'message': 'hi', 'data': search_html})
+        except (ValueError, TypeError):
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid request method'})
-
-
