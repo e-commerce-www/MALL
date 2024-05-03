@@ -56,7 +56,7 @@ def payment_verify(request, pk):
 
 @login_required
 def payment_detail(request, pk):
-    payment = get_object_or_404(Payment, pk=pk)
+    payment = Payment.objects.get(order_id=pk)
     if request.user == payment.order.user:
         return render(
             request,

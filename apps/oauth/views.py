@@ -28,7 +28,7 @@ def profile(request):
 
 @login_required
 def purchase(request):
-    orders = Order.objects.filter(user=request.user).order_by('-id')
+    orders = Order.objects.filter(payment__is_paid=True, user=request.user).order_by('-created_at')
     paginator = Paginator(orders, 10)
 
     page_number = request.GET.get("page", 1)
@@ -44,7 +44,6 @@ def purchase(request):
     page_range = range(start_page, end_page + 1)
 
     return render(request, 'accounts/purchase_detail.html', context={"page_obj": page_obj, 'page_range': page_range})
-
 
 @login_required
 def sales(request):

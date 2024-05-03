@@ -47,8 +47,9 @@
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-light me-2" id="puchase-btn">구매</button>
                     </form>
+                    {% else %}
+                    <button type="submit" class="btn btn-outline-light me-2" id="puchase-btn">이미 구매한 음원</button>
                     {% endif %}
-                    
                 </div>
             </div>
         </div>
