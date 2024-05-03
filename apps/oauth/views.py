@@ -13,17 +13,20 @@ from apps.sellers.models import Seller
 
 @login_required
 def profile(request):
+    
+    profile_songs = Song.objects.filter(seller__user=request.user)[:9]
+    
     if request.method == 'POST':
         form = UserEditForm(request.POST, request.FILES, instance=request.user)  # request.user는 현재 로그인한 사용자의 인스턴스
         if form.is_valid():
             form.save()
             return redirect('home')  # 프로필 페이지로 리다이렉트
         else:
-            return render(request, 'accounts/profile.html', {'form': form})
+            return render(request, 'accounts/profile.html', {'form': form, 'profile_songs': profile_songs})
     else:
         form = UserEditForm(instance=request.user)  # 폼을 초기화할 때 현재 사용자 정보로 채웁니다
     
-    return render(request, 'accounts/profile.html', {'form': form})
+    return render(request, 'accounts/profile.html', {'form': form, 'profile_songs': profile_songs})
 
 
 @login_required
