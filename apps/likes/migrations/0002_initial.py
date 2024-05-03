@@ -10,20 +10,24 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('carts', '0001_initial'),
+        ('likes', '0001_initial'),
         ('songs', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='cart',
+            model_name='like',
             name='song',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='songs.song'),
         ),
         migrations.AddField(
-            model_name='cart',
+            model_name='like',
             name='user',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AlterUniqueTogether(
+            name='like',
+            unique_together={('song', 'user')},
         ),
     ]
