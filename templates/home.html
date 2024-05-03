@@ -180,24 +180,6 @@
             })
             .catch(error => console.log(error));
     });
-
-    const helloBtn = document.getElementById('hello-btn');
-    helloBtn.addEventListener('click', () => {
-      axios({
-        method: 'post',
-        url: '{%url "hello"%}',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': '{{ csrf_token }}'
-        }
-      })
-      .then(response => {
-        console.log(response.data.message);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-    });
 </script>
 
 {% endblock extra-script %}
