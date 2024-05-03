@@ -57,23 +57,6 @@ def sales(request):
     except Seller.DoesNotExist:
         seller = None
 
-    # if seller:
-    #     # 각 노래에 대한 주문 수 계산
-    #     orders_by_song = Order.objects.filter(
-    #         payment__is_paid = True,
-    #         song__seller = seller
-    #     ).values('song__title').annotate(order_count = Count('id'))
-
-    #     # 노래 제목을 통해 주문 수 매칭
-    #     orders = Order.objects.filter(
-    #         payment__is_paid = True,
-    #         song__seller = seller
-    #     )
-
-    #     # 노래 제목 통해 주문 수 가져오기
-    #     order_counts = {order['song__title']: order['order_count'] for order in orders_by_song}
-    # else:
-    #     orders = []
 
     if seller:
         # 노래별로 주문 수 계산
