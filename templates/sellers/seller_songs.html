@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div style=" border-bottom: 1px solid #ccc; padding-bottom: 24px;" class="mb-3">
+        <h1 id="chart-title" class="fs-2 text-white m-0 ">{{ user.username }}</h1>
+    </div>
+
+    {% for song in page_obj %}
+        <a href="{% url 'sellers:seller_edit' song.id %}">{{ song.title }}</a>
+    {% endfor %}
+
+</div>
+
+{% endblock content %}

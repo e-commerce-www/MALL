@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
-
+{% load thumbnail %}
 {% load static %}
 
 {% block extra-style %}
@@ -117,36 +117,27 @@
                 {% if user.is_seller %}
                 <div class="row text-bg-dark" style="margin-right: 2px;">
                     <div class="col-md-12 mb-3 mt-3" >
-                        <a class="text-decoration-none" href="{% url 'sellers:seller_upload' %}"><span class="fs-4 text-white">음악 업로드</span></a>
+                        <a class="text-decoration-none" href="{% url 'sellers:seller_upload' %}"><span class="fs-4 text-white">음악 업로드하러 가기</span></a>
                     </div>
                 </div>
                 
-                <div id="coverflow" class="mt-5">
+                <div id="coverflow" style="margin-top: 65px; margin-bottom: 36px;">
                     <ul class="flip-items">
-                        <li data-flip-title="Razzmatazz" data-flip-category="Purples">
-                            <img src="https://img.freepik.com/free-photo/a-painting-of-a-mountain-lake-with-a-mountain-in-the-background_188544-9126.jpg" width="200px" height="200px">
-                        </li>
-                        <li data-flip-title="Deep Lilac" data-flip-category="Purples">
-                            <img src="https://img.freepik.com/free-photo/a-painting-of-a-mountain-lake-with-a-mountain-in-the-background_188544-9126.jpg" width="200px" height="200px">
-                        </li>
-                        <li data-flip-title="Daisy Bush" data-flip-category="Purples">
-                            <img src="https://img.freepik.com/free-photo/a-painting-of-a-mountain-lake-with-a-mountain-in-the-background_188544-9126.jpg" width="200px" height="200px">
-                        </li>
-                        <li data-flip-title="Cerulean Blue" data-flip-category="Blues">
-                            <img src="https://img.freepik.com/free-photo/a-painting-of-a-mountain-lake-with-a-mountain-in-the-background_188544-9126.jpg" width="200px" height="200px">
-                        </li>
-                        <li data-flip-title="Dodger Blue" data-flip-category="Blues">
-                            <img src="https://img.freepik.com/free-photo/a-painting-of-a-mountain-lake-with-a-mountain-in-the-background_188544-9126.jpg" width="200px" height="200px">
-                        </li>
-                        <li data-flip-title="Dodger Blue" data-flip-category="Blues">
-                            <img src="https://img.freepik.com/free-photo/a-painting-of-a-mountain-lake-with-a-mountain-in-the-background_188544-9126.jpg" width="200px" height="200px">
-                        </li>
-                        <li data-flip-title="Dodger Blue" data-flip-category="Blues">
-                            <img src="https://img.freepik.com/free-photo/a-painting-of-a-mountain-lake-with-a-mountain-in-the-background_188544-9126.jpg" width="200px" height="200px">
-                        </li>
+                        {% for song in profile_songs %}
+                            {% thumbnail song.thumbnail "200x200" crop="center" as thumb %}
+                            <li data-flip-title="Razzmatazz" data-flip-category="Purples">
+                                <a href="{% url 'songs:song_detail' song.id %}"><img src="{{ thumb.url }}" width="200px" height="200px"></a>
+                            </li>
+                            {% endthumbnail %}
+                        {% endfor %}
                     </ul>
                 </div>
 
+                <div class="row text-bg-dark" style="margin-right: 2px;">
+                    <div class="col-md-12 mb-3 mt-3" >
+                        <a class="text-decoration-none" href="{% url 'sellers:seller_songs' %}"><span class="fs-4 text-white">나의 음악 보러가기</span></a>
+                    </div>
+                </div>
 
                 {% endif %}
             {% endif %}
