@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
 from twilio.rest import Client
 from .forms import SellerApplyForm
-from apps.songs.forms import SongUploadForm
+from apps.songs.forms import SongUploadForm, SongEditForm
+from django.core.paginator import Paginator
 from .models import Seller
 from apps.songs.models import Song
 
@@ -75,3 +76,38 @@ def seller_upload(request):
     else:
         form = SongUploadForm()
     return render(request, 'sellers/seller_upload.html', context={'form': form})
+
+@login_required
+def seller_edit(request, pk):
+    song = get_object_or_404(Song, pk=pk)
+    if request.method == 'POST':
+        form = SongEditForm(request.POST, request.FILES, instance=song)
+        if form.is_valid():
+            form.save()
+            return redirect('sellers:seller_songs')
+    else:
+        form = SongEditForm(instance=song)
+    return render(request, 'sellers/seller_edit.html', context={'form': form})
+
+@login_required
+def seller_songs(request):
+        song_list = Song.objects.filter(seller__user=request.user)
+        paginator = Paginator(song_list, 10)
+
+        page_number = request.GET.get("page", 1)
+        page_obj = paginator.get_page(page_number)
+
+        current_page = page_obj.number
+        range_size = 5
+        half_range = range_size // 2
+
+        start_page = max(current_page - half_range, 1)
+        end_page = min(start_page + range_size - 1, paginator.num_pages)
+
+        page_range = range(start_page, end_page + 1)
+
+        return render(
+            request,
+            "sellers/seller_songs.html",
+            context={"page_obj": page_obj, "page_range": page_range},
+        )
