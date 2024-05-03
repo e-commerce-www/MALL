@@ -48,31 +48,56 @@
         </ul>
     </div>
 
-    <div class="container-fluid px-5 ">
-        <table class="container-fluid">
-            <thead>
-                <tr>
-                    <th scope="col">No.</th>
-                    <th scope="col">구매날짜</th>
-                    <th scope="col">노래제목</th>
-                    <th scope="col">판매자</th>
-                    <th scope="col">가격</th>
-                </tr>
-            </thead>
-            <tbody>
+<div class = "purchaseDetail mt-5">
+    <table class ="container-fluid">
+        <thead>
+            <tr style="color: #bcbcbc;">
+                <th scope="col">No.</th>
+                <th scope="col">구매날짜</th>
+                <th scope="col">노래제목</th>
+                <th scope="col">판매자</th>
+                <th scope="col">가격</th>
+            </tr>
+        </thead>
+        <tbody>
 
-                {% for order in orders %}
+
+            {% for order in page_obj %}
                 <tr>
-                    <td>No. {{order.id}}</td>
-                    <td><a href="{% url 'payments:payment_detail' order.id %}">{{ order.created_at }}</a></td>
-                    <td>{{ order.song.title }}</td>
-                    <td>{{ order.song.seller.user }}</td>
-                    <td>{{ order.amount|intcomma }}원</td>
+                    <td class = "text-white">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
+                    <td class = "text-white"><a href="{% url 'payments:payment_detail' order.song.id %}">{{ order.created_at }}</a></td>
+                    <td class = "text-white">{{ order.song.title }}</td>
+                    <td class = "text-white">{{ order.song.seller }}</td>
+                    <td class = "text-white">{{ order.amount|intcomma  }}원</td>
                 </tr>
+            {% endfor %}
+
+
+        </tbody>
+
+    </table>
+</div>
+
+<div class="container mt-3">
+    <div class="d-flex justify-content-center">
+        <div>
+            <ul class="pagination">
+            {% if page_obj.has_other_pages %}
+                {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
+                {% endif %}
+    
+                {% for num in page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
                 {% endfor %}
-
-            </tbody>
-        </table>
+    
+                {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a></li>
+                {% endif %}
+            {% endif %}
+            </ul>
+        </div>
     </div>
 </div>
+
 {% endblock %}

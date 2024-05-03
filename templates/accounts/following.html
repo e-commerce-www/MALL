@@ -47,54 +47,42 @@
         </ul>
     </div>
 
-    <div class="followingDetail">
-        <div class="follow">
-            <ul>
-                <li style="list-style: none;"><a href="#">팔로우 판매자ID</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <div class = "followingDetail mt-5">
-        <table class = "container-fluid">
-            <thead>
-                <tr>
-                    <th scope="col">No.</th>
-                    <th scope="col">뮤지션 정보</th>
-                    <th scope="col">최근 활동</th>
-                    <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for follow in myfollow %}
-                <tr>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr>
-                    <td class = "text-white">No. {{ forloop.counter }}</td>
-                    <td><a href = "#" class = "text-white">{{ follow.following.username }}</a></td>
-                    <td class = "text-white">
-                        {% if follow.recent_songs %}
-                            {{follow.recent_songs.0.title}}을 등록하셨습니다.
-                        {% else %}
-                            최근 음악 없음
-                        {% endif %}
-                    </td>
-                    <td>
-                        <form action = "{% url 'oauth:unfollow' pk=follow.id %}" method="post"> 
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-outline-light me-2">팔로우 취소</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    
+<div class = "followingDetail mt-5">
+    <table class = "container-fluid">
+        <thead>
+            <tr style="color: #bcbcbc;">
+                <th scope="col">No.</th>
+                <th scope="col">뮤지션 정보</th>
+                <th scope="col">최근 활동</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for follow in myfollow %}
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td class = "text-white">No. {{ forloop.counter }}</td>
+                <td><a href = "{% url 'follows:following' pk=follow.id %}" class = "text-white">{{ follow.following.username }}</a></td>
+                <td class = "text-white">
+                    {% if follow.recent_songs %}
+                        {{follow.recent_songs.0.title}}을 등록하셨습니다.
+                    {% else %}
+                        최근 음악 없음
+                    {% endif %}
+                </td>
+                <td>
+                    <form action = "{% url 'oauth:unfollow' pk=follow.id %}" method="post"> 
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-light me-2">팔로우 취소</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
-
-
 
 
 {% endblock content %}
