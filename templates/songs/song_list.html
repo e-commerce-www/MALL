@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load session_filters %}
-
+{% load thumbnail %}
 <!-- 파란색 배경 카드 가운데로 해서 길게 만들어줌  -->
 <style>
     .card-horizontal {
@@ -34,7 +34,10 @@
             {% for song in page_obj %}
             <div class="container-fluid p-0 mt-1">
                 <div class="row justify-content-between align-items-center bg-dark p-3 shadow">
-                    <div class="col-auto">
+                    {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
+                        <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
+                    {% endthumbnail %}
+                    <div class="col">
                         <span class="text-white" style="margin-right: 2px;">{{ forloop.counter }}</span><span
                             class="text-white ">위</span>
                         <a class="text-decoration-none " href="{% url 'songs:song_detail' song.id %}">
@@ -43,7 +46,7 @@
                             <small class="fs-6" style="color: #888888;">{{ song.seller }}</small>
                         </a>
                     </div>
-                    <div class="col-auto ">
+                    <div class="col">
                         <div>
                             <a class="text-white" style="cursor: pointer;" data-id="{{ song.id }}"
                                 onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
