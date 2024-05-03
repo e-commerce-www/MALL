@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+{% load session_filters %}
 
 {% block extra-style %}
 <style>
@@ -25,6 +26,30 @@
         justify-content: space-between;
     }
 
+    .btn-outline-light {
+        color: rgb(255, 255, 255); 
+        background-color: none; 
+        border: none;
+        position: relative;
+        display: flex;
+        top: -40px; /* 버튼을 위로 한 칸 올림 */
+        left: 0px; /* 버튼을 왼쪽으로 정렬 */
+        width: 20px; /* 버튼 너비 설정 */
+        height: 20px; /* 버튼 높이 설정 */
+    }
+
+    .btn-outline-light-rm{
+        color: rgb(255, 0, 0); /* 빨간색으로 변경 */
+        background-color: transparent; 
+        border: none;
+        position: relative;
+        display: flex;
+        top: -40px; /* 버튼을 위로 한 칸 올림 */
+        left: 0px; /* 버튼을 왼쪽으로 정렬 */
+        width: 20px; /* 버튼 너비 설정 */
+        height: 20px; /* 버튼 높이 설정 */
+    }
+
 </style>
 {% endblock extra-style %}
 
@@ -39,9 +64,12 @@
         <!-- Right column for the song details -->
         <div class="col-md-5">
             <h3 class="card-title" style="color: rgb(255, 255, 255); margin-bottom: 20px;">{{ song.title }}</h3>
-                <button type="button" id="toggle-info" class="btn" data-bs-toggle="button" style="color: rgb(255, 255, 255); background-color: transparent; border: none; ">
-                    <i class="fas fa-heart heart-white"></i>
-                </button>
+            {% is_added_to_cart user song.id as added %}<!-- 찜한 목록에 있으면 -->
+            {% if not added %}
+                <button id="toggle-btn" class="btn btn-outline-light-rm" onclick="toggleButtonColor()">❤️</button> <!-- 빨간색 하트로 변경 및 활성화 -->
+            {% else %} <!-- 찜한 목록에 없으면 -->
+                <button id="toggle-btn" class="btn btn-outline-light" onclick="toggleButtonColor()">🤍</button> <!-- 흰색 하트로 유지 -->
+            {% endif %}
             <div class="d-flex">
                 <div class="me-4">
                     <h6 style="color: aliceblue;">Made by</h6>
@@ -52,11 +80,12 @@
                     <p class="btn btn-sm" style="background-color: rgb(49, 49, 49);">{{ song.genre }}</p>
                 </div>
             </div>
-            <audio controls class="w-100" controlsList="nodownload" style="">
+            <audio controls class="w-100" controlsList="nodownload">
                 <source src="{% url 'songs:song_stream' song.id %}" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
         </div>
+    </div>
     <!-- Comments section -->
     <div class="card my-4" style="background-color: rgb(20, 20, 20); border:none">
         <hr style="border-top: 1px solid white;">
@@ -72,19 +101,31 @@
         </div>
     </div>
 </div>
-{% endblock content%}
+{% endblock content %}
 
 {% block extra-script %}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var toggleButton = document.getElementById('toggle-info');
-        var heartIcon = toggleButton.querySelector('.fas.fa-heart');
+    function toggleButtonColor() {
+        const btn = document.getElementById('toggle-btn');
+        addToCart(); // 찜하기 동작 수행
+    }
 
-        toggleButton.addEventListener('click', function () {
-            // 하트 아이콘의 클래스를 토글합니다.
-            heartIcon.classList.toggle('heart-white');
-            heartIcon.classList.toggle('heart-red');
-        });
-    });
+    function addToCart() {
+        const addBtn = document.getElementById('toggle-btn');
+        axios({
+            method: 'get',
+            url: '{% url "carts:add_song" %}',
+            params: {
+                songid: '{{ song.id }}'
+            }
+        })
+            .then(response => {
+                addBtn.classList.remove('btn-outline-light');
+                addBtn.classList.add('btn-outline-light-rm');
+                addBtn.textContent = '❤️';
+                alert('찜 목록에 "{{ song.title }}"을(를) 추가하였습니다.');
+            })
+            .catch(error => console.log(error));
+    }
 </script>
 {% endblock extra-script %}
