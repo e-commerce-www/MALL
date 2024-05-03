@@ -11,6 +11,7 @@
             <h5 class="card-title">결제 정보</h5>
             <p class="card-text">
                 <strong>거래 ID:</strong> {{ payment.merchant_uid }}<br>
+                <strong>결제 시간:</strong> {{ payment.created_at|date:"Y년 n월 j일 g:i A" }}<br>
                 <div>
                     <img src="{{ payment.order.song.thumbnail.url }}" alt="{{ payment.name }}" width="200px;">
                 </div>

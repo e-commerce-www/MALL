@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
+{% load humanize %}
 
 {% block extra-style %}
 <style>
@@ -55,8 +57,8 @@
                     <th scope="col">No.</th>
                     <th scope="col">등록날짜</th>
                     <th scope="col">노래제목</th>
-                    <th scope="col">가격</th>
-                    <th scope="col">총 판매횟수</th>
+                    <th scope="col">구매자 수</th>
+                    <th scope="col">총 수익</th>
                 </tr>
             </thead>
             <tbody>
@@ -64,10 +66,10 @@
                 {% for order in page_obj %}
                 <tr>
                     <td class = "text-white">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
-                    <td class = "text-white">{{order.song__created_at}}</td>
+                    <td class = "text-white">{{order.song__created_at|date:"Y년 n월 j일 g:i A"}}</td>
                     <td class = "text-white">{{order.song__title}}</td>
-                    <td class = "text-white">{{order.song__price}}</td>
-                    <td class = "text-white">{{order.order_count}}</td>
+                    <td class = "text-white">{{order.order_count}}명</td>
+                    <td class = "text-white">{{ order.song__price|multiply:order.order_count|intcomma }}원</td>
                 </tr>
                 {% endfor %}
             </tbody>
