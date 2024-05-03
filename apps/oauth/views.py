@@ -51,7 +51,7 @@ def sales(request):
 
 
 @login_required
-def follow(request):
+def follower_recent(request):
     myfollow = Follows.objects.filter(follower=request.user)
 
     for se_follow in myfollow:
