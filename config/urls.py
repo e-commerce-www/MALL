@@ -36,5 +36,6 @@ urlpatterns = [
     path('mySongs/', include('apps.carts.urls')),
     path('payments/', include('apps.payments.urls')),
     path('search/',views.search,name='search'),
+    path('follows/', include('apps.follows.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

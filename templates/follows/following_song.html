@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load session_filters %}
+
+
+{% block content %}
+
+<div class = "container"></div>
+    <div>
+        <h1 class = "text-white">{{following_user.username}}</h1>
+    </div>
+
+    <div id = "song-content">
+        {% for song in page_obj %}
+        <div>
+            <div class = "container-fluid p-0 mt-3">
+                <div class="row justify-content-between align-items-center bg-dark p-3 shadow">
+                    <div class="col-auto">
+                        <a href="{% url 'songs:song_detail' song.id %}"> <!-- 노래 세부 내용 페이지로 링크 -->
+                            <h5 class="text-white mb-0">노래 제목 : {{ song.title }}</h5>
+                            <small class="text-secondary text-white">발매일: {{ song.created_at }}</small>
+                        </a>
+                    </div>
+    
+    
+                <div class="col-auto d-flex align-items-center">
+                    <audio controls class="me-3" controlsList="nodownload">
+                        <source src="{% url 'songs:song_stream' song.id %}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>    
+    
+    
+                    {% is_added_to_cart user song.id as added %}
+    
+                    {% if not added %}
+                    <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2"
+                        onclick="addToCart('{{song.id}}');">찜하기</button>
+                    {% else %}
+                    <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2"
+                        onclick="removeFromCart('{{song.id}}');">찜 취소</button>
+                    {% endif %}
+                
+    
+                
+                    {% is_purchased user song.id as purchased %}
+                    {% if not purchased %}
+                    <form action="{% url 'payments:payment_pay' song.id %}" method="post" class="purchase-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-light me-2" id="puchase-btn">구매</button>
+                    </form>
+                    {% else %}
+                    <button type="submit" class="btn btn-outline-light me-2" id="puchase-btn">이미 구매한 음원</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="container mt-3">
+        <div class="d-flex justify-content-center">
+            <div>
+                <ul class="pagination">
+                    {% if page_obj.has_other_pages %}
+                    {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link"
+                            href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
+                    {% endif %}
+
+                    {% for num in page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link"
+                            href="?page={{ num }}">{{ num }}</a></li>
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next
+                            &raquo;</a></li>
+                    {% endif %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+{% endblock content %}
+
+{% block extra-script %}
+<script>
+    function addToCart(songId) {
+
+    const addBtn = document.getElementById('add-btn-' + (songId));
+    axios({
+        method: 'get',
+        url: '{% url "carts:add_song" %}',
+        params: {
+            songid: songId
+        }
+    })
+        .then(response => {
+            addBtn.id = 'remove-btn-' + response.data.song_id;  // Change the ID
+            addBtn.className = 'btn btn-outline-danger me-2';  // Change the classes
+            addBtn.onclick = () => removeFromCart(songId);  // Change the onclick event
+            addBtn.textContent = '찜 취소';
+            alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
+        })
+        .catch(error => console.log(error));
+    }
+
+    function removeFromCart(songId) {
+    const removeBtn = document.getElementById('remove-btn-' + (songId));
+    axios({
+        method: 'get',
+        url: '{% url "carts:remove_song" %}',
+        params: {
+            songid: songId
+        }
+    })
+        .then(response => {
+            removeBtn.id = 'add-btn-' + response.data.song_id;  // Change the ID
+            removeBtn.className = 'btn btn-outline-light me-2';  // Change the classes
+            removeBtn.onclick = () => addToCart(songId);  // Change the onclick event
+            removeBtn.textContent = '찜하기';
+            alert(response.data.success);
+        })
+        .catch(error => console.log(error));
+    }
+</script>
+{% endblock extra-script %}

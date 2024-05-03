@@ -39,7 +39,7 @@ DEBUG = config('DEBUG')
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 
-SITE_ID = 4
+SITE_ID = 9 
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -73,9 +73,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.naver',
     # 'allauth.socialaccount.providers.kakao',
     # third apps
-    'taggit',
     'sorl.thumbnail',
     'corsheaders',
+    'widget_tweaks',
     # apps
     'apps.payments',
     'apps.follows',

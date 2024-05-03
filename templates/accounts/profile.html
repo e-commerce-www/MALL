@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% load static %}
 
 {% block extra-style %}
+
 <style>
     .remenu {
         margin-top: 15px;
@@ -59,9 +63,8 @@
     .remenu a.active {
         color: white;
     }
-
-
 </style>
+<link rel="stylesheet" href="{% static 'css/jquery.flipster.min.css' %}">
 {% endblock extra-style %}
 
 {% block content %}
@@ -76,7 +79,7 @@
         </ul>
     </div>
     <div class="row">
-        <div class="col-md-4 text-center">
+        <div class="col-4 text-center">
             <form method="post" enctype="multipart/form-data" class="left-section bg-dark shadow text-white">
                 {% csrf_token %}
                 <h2>프로필</h2>
@@ -86,7 +89,10 @@
                         id="{{ form.profile.id_for_label }}" accept="image/png, image/jpeg, image/gif" onchange="previewFile()"/>
                 </div>
                 <div class="mb-3">
-                    닉네임 {{ form.username }}
+                    <div class="d-flex align-items-center">
+                        <label class="flex-shrink-0" for="{{ form.username.id_for_label }}" style="margin-left:30px; margin-right: 3px;">닉네임</label>
+                        {% render_field form.username class="rounded-2 text-center flex-grow-1 w-100 " style="margin-right:30px;" %}
+                    </div>
                     {% if form.username.errors %}
                     {% for error in form.username.errors %}
                     <div class="alert alert-danger mt-2">이미 존재하는 닉네임입니다.<br>다른 닉네임으로 변경해주세요.</div>
@@ -99,9 +105,9 @@
                 <button class="btn btn-outline-light me-2" type="submit">저장</button>
             </form>
         </div>
-        <div class="col-md-8">
+        <div class="col-8 text-center">
             {% if not user.is_seller %}
-            <div class="row mb-2 text-bg-dark " style="margin-right: 2px;">
+            <div class="col mb-2 text-bg-dark " style="margin-right: 2px;">
                 <div class="col-md-12 right-top">
                     <a class="text-bg-dark " href="{% url 'sellers:seller_apply' %}">판매자 신청하러 가기</a>
                 </div>
@@ -111,9 +117,37 @@
                 {% if user.is_seller %}
                 <div class="row text-bg-dark" style="margin-right: 2px;">
                     <div class="col-md-12 mb-3 mt-3" >
-                        <h2>음악 업로드</h2>
+                        <a class="text-decoration-none" href="{% url 'sellers:seller_upload' %}"><span class="fs-4 text-white">음악 업로드</span></a>
                     </div>
                 </div>
+                
+                <div id="coverflow" class="mt-5">
+                    <ul class="flip-items">
+                        <li data-flip-title="Razzmatazz" data-flip-category="Purples">
+                            <img src="https://img.freepik.com/free-photo/a-painting-of-a-mountain-lake-with-a-mountain-in-the-background_188544-9126.jpg" width="200px" height="200px">
+                        </li>
+                        <li data-flip-title="Deep Lilac" data-flip-category="Purples">
+                            <img src="https://img.freepik.com/free-photo/a-painting-of-a-mountain-lake-with-a-mountain-in-the-background_188544-9126.jpg" width="200px" height="200px">
+                        </li>
+                        <li data-flip-title="Daisy Bush" data-flip-category="Purples">
+                            <img src="https://img.freepik.com/free-photo/a-painting-of-a-mountain-lake-with-a-mountain-in-the-background_188544-9126.jpg" width="200px" height="200px">
+                        </li>
+                        <li data-flip-title="Cerulean Blue" data-flip-category="Blues">
+                            <img src="https://img.freepik.com/free-photo/a-painting-of-a-mountain-lake-with-a-mountain-in-the-background_188544-9126.jpg" width="200px" height="200px">
+                        </li>
+                        <li data-flip-title="Dodger Blue" data-flip-category="Blues">
+                            <img src="https://img.freepik.com/free-photo/a-painting-of-a-mountain-lake-with-a-mountain-in-the-background_188544-9126.jpg" width="200px" height="200px">
+                        </li>
+                        <li data-flip-title="Dodger Blue" data-flip-category="Blues">
+                            <img src="https://img.freepik.com/free-photo/a-painting-of-a-mountain-lake-with-a-mountain-in-the-background_188544-9126.jpg" width="200px" height="200px">
+                        </li>
+                        <li data-flip-title="Dodger Blue" data-flip-category="Blues">
+                            <img src="https://img.freepik.com/free-photo/a-painting-of-a-mountain-lake-with-a-mountain-in-the-background_188544-9126.jpg" width="200px" height="200px">
+                        </li>
+                    </ul>
+                </div>
+
+
                 {% endif %}
             {% endif %}
         </div>
@@ -139,4 +173,15 @@
         }
     }
 </script>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+
+<!-- Flipster Js -->
+<script src="{% static 'js/jquery.flipster.min.js' %}"></script>
+
+<script>
+var coverflow = $("#coverflow").flipster();
+</script>
+
 {% endblock extra-script %}

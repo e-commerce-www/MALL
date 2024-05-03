@@ -32,10 +32,11 @@
         border: none;
         position: relative;
         display: flex;
-        top: -40px; /* 버튼을 위로 한 칸 올림 */
-        left: 0px; /* 버튼을 왼쪽으로 정렬 */
+        align-items: center; /* 세로 중앙 정렬 */
+        justify-content: center; /* 가로 중앙 정렬 */
         width: 20px; /* 버튼 너비 설정 */
         height: 20px; /* 버튼 높이 설정 */
+        margin-top: -20px;
     }
 
     .btn-outline-light-rm{
@@ -44,12 +45,12 @@
         border: none;
         position: relative;
         display: flex;
-        top: -40px; /* 버튼을 위로 한 칸 올림 */
-        left: 0px; /* 버튼을 왼쪽으로 정렬 */
+        align-items: center; /* 세로 중앙 정렬 */
+        justify-content: center; /* 가로 중앙 정렬 */
         width: 20px; /* 버튼 너비 설정 */
         height: 20px; /* 버튼 높이 설정 */
+        margin-top: -20px;
     }
-
 </style>
 {% endblock extra-style %}
 
@@ -66,10 +67,14 @@
             <h3 class="card-title" style="color: rgb(255, 255, 255); margin-bottom: 20px;">{{ song.title }}</h3>
             {% is_added_to_cart user song.id as added %}<!-- 찜한 목록에 있으면 -->
             {% if not added %}
-            <button id="toggle-btn" class="btn btn-outline-light" onclick="toggleButtonColor()">🤍</button> <!-- 흰색 하트로 유지 -->
-            {% else %} <!-- 찜한 목록에 없으면 -->
-            <button id="toggle-btn" class="btn btn-outline-light-rm" onclick="toggleButtonColor()">❤️</button> <!-- 빨간색 하트로 변경 및 활성화 -->
+            <button id="toggle-btn" class="btn btn-outline-light" onclick="toggleButtonColor()">🤍</button> <!-- 토글 버튼으로 변경 -->
+            {% else %}
+            <button id="toggle-btn" class="btn btn-outline-light-rm" onclick="toggleButtonColor()">❤️</button> <!-- 토글 버튼으로 변경 -->
             {% endif %}
+            <button id="like-btn" class="btn btn-outline-primary" onclick="toggleLike()" style="color: white; width: calc(30%);">
+                Like
+            </button>
+            <button type="button" class="btn btn-outline-danger" style="width: 30%;">Musician Follow</button>
             <div class="d-flex">
                 <div class="me-4">
                     <h6 style="color: aliceblue;">Made by</h6>
@@ -79,6 +84,11 @@
                     <h6 style="color: aliceblue;">장르</h6>
                     <p class="btn btn-sm" style="background-color: rgb(49, 49, 49);">{{ song.genre }}</p>
                 </div>
+                <div style="margin-left: 20px;">
+                    <h6 style="color: aliceblue;">Tempo</h6>
+                    <p class="btn btn-sm" style="background-color: rgb(49, 49, 49);">{{ song.display_tempo }}</p>
+                </div>
+                
             </div>
             <audio controls class="w-100" controlsList="nodownload">
                 <source src="{% url 'songs:song_stream' song.id %}" type="audio/mpeg">
@@ -103,13 +113,22 @@
 </div>
 {% endblock content %}
 
+
 {% block extra-script %}
 <script>
+    // 버튼을 클릭했을 때 찜 목록에 추가 또는 제거하는 함수
     function toggleButtonColor() {
         const btn = document.getElementById('toggle-btn');
-        addToCart(); // 찜하기 동작 수행
+        const added = btn.classList.contains('btn-outline-light-rm'); // 빨간색 하트인지 확인
+
+        if (added) {
+            removeFromCart(); // 찜 목록에서 제거
+        } else {
+            addToCart(); // 찜 목록에 추가
+        }
     }
 
+    // 찜 목록에 노래를 추가하는 함수
     function addToCart() {
         const addBtn = document.getElementById('toggle-btn');
         axios({
@@ -126,6 +145,56 @@
                 alert('찜 목록에 "{{ song.title }}"을(를) 추가하였습니다.');
             })
             .catch(error => console.log(error));
+    }
+
+    // 찜 목록에서 노래를 제거하는 함수
+    function removeFromCart() {
+        const removeBtn = document.getElementById('toggle-btn');
+        axios({
+            method: 'get',
+            url: '{% url "carts:remove_song" %}',
+            params: {
+                songid: '{{ song.id }}'
+            }
+        })
+            .then(response => {
+                removeBtn.classList.remove('btn-outline-light-rm');
+                removeBtn.classList.add('btn-outline-light');
+                removeBtn.textContent = '🤍';
+                alert(response.data.success);
+            })
+            .catch(error => console.log(error));
+    }
+
+    // 좋아요 버튼을 토글하는 함수
+    function toggleLike() {
+        const likeBtn = document.getElementById('like-btn');
+        const liked = likeBtn.classList.contains('liked'); // 이미 좋아요를 눌렀는지 확인
+
+        if (liked) {
+            dislike(); // 좋아요 취소
+        } else {
+            like(); // 좋아요
+        }
+    }
+
+        // 좋아요 버튼을 누를 때의 동작
+    function like() {
+        const likeBtn = document.getElementById('like-btn');
+        likeBtn.textContent = 'Liked!';
+        likeBtn.style.backgroundColor = '#007bff'; // primary 색상으로 내부 색상 변경
+        likeBtn.style.color = '#ffffff'; // 텍스트 색상을 흰색으로 변경
+        likeBtn.style.borderColor = '#007bff'; // 테두리 색상을 primary로 유지
+        likeBtn.classList.add('liked'); // 좋아요 상태로 클래스 추가
+    }
+
+    function dislike() {
+        const likeBtn = document.getElementById('like-btn');
+        likeBtn.textContent = 'Like';
+        likeBtn.style.backgroundColor = ''; // 내부 색상 초기화
+        likeBtn.style.color = ''; // 텍스트 색상 초기화
+        likeBtn.style.borderColor = ''; // 테두리 색상 초기화
+        likeBtn.classList.remove('liked'); // 좋아요 상태 클래스 제거
     }
 </script>
 {% endblock extra-script %}
