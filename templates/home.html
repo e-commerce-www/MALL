@@ -72,6 +72,9 @@
 {% block content %}
 <div class="container ">
 
+    {% for song, score in ranking_songs %}
+        {{ song.title }}
+    {% endfor %}
 
     <form id="search-form" class="search-form">
         {% csrf_token %}

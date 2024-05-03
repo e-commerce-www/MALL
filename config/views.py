@@ -3,16 +3,19 @@ from django.urls import reverse
 from apps.songs.models import Song
 from django.http import JsonResponse
 from config.forms import SearchForm
+from apps.songs.services import ranked_songs
 import json
 
 def home(request):
     songs = Song.objects.all()[:4] # 노래 가져오기 예시
+    ranking_songs = ranked_songs()
     form = SearchForm()
     context = {
         'object':songs,
+        'ranking_songs':ranking_songs,
         'form':form
     }
-    return render(request, 'home.html',context)
+    return render(request, 'home.html', context)
 
 
 def custom_404(request, exception):

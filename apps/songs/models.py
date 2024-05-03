@@ -1,8 +1,10 @@
 from django.db import models
 from apps.sellers.models import Seller
+from django.db.models import Sum, ExpressionWrapper, F, FloatField
+from django.db.models.functions import Exp
+from django.utils import timezone
 
 
-# Create your models here.
 class Song(models.Model):
     title = models.CharField(max_length=255)
     GENRE_CHOICES = (
