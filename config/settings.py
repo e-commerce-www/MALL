@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     'apps.oauth',
     'apps.songs',
     'apps.carts',
+    'apps.likes',
     'apps',
 ]
 
