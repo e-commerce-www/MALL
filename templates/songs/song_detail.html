@@ -66,9 +66,9 @@
             <h3 class="card-title" style="color: rgb(255, 255, 255); margin-bottom: 20px;">{{ song.title }}</h3>
             {% is_added_to_cart user song.id as added %}<!-- 찜한 목록에 있으면 -->
             {% if not added %}
-                <button id="toggle-btn" class="btn btn-outline-light-rm" onclick="toggleButtonColor()">❤️</button> <!-- 빨간색 하트로 변경 및 활성화 -->
+            <button id="toggle-btn" class="btn btn-outline-light" onclick="toggleButtonColor()">🤍</button> <!-- 흰색 하트로 유지 -->
             {% else %} <!-- 찜한 목록에 없으면 -->
-                <button id="toggle-btn" class="btn btn-outline-light" onclick="toggleButtonColor()">🤍</button> <!-- 흰색 하트로 유지 -->
+            <button id="toggle-btn" class="btn btn-outline-light-rm" onclick="toggleButtonColor()">❤️</button> <!-- 빨간색 하트로 변경 및 활성화 -->
             {% endif %}
             <div class="d-flex">
                 <div class="me-4">
