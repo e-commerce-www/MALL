@@ -12,9 +12,10 @@ def home(request):
     form = SearchForm()
     context = {
         'object':songs,
+        'ranking_songs':ranking_songs,
         'form':form
     }
-    return render(request, 'home.html',context)
+    return render(request, 'home.html', context)
 
 
 def custom_404(request, exception):

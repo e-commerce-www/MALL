@@ -11,3 +11,6 @@ class Like(models.Model):
 
     class Meta:
         unique_together = ('song', 'user')
+        
+    def __str__(self):
+        return self.song.title
