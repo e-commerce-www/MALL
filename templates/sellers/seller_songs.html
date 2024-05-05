@@ -31,7 +31,7 @@
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <audio controls class="me-3" controlsList="nodownload">
-                            <source src="{% url 'songs:song_stream' song.id %}" type="audio/mpeg">
+                            <source src="{{song.mp3.url}}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
                         <a href="{% url 'sellers:seller_edit' song.id %}">

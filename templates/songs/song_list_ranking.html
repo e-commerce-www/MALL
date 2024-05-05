@@ -1,7 +1,7 @@
 {% load session_filters %}
 {% load thumbnail %}
 
-{% for song in page_obj %}
+{% for song, _ in page_obj %}
 <div class="container p-0 mt-1 px-3">
     <div class="row justify-content-between align-items-center bg-dark p-3 shadow">
         {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
@@ -9,7 +9,10 @@
         {% endthumbnail %}
         <div class="col">
             {% if forloop.counter <= 3 %} 
-                <span style="margin-right: 2px; color: yellow;">New</span>
+                <span style="margin-right: 2px; color: yellow;">{{ page_obj.start_index | add:forloop.counter0 }}</span><span style="color: yellow;">위</span>
+            {% else %}
+                <span class="text-white" style="margin-right: 2px;">{{ page_obj.start_index | add:forloop.counter0 }}</span><span
+                    class="text-white ">위</span>
             {% endif %}
             <a class="text-decoration-none " href="{% url 'songs:song_detail' song.id %}">
                 <!-- 노래 세부 내용 페이지로 링크 -->
@@ -35,7 +38,6 @@
             <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
             {% is_purchased user song.id as purchased %}
             {% is_added_to_cart user song.id as added %}
-            
                 <!-- 찜 버튼 -->
                 {% if not added %}
                     <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2"
@@ -45,18 +47,19 @@
                         onclick="removeFromCart('{{song.id}}');">찜 취소</button>
                 {% endif %}
                 {% if not purchased %}
-                <!-- 다운로드 버튼 -->
-                <form action="{% url 'payments:payment_pay' song.id %}"
-                    onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                    <button class="btn btn-outline-light me-2" type="submit" onclick="">구매하기</button>
-                </form>
+                    <!-- 다운로드 버튼 -->
+                    <form action="{% url 'payments:payment_pay' song.id %}"
+                        onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
+                        <button class="btn btn-outline-light me-2" type="submit" onclick="">구매하기</button>
+                    </form>
                 {% else %}
-                <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
-                    <button class="btn btn-outline-light me-2">다운로드</button>
-                </a>
+                    <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
+                        <button class="btn btn-outline-light me-2">다운로드</button>
+                    </a>
                 {% endif %}
             {% else %}
                 <button type="button" class="btn btn-outline-light me-2" onclick="gotoLogin();">찜하기</button>
+                <!-- 다운로드 버튼 -->
                 <button class="btn btn-outline-light me-2" type="submit" onclick="gotoLogin();">구매하기</button>
             {% endif %}
         </div>

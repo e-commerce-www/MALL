@@ -132,6 +132,8 @@
         <!-- JS-->
         <script src="https://unpkg.com/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
         
         <script>
             function updateModalText(action) {
@@ -159,6 +161,24 @@
                 loginModal.show();
                 {% endif %}
             }
+
+            // document.addEventListener('contextmenu', event => event.preventDefault());
+
+            // document.onkeydown = function(e) {
+            //     if (e.keyCode == 123) { // F12 Key
+            //         return false;
+            //     }
+            //     if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { // Ctrl + Shift + I
+            //         return false;
+            //     }
+            //     if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { // Ctrl + Shift + J
+            //         return false;
+            //     }
+            //     if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { // Ctrl + U
+            //         return false;
+            //     }
+            // }
+
         </script>
         {% block extra-script %} {% endblock extra-script %}
     </div>

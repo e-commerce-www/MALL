@@ -6,7 +6,7 @@
 
 <div class="container">
     <div style=" border-bottom: 1px solid #ccc; padding-bottom: 24px;">
-        <h1 id="chart-title" class="fs-2 text-white m-0 ">{{following_user.username}}</h1>
+        <h1 id="chart-title" class="fs-2 text-white m-0 ">{{seller.user.username}}</h1>
     </div>
 
     <div class="container p-0 mt-1 px-3">
@@ -41,24 +41,32 @@
                                 <source src="{{song.mp3.url}}" type="audio/mpeg">
                                 Your browser does not support the audio element.
                             </audio>
-                            {% is_added_to_cart user song.id as added %}
-                            {% if not added %}
-                            <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2"
-                                onclick="addToCart('{{song.id}}');">찜하기</button>
+
+                            {% if user.is_authenticated %}
+                                {% is_added_to_cart user song.id as added %}
+
+                                {% if not added %}
+                                <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2"
+                                    onclick="addToCart('{{song.id}}');">찜하기</button>
+                                {% else %}
+                                <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2"
+                                    onclick="removeFromCart('{{song.id}}');">찜 취소</button>
+                                {% endif %}
+
+                                {% is_purchased user song.id as purchased %}
+                                {% if not purchased %}
+                                <form action="{% url 'payments:payment_pay' song.id %}" method="post" class="purchase-form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-light me-2" id="puchase-btn">구매하기</button>
+                                </form>
+                                {% else %}
+                                <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
+                                    <button class="btn btn-outline-light me-2">다운로드</button>
+                                </a>
+                                {% endif %}
                             {% else %}
-                            <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2"
-                                onclick="removeFromCart('{{song.id}}');">찜 취소</button>
-                            {% endif %}
-                            {% is_purchased user song.id as purchased %}
-                            {% if not purchased %}
-                            <form action="{% url 'payments:payment_pay' song.id %}" method="post" class="purchase-form">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-outline-light me-2" id="puchase-btn">구매하기</button>
-                            </form>
-                            {% else %}
-                            <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
-                                <button class="btn btn-outline-light me-2">다운로드</button>
-                            </a>
+                                <button type="button" class="btn btn-outline-light me-2" onclick="gotoLogin();">찜하기</button>
+                                <button class="btn btn-outline-light me-2" type="submit" onclick="gotoLogin();">구매하기</button>
                             {% endif %}
                         </div>
                     </div>
@@ -160,6 +168,13 @@
                 lyricsModal.show();
             })
             .catch(error => console.log(error));
+    }
+
+    function gotoLogin() {
+        var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
+            keyboard: false
+        });
+        loginModal.show();
     }
 </script>
 {% endblock extra-script %}

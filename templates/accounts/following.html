@@ -58,25 +58,22 @@
             </tr>
         </thead>
         <tbody>
-            {% for follow in myfollow %}
+            {% for follow in page_obj %}
             <tr>
                 <td>&nbsp;</td>
             </tr>
-            <tr>
-                <td class = "text-white">No. {{ forloop.counter }}</td>
+            <tr id="data-{{follow.following.id}}">
+                <td class = "text-white">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
                 <td><a href = "{% url 'follows:following' pk=follow.id %}" class = "text-white">{{ follow.following.username }}</a></td>
                 <td class = "text-white">
                     {% if follow.recent_songs %}
-                        {{follow.recent_songs.0.title}}을 등록하셨습니다.
+                        <a class="text-decoration-none text-bg-info" href="{% url 'songs:song_detail' follow.recent_songs.0.id %}">{{follow.recent_songs.0.title}}</a>을 등록하셨습니다.
                     {% else %}
-                        최근 음악 없음
+                        최근 활동 없음.
                     {% endif %}
                 </td>
                 <td>
-                    <form action = "{% url 'oauth:unfollow' pk=follow.id %}" method="post"> 
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-light me-2">팔로우 취소</button>
-                    </form>
+                    <a  class="btn btn-danger me-2" onclick="unfollowArtist('{{follow.following.id}}')">팔로우 취소</a>
                 </td>
             </tr>
             {% endfor %}
@@ -84,5 +81,48 @@
     </table>
 </div>
 
+<div class="container mt-3">
+    <div class="d-flex justify-content-center">
+        <div>
+            <ul class="pagination">
+            {% if page_obj.has_other_pages %}
+                {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
+                {% endif %}
+    
+                {% for num in page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endfor %}
+    
+                {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a></li>
+                {% endif %}
+            {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
 
 {% endblock content %}
+
+{% block extra-script %}
+<script>
+    function unfollowArtist(userId) {
+        const unfollowBtn = document.getElementById('data-'+userId);
+        axios({
+            method: 'get',
+            url: '{% url "follows:unfollow" %}',
+            params: {
+                userid: userId
+            },
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => {
+                unfollowBtn.remove()
+            })
+            .catch(error => console.log(error));
+    }
+</script>
+{% endblock extra-script %}
