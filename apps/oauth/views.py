@@ -69,7 +69,7 @@ def sales(request):
         orders_by_song = Order.objects.filter(
             payment__is_paid=True,
             song__seller=seller
-        ).values('song__title', 'song__created_at', 'song__price').annotate(order_count=Count('id'))
+        ).values('song__title', 'song__created_at', 'song__price').annotate(order_count=Count('id')).order_by('-created_at')
     else:
         orders_by_song = []
 

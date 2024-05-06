@@ -7,26 +7,29 @@
 <div class="container">
     <div class="row" style="border-radius: 20px;">
         <!-- Left column for the song image -->
-        <div class="col-md-4 text-center" style="margin-left: 20%;">
+        <div class="col-md-4 text-center " style="margin-left: 20%;">
             {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
-            <img src="{{ thumb.url }}" alt="{{ song.title }}" style="max-width: 100%; height: auto;">
+            <img src="{{ thumb.url }}" alt="{{ song.title }}" class="rounded-2 " style="max-width: 100%; height: auto; border: 1px solid hsla(0, 0%, 100%, .3);">
             {% endthumbnail %}
         </div>
 
         <!-- Right column for the song details -->
         <div class="col">
-            <h1 class="card-title fs-2 text-white">{{ song.title }}
+            <h1 class="card-title fs-2" style="color: aquamarine;">{{ song.title }}
                 {% if user.is_authenticated %}
-                    <a {% if like %} class="btn btn-danger" {% else %}
-                class="btn btn-outline-danger" {% endif %} id="like-btn" onclick="likeFunc('{{song.id}}');">좋아요 취소</a>
+                    {% if like %}
+                        <a class="btn btn-danger" id="like-btn" onclick="likeFunc('{{song.id}}');">좋아요 퓌소</a>
+                    {% else %}
+                        <a class="btn btn-outline-danger" id="like-btn" onclick="likeFunc('{{song.id}}');">좋아요</a>
+                    {% endif %}
                 {% else %}
                     <a class="btn btn-outline-danger" onclick="gotoLogin();">좋아요</a>
                 {% endif %}
             </h1>
-            <div class="mt-2">
-                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">아티스트</span>
-                <h2 class="fs-5 text-white mx-2" style="display: inline-block; ">
-                    <a href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{song.seller}}</a>
+            <div class="mt-2 align-content-center align-items-center  d-flex ">
+                <span style="background-color: black; border-radius: 8px; color: navajowhite; padding: 5px;">아티스트</span>
+                <h2 class="fs-5 text-white mx-2 m-0" style="display: inline-block; ">
+                    <a class="text-decoration-none" style="color:orange" href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{song.seller}}</a>
                     {% if user.is_authenticated %}
                         {% if not song.seller.user == user %}
                             {% if follow %}
@@ -40,18 +43,18 @@
                     {% endif %}
                 </h2>
             </div>
-            <div class="mt-3">
-                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">장르</span>
+            <div class="mt-3 align-content-center align-items-center  d-flex ">
+                <span style="background-color: black; border-radius: 8px; color: navajowhite; padding: 5px;">장르</span>
                 <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">{{ song.display_genre }}</span>
             </div>
-            <div class="mt-3">
-                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">템포</span>
+            <div class="mt-3  align-content-center align-items-center  d-flex ">
+                <span style="background-color: black; border-radius: 8px; color: navajowhite; padding: 5px;">템포</span>
                 <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">{{ song.display_tempo }}</span>
             </div>
-            <div class="mt-3">
-                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">가사</span>
+            <div class="mt-3 align-content-center align-items-center  d-flex ">
+                <span style="background-color: black; border-radius: 8px; color: navajowhite; padding: 5px;">가사</span>
                 <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">
-                    <a class="text-white" style="cursor: pointer;" data-id="{{ song.id }}"
+                    <a class="btn btn-outline-light me-2 text-white" style="cursor: pointer;" data-id="{{ song.id }}"
                     onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
                 </span>
             </div>
@@ -69,7 +72,7 @@
                         </a>
                     {% else %}
                         <form action="{% url 'payments:payment_pay' song.id %}" onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                            <button class="btn btn-outline-light me-2" type="submit" onclick="" style="height: 100%;">구매하기</button>
+                            <button class="btn btn-outline-light me-2 " type="submit" onclick="" style="height: 100%;">구매하기</button>
                         </form>
                     {% endif %}
                     {% if not added %}

@@ -45,9 +45,9 @@ def search(request):
             for song in search_results:
                 search_html += "<li class='search-item'>"
                 search_html += "<a href='{}' class='text-decoration-none' >".format(reverse('songs:song_detail', args=[song.id]))
-                search_html += "<img src='{}' alt='{}' class='search-thumbnail'>".format(song.thumbnail.url, song.title)
+                search_html += "<img style='border: 1px solid hsla(0, 0%, 100%, .3);' src='{}' alt='{}' class='search-thumbnail'>".format(song.thumbnail.url, song.title)
                 search_html += "<h1 class='fs-4 mt-2 mb-0 text-white'>{}</h1>".format(song.title)
-                search_html += "<p class='text-black' ><a href='{}'>{}</a></p>".format(reverse('sellers:seller_artist', args=[song.seller.user.id]), song.seller)
+                search_html += "<p class='text-black' ><a class='text-decoration-none' style='color:#888;' href='{}'>{}</a></p>".format(reverse('sellers:seller_artist', args=[song.seller.user.id]), song.seller)
                 search_html += "</a>"
                 search_html += "</li>"
             search_html += "</ul>"

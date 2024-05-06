@@ -76,14 +76,14 @@
                 </div>
                 <div class="row mt-3">
                     {% for song in object %}
-                    <div class="col-sm-6 col-md-3 mb-4">
-                        <div class="card text-center ">
+                    <div class="col-sm-6 col-md-3 mb-4" >
+                        <div class="card text-center bg-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                             <a href="{% url 'songs:song_detail' pk=song.id %}" class="text-decoration-none ">
                                 {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
                                 <img src="{{ thumb.url }}" class="card-img-top food-image" alt="{{ song.title }}">
                                 <div class="card-body row">
-                                    <h5 class="card-title">{{ song.title }}</h5>
-                                    <p class="p-0 m-0 "><a href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{song.seller}}</a></p>
+                                    <h5 class="card-title text-white ">{{ song.title }}</h5>
+                                    <p class="p-0 m-0 "><a class="text-decoration-none " href="{% url 'sellers:seller_artist' song.seller.user.id %}" style="color:#888;">{{song.seller}}</a></p>
                                 </div>
                                 {% endthumbnail %}
                             </a>
@@ -103,7 +103,7 @@
         <div class="row mt-3 px-4">
             {% for song, score in ranking_songs %}
             <div class="container-fluid p-0 mt-1">
-                <div class="row justify-content-between align-items-center bg-dark p-3 shadow">
+                <div class="row justify-content-between align-items-center bg-dark p-3 shadow" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
                         <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
                     {% endthumbnail %}
@@ -118,12 +118,12 @@
                         <a class="text-decoration-none " href="{% url 'songs:song_detail' song.id %}">
                             <!-- 노래 세부 내용 페이지로 링크 -->
                             <h5 class="text-white mb-0">{{ song.title }}</h5>
-                            <small class="fs-6" style="color: #888888;"><a href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{ song.seller }}</a></small>
+                            <small class="fs-6" style="color: #888888;"><a class="text-decoration-none " href="{% url 'sellers:seller_artist' song.seller.user.id %}" style="color:#888;" >{{ song.seller }}</a></small>
                         </a>
                     </div>
                     <div class="col">
                         <div>
-                            <a class="text-white" style="cursor: pointer;" data-id="{{ song.id }}"
+                            <a class="btn btn-outline-light me-2" style="cursor: pointer;" data-id="{{ song.id }}"
                                 onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
                         </div>
                     </div>
