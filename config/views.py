@@ -8,7 +8,7 @@ import json
 
 def home(request):
     songs = Song.objects.all().order_by('-created_at')[:4] # 노래 가져오기 예시
-    ranking_songs = ranked_songs()[:10]
+    ranking_songs = ranked_songs()[:5]
     form = SearchForm()
     context = {
         'object':songs,

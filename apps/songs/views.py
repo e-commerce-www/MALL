@@ -14,7 +14,7 @@ import os
 
 def song_list(request):
     song_list = ranked_songs()
-    paginator = Paginator(song_list, 10)
+    paginator = Paginator(song_list, 5)
 
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)

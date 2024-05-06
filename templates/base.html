@@ -1,4 +1,5 @@
 {% load socialaccount %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +10,7 @@
     <title>MVP:Music Value Platform</title>
 
     <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.png' %}">
 
     <!-- Bootstrap icons-->
     <link href="https://unpkg.com/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -40,12 +41,12 @@
 
         .main-content {
             flex: 1;
-            background-color: gray;
+            background-color: #000;
         }
 
         footer {
             padding: 20px 0;
-            background: #292929;
+            background: #111
         }
 
         .top-bar {
@@ -63,6 +64,14 @@
             filter: invert(1);
             /* 닫기 버튼을 밝게 조정 */
         }
+
+        .img-render {
+            image-rendering: -mon-crisp-edges;
+            image-rendering: -o-crisp-edges;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            -ms-interpolation-mode: nearest-neighbor;
+        }
     </style>
     <!-- CSS-->
     {% block extra-style %} {% endblock extra-style %}
@@ -73,7 +82,7 @@
         <!-- Navigation-->
         <nav class="navbar navbar-expand-sm navbar-dark  ">
             <div class="container">
-                <a class="navbar-brand" href="{% url 'home' %}">MVP 로고</a>
+                <a class="navbar-brand p-0 img-render" href="{% url 'home' %}"><img src="{% static 'logo.png' %}" alt="MVP"></a>
                 <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
                     aria-label="Toggle navigation">
@@ -81,24 +90,24 @@
                 </button>
                 <div class="collapse navbar-collapse " id="collapsibleNavId">
                     <ul class="navbar-nav me-auto mt-2 mt-lg-0">
-                        <li class="nav-item "><a class="nav-link" href="{% url 'songs:song_list' %}">음악</a></li>
-                        <li class="nav-item"><button class="nav-link" onclick="mySongFunc()">찜한 음악</button></li>
+                        <li class="nav-item "><a class="nav-link text-white " href="{% url 'songs:song_list' %}">음악</a></li>
+                        <li class="nav-item"><button class="nav-link text-white " onclick="mySongFunc()">찜한 음악</button></li>
                     </ul>
 
                     {% if user.is_authenticated %}
                     <ul class="navbar-nav d-flex">
-                        <li class="nav-item "><a class="nav-link " href="{% url 'oauth:profile' %}">마이페이지</a></li>
-                        <li class="nav-item "><a class="nav-link " href="{% url 'account_logout' %}">로그아웃</a></li>
+                        <li class="nav-item "><a class="nav-link text-white " href="{% url 'oauth:profile' %}">마이페이지</a></li>
+                        <li class="nav-item "><a class="nav-link text-white" href="{% url 'account_logout' %}">로그아웃</a></li>
                     </ul>
                     {% else %}
                     <form class="d-flex">
                         <ul class="navbar-nav d-flex">
-                            <li class="nav-item "><a class="nav-link " data-bs-toggle="modal"
+                            <li class="nav-item "><a class="nav-link text-white " data-bs-toggle="modal"
                                     data-bs-target="#loginModal" onclick="updateModalText('로그인')" href="#">
                                     로그인
                                 </a></li>
                             <li class="nav-item ">
-                                <a class="nav-link " data-bs-toggle="modal" data-bs-target="#loginModal"
+                                <a class="nav-link text-white " data-bs-toggle="modal" data-bs-target="#loginModal"
                                     onclick="updateModalText('가입')" href="#">
                                     회원가입
                                 </a>
