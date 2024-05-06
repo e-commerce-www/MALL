@@ -5,6 +5,7 @@ from . import views
 app_name = 'follows'
 urlpatterns = [
     path('following/<int:pk>', views.follow_song, name='following'),
-    path('add_follow/',views.add_follow, name ='add_follow'),
-    
+    # follow api
+    path('follow/', views.follow, name='follow'),
+    path('unfollow/', views.unfollow, name='unfollow'),
 ]
