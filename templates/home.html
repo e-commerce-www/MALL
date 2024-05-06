@@ -27,7 +27,7 @@
         border-radius: 0 20px 20px 0;
         padding: 5px 30px;
         font-size: 16px;
-        background-color: rgb(0, 0, 0);
+        background-color: rgb(129, 255, 61);
         /* 버튼 배경색 */
         color: #ffffff;
         /* 버튼 텍스트 색상 */
@@ -63,6 +63,34 @@
         font-size: 16px;
         font-weight: bold;
     }
+
+    .song {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .song img {
+        width: 100px;
+        height: auto;
+        border-radius: 10px;
+        margin-right: 50px;
+    }
+
+    .song a {
+        margin-right: 100px;
+    }
+
+    .song audio {
+        order: 0;
+        margin-left: 50px;
+    }
+
+    .ranking {
+        min-width: 50px;
+        text-align: left;
+    }
+
 </style>
 {% endblock extra-style %}
 
@@ -72,15 +100,10 @@
 {% block content %}
 <div class="container">
 
-<<<<<<< HEAD
+
     <form id="search-form" class="search-form mt-4">
-=======
-    {% for song, score in ranking_songs %}
-        {{ song.title }}
-    {% endfor %}
 
     <form id="search-form" class="search-form">
->>>>>>> main
         {% csrf_token %}
         <div class="input-group">
             <input type="text" id="search-input" title="title" class="form-control" placeholder="검색어를 입력하세요">
@@ -112,32 +135,24 @@
             </div>
         </div>
     </div>
-
-    <!-- <div class="row">
-        {% for song in object %}
-        <div class="card mb-3" style="max-width: 100%;">
-            <div class="card-header"><span class="rank">{{ forloop.counter }}.</span> {{ song.title }}</div>
-            <div class="row g-0">
-                <div class="col-md-4">
-                    <a href="{%url 'songs:song_detail' pk=song.id%}">
-                        {% thumbnail song.thumbnail "200x200" crop="center" as thumb %}
-                        <img src="{{ thumb.url }}" class="card-img-top food-image" alt="{{ song.title }}">
-                        <div class="card-body row">
-                            <h5 class="card-title">{{ song.title }}</h5>
-                        </div>
-                        {% endthumbnail %}
-                    </a>
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                    </div>
-                </div>
+    <h3>Top 10</h3>
+    <div>
+        {% for song, score in ranking_songs %}
+            <div class="song">
+                <span class="ranking">{{ forloop.counter }}</span>
+                <a href="{% url 'songs:song_detail' pk=song.id %}">
+                    {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
+                        <img src="{{ thumb.url }}" class="card-img-top food-image" alt="{{ song.title }}" style="border-radius: 10px;">
+                    {% endthumbnail %}
+                    {{ song.title }} -- {{ song.seller }}
+                </a>
+                <audio controls>
+                    <source src="{{ song.audio_url }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
             </div>
-        </div>
         {% endfor %}
-    </div> -->
-    <button id="daily_chart" class="btn btn-primary">일간</button>
-    <div id="message"></div>
+    </div>
 </div>
 {% endblock %}
 
@@ -187,5 +202,7 @@
             .catch(error => console.log(error));
     });
 </script>
+
+
 
 {% endblock extra-script %}

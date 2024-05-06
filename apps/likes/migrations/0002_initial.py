@@ -10,31 +10,28 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("follows", "0001_initial"),
+        ("likes", "0001_initial"),
+        ("songs", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="follows",
-            name="follower",
+            model_name="like",
+            name="song",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE,
-                related_name="following_set",
-                to=settings.AUTH_USER_MODEL,
+                on_delete=django.db.models.deletion.CASCADE, to="songs.song"
             ),
         ),
         migrations.AddField(
-            model_name="follows",
-            name="following",
+            model_name="like",
+            name="user",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE,
-                related_name="followers_set",
-                to=settings.AUTH_USER_MODEL,
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
             ),
         ),
         migrations.AlterUniqueTogether(
-            name="follows",
-            unique_together={("follower", "following")},
+            name="like",
+            unique_together={("song", "user")},
         ),
     ]

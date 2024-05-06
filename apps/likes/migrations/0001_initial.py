@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="Cart",
+            name="Like",
             fields=[
                 (
                     "id",
@@ -22,6 +22,7 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
         ),
     ]
