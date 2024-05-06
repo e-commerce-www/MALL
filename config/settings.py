@@ -33,6 +33,10 @@ TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
 TWILIO_PHONE_NUMBER = config('TWILIO_PHONE_NUMBER')
 TWILIO_SERVICE_SID = config('TWILIO_SERVICE_SID')
 
+# DISQUS
+DISQUS_SHORTNAME = config('DISQUS_SHORTNAME')
+DISQUS_MY_DOMAIN = config('DISQUS_MY_DOMAIN')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
 
@@ -168,9 +172,9 @@ AUTH_USER_MODEL = "oauth.User"
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-kr'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 

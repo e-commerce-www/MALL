@@ -59,5 +59,5 @@ class Payment(models.Model):
         self.is_paid = meta['status'] == 'paid' and meta['amount'] == self.amount
         if commit:
             self.save()
-        
-        
+
+    created_at = models.DateTimeField(auto_now_add=True)

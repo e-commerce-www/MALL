@@ -1,21 +1,28 @@
 from django.shortcuts import render, get_object_or_404
-from . models import Follows
+from .models import Follows
 from apps.songs.models import Song
 from django.core.paginator import Paginator
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from .models import Follows
+from django.http import JsonResponse
+
+User = get_user_model()
 
 
-
-# Create your views here.
+@login_required
 def follow_song(request, pk):
 
     following_user = get_object_or_404(Follows, pk=pk).following
-    songs = Song.objects.filter(seller__user_id = following_user.pk).order_by('-created_at')
+    songs = Song.objects.filter(seller__user_id=following_user.pk).order_by(
+        "-created_at"
+    )
 
-    paginator = Paginator(songs, 3)
+    paginator = Paginator(songs, 10)
 
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
-    
+
     current_page = page_obj.number
     range_size = 5
     half_range = range_size // 2
@@ -26,14 +33,30 @@ def follow_song(request, pk):
     page_range = range(start_page, end_page + 1)
 
     context = {
-        "page_obj": page_obj, 
+        "page_obj": page_obj,
         "page_range": page_range,
-        'following_user':following_user,
-        'songs':songs
+        "following_user": following_user,
+        "songs": songs,
     }
 
-    
-    return render(request, 'follows/following_song.html', context)
+    return render(request, "follows/following_song.html", context)
 
-def add_follow(request):
-    pass
+@login_required
+def follow(request):
+    user_id = request.GET.get("userid")
+    user_to_follow = User.objects.get(pk=user_id)
+    if request.user != user_to_follow:
+        Follows.objects.get_or_create(follower=request.user, following=user_to_follow)
+
+    return JsonResponse({"success": True})
+
+
+@login_required
+def unfollow(request):
+    user_id = request.GET.get("userid")
+    user_to_unfollow = User.objects.get(pk=user_id)
+    if request.user != user_to_unfollow:
+        Follows.objects.filter(
+            follower=request.user, following=user_to_unfollow
+        ).delete()
+    return JsonResponse({"success": True})

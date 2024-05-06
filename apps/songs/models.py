@@ -3,6 +3,7 @@ from apps.sellers.models import Seller
 from django.db.models import Sum, ExpressionWrapper, F, FloatField
 from django.db.models.functions import Exp
 from django.utils import timezone
+from django.urls import reverse
 
 
 class Song(models.Model):
@@ -78,5 +79,11 @@ class Song(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self) -> str:
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('songs:song_detail', args=(self.pk, ))
