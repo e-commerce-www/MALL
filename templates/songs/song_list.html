@@ -1,17 +1,37 @@
 {% extends 'base.html' %}
 {% load session_filters %}
 {% load thumbnail %}
-<!-- 파란색 배경 카드 가운데로 해서 길게 만들어줌  -->
+
+{% block extra-style %}
 <style>
-    .card-horizontal {
-        display: flex;
-        flex-direction: row;
+
+    .search-result {
+        text-align: center;
     }
 
-    .card-horizontal .card-body {
-        flex: 1;
+    .search-results {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .search-item {
+        width: 200px;
+        margin: 20px;
+        text-align: center;
+    }
+
+    .search-thumbnail {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 5%;
     }
 </style>
+
+{% endblock extra-style %}
 {% block content %}
 <div class="container">
 
@@ -57,6 +77,14 @@
                             <option value="fast">빠름</option>
                             <option value="faster">아주 빠름</option>
                         </select>
+                    </div>
+                    <div style="display: inline-block; margin-left: 10px;">
+                        <div class="d-flex ">
+                            <form class="d-flex " id="search-form">
+                                <input type="text" id="search-input" title="title" class="form-control" style="width: 300px; margin-right: 10px;" placeholder="검색어를 입력하세요. (노래명;아티스트명)">
+                                <button type="submit" class="btn btn-outline-light bg-secondary ">검색</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -170,6 +198,7 @@
     function pauseAudio() {
         myAudio.pause();
     }
+
     function confirmPurchase(title) {
         return confirm('정말 "' + title + '"을(를) 구매하시겠습니까?');
     }
@@ -290,7 +319,6 @@
             .catch(error => console.log(error));
     }
 
-
     function filterByGenre(genre) {
         const title = document.getElementById('chart-title');
         axios({
@@ -333,5 +361,34 @@
             console.error('Error fetching data:', error);
         });
     }
+
+    // 
+
+    document.getElementById("search-form").addEventListener('submit', function (event) {
+        event.preventDefault();
+        const search_name_value = document.getElementById('search-input').value;
+        const display_content = document.getElementById('songs-container');
+        axios({
+            method: 'post',
+            url: '{% url "search" %}',
+            data: JSON.stringify({
+                title: search_name_value
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+            .then(response => {
+                console.log(response);
+                if (response.data.success === 'true') {
+                    display_content.innerHTML = response.data.data;
+                } else {
+                    display_content.textContent = response.data.message;
+                }
+            })
+            .catch(error => console.log(error));
+    });
+
 </script>
 {% endblock extra-script %}
