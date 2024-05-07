@@ -82,7 +82,7 @@
                     {% endif %}
                     {% for cart in page_obj %}
                     <div class="container p-0 mt-1 px-3">
-                        <div class="row justify-content-between align-items-center bg-dark p-3 shadow" style="border: 1px solid hsla(0, 0%, 100%, .3);"
+                        <div class="row justify-content-between align-items-center bg-dark p-3 shadow" style="border: 1px solid hsla(0, 0%, 100%, .3); border-radius: 10px;"
                             id="cart-song-{{ cart.song.id }}">
                             {% thumbnail cart.song.thumbnail "70x70" crop="center" as thumb %}
                             <a href="{% url 'songs:song_detail' cart.song.id %}"
