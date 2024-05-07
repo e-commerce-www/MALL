@@ -1,26 +1,29 @@
-# MVP
+<h1 align="center">
+  <br>
+  <a href="https://github.com/e-commerce-www/MALL.git"><img src="https://github.com/e-commerce-www/MALL/assets/158125247/2bd4c467-8770-40b4-975a-4b4060b01b9d" alt="MVP" width="500"></a>
+</h1>
+
+<h4 align="center">
+한줄 설명</h4>
+
+<p align="center">
+<a href="https://github.com/e-commerce-www/MALL/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue"></a>
+<a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-v3.10.12-yellow"></a>
+<a href="https://github.com/e-commerce-www/MALL.git"><img src="https://img.shields.io/badge/PRs-welcome-green"></a>
+<a href="https://www.paypal.me/madEffort"><img src="https://img.shields.io/badge/$-donate-ff69b4"></a>
+</p>
+
+<p align="center">
+  <a href="#key-features">Key Features</a> • <a href="#database-erd">Database ERD</a> • <a href="#how-to-use">How To Use</a> • <a href="#download">Download</a> • <a href="#credits">Credits</a> • <a href="#related">Related</a> • <a href="#support">Support</a> • <a href="#license">License</a>
+</p>
 
 <img src="https://github.com/e-commerce-www/MALL/assets/158125247/53dd779e-7971-40c9-a5a2-57c434e0141c" alt="MVP"/>
-
-ERD : https://www.erdcloud.com/p/JYqD8jKydarZYmrxE
------------------------------------------------------------
-### Music Value Platform
 
 ### 개요
 * 인디 음악가들이 자신의 음악을 판매하고, 구매자가 해당 음악을 다양한 창작물에 법적으로 활용할 수 있도록 지원하는 온라인 마켓플레이스입니다.
 * 다양한 창작물에 인디 음악가들의 음악이 사용되어 대중들에게 노출되어 인디 음악가의 인지도 상승 및 부가적인 수익 창출이 가능합니다.
------------------------------------------
-### 기술스택
-- 백엔드: Django, Python, PostgreSQL
-- 프론트엔드: JavaScript, CSS, HTML
------------------------------------------
-### 개발기간
--
--------------------------------------------------------
-### 팀원소개
--
-----------------------------------------------------------
-### 주요 기능
+
+## Key Features
 * 로그인/회원가입 -> 구글,네이버 소셜 로그인 및 가입 지원.
   
 * 맘에 드는 음악 찜하기/취소하기
@@ -103,16 +106,68 @@ ERD : https://www.erdcloud.com/p/JYqD8jKydarZYmrxE
   - 장르별/ 템포별/ 검색
     
     + 장르, 템포 및 제목으로 음악을 필터링하여 검색합니다.
+
+## Database ERD
+
+To view the **`Database ERD`**, please click [here](https://www.erdcloud.com/p/JYqD8jKydarZYmrxE).
                
+## How To Use
 
+To clone and run this application, you'll need [Git](https://git-scm.com) and [Python](https://www.python.org/downloads/) installed on your computer. From your command line:
 
+```bash
+# Clone this repository
+$ git clone https://github.com/e-commerce-www/MALL.git
 
+# Go into the repository
+$ cd MALL
 
+# Install dependencies
+$ pip install -r requirements.txt
+or
+$ poetry install
+```
 
+After setting up the database and templates, please use the `makemigrations`, `migrate` and `collectstatic` commands.
 
+```bash
+# Run the app
+$ python manage.py runserver
+```
 
+## Download
 
+You can [download](https://github.com/e-commerce-www/MALL/releases) the latest release version of the MVP(Music-Value-Platform).
 
+## Credits
+
+This software uses the following open source packages:
+
+- [Python](https://www.python.org/)
+- [Django](https://www.djangoproject.com/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Bootstrap5](https://getbootstrap.com/)
+
+## Related
+
+- [Amazon Web Service](https://aws.amazon.com/) : AWS S3
+- [Twilio](https://www.twilio.com) : SMS Phone Verification
+- [PortOne](https://www.portone.io) : Payment Module
+
+## Support
+
+<a href="https://www.paypal.com/paypalme/madEffort">
+<img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" width="200">
+</a>
+
+## License
+
+This project adheres to the Apache-2.0 license, and you can find more detailed information in the [LICENSE](https://github.com/e-commerce-www/MALL/blob/main/LICENSE)
+
+---
+
+> GitHub <br>
+> [@madEffort](https://github.com/madEffort) &nbsp;&middot;&nbsp; [@2taeyeon](https://github.com/2taeyeon) &nbsp;&middot;&nbsp; [@chlryddk](https://github.com/chlryddk) &nbsp;&middot;&nbsp; [@HalalGuys1232](https://github.com/HalalGuys1232) &nbsp;&middot;&nbsp; [@ieunchan](https://github.com/ieunchan) &nbsp;&middot;&nbsp; [@KMJ7916](https://github.com/KMJ7916)
 
 
 
