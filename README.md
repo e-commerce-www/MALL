@@ -79,12 +79,13 @@ ERD : https://www.erdcloud.com/p/JYqD8jKydarZYmrxE
         
         #### 시간 가중치 순위 알고리즘
         
-         + 코드식: L_decayed = sum(0.5 ** ((t_now - t_i) / T) for i in range(1, n+1))
-         + L_decayed 는 시간 가중치가 적용된 좋아요 수 입니다.
-         + n 은 곡에 대한 좋아요의 총 개수입니다.
-         + t_now는 현재 시간입니다.
-         + T는 반감기(halflife)로, 좋아요의 가중치가 절반으로 줄어드는 데 걸리는 시간입니다.
-         + 0.5 ** ((t_now - t_i) / T) for i in range(1, n+1) 는 각 좋아요의 시간에 따른 가중치입니다
+         - 코드식: L_decayed = sum(0.5 ** ((t_now - t_i) / T) for i in range(1, n+1))
+         - L_decayed 는 시간 가중치가 적용된 좋아요 수 입니다.
+         - n 은 곡에 대한 좋아요의 총 개수입니다.
+         - t_now는 현재 시간입니다.
+         - T는 반감기(halflife)로, 좋아요의 가중치가 절반으로 줄어드는 데 걸리는 시간입니다.
+         - 0.5 ** ((t_now - t_i) / T) for i in range(1, n+1) 는 각 좋아요의 시간에 따른 가중치입니다
+           
         + 좋아요를 누른 순간부터 시간이 지날수록 점수가 계속 떨어지는 방식입니다.
         + 좋아요의 수가 같아도 최근에 좋아요가 눌린 음악이 순위가 더 높습니다.
 
