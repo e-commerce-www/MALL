@@ -58,7 +58,7 @@
 
 
 <div class="container ">
-    <div style=" border-bottom: 1px solid #ccc; padding-bottom: 24px;" class="mb-3">
+    <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;" class="mb-3">
         <h1 id="chart-title" class="fs-2 text-white m-0 ">찜한 음악</h1>
     </div>
     <div>
@@ -66,8 +66,8 @@
             <div class="row mt-3 mb-3">
                 <div class="col">
                     <div class="btn-group" role="group" aria-label="Sort">
-                        <button type="button" class="btn btn-secondary" onclick="myFavorite();">나의 찜 목록</button>
-                        <button type="button" class="btn btn-secondary" onclick="myRecent();">최근 본 노래</button>
+                        <button type="button" class="btn btn-dark " style="border: 1px solid hsla(0, 0%, 100%, .3);" onclick="myFavorite();">나의 찜 목록</button>
+                        <button type="button" class="btn btn-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);" onclick="myRecent();">최근 본 노래</button>
                     </div>
                 </div>
             </div>
@@ -77,12 +77,12 @@
                 <div id="songs-container">
                     {% if not page_obj %}
                     <div class="container p-0 mt-1 px-3">
-                        <h1 class="fs-4">찜 목록이 비어있습니다.</h1>
+                        <h1 class="fs-4 text-white ">찜 목록이 비어있습니다.</h1>
                     </div>
                     {% endif %}
                     {% for cart in page_obj %}
                     <div class="container p-0 mt-1 px-3">
-                        <div class="row justify-content-between align-items-center bg-dark p-3 shadow"
+                        <div class="row justify-content-between align-items-center bg-dark p-3 shadow" style="border: 1px solid hsla(0, 0%, 100%, .3);"
                             id="cart-song-{{ cart.song.id }}">
                             {% thumbnail cart.song.thumbnail "70x70" crop="center" as thumb %}
                             <a href="{% url 'songs:song_detail' cart.song.id %}"
@@ -94,13 +94,13 @@
                                     <!-- 노래 세부 내용 페이지로 링크 -->
                                     <h5 class="text-white mb-0">{{ cart.song.title }}</h5>
                                     <small class="fs-6" style="color: #888888;">
-                                        <a href="{% url 'sellers:seller_artist' cart.song.seller.user.id %}">{{cart.song.seller }}</a>
+                                        <a class="text-decoration-none " style="color: #888" href="{% url 'sellers:seller_artist' cart.song.seller.user.id %}">{{cart.song.seller }}</a>
                                     </small>
                                 </a>
                             </div>
                             <div class="col">
                                 <div>
-                                    <a class="text-white" style="cursor: pointer;" data-id="{{ cart.song.id }}"
+                                    <a class=" btn btn-outline-light me-2 text-white" style="cursor: pointer;" data-id="{{ cart.song.id }}"
                                         onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
                                 </div>
                             </div>
@@ -174,7 +174,7 @@
                     <div class="song-item">
                         {% if song %}
                         <div class="container-fluid p-0 mt-1">
-                            <div class="row justify-content-between align-items-center bg-dark p-3 shadow">
+                            <div class="row justify-content-between align-items-center bg-dark p-3 shadow" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                                 {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
                                 <a href="{% url 'songs:song_detail' song.id %}"
                                     style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt=""
@@ -185,13 +185,13 @@
                                         <!-- 노래 세부 내용 페이지로 링크 -->
                                         <h5 class="text-white mb-0">{{ song.title }}</h5>
                                         <small class="fs-6" style="color: #888888;">
-                                            <a href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{ song.seller }}</a>
+                                            <a class="text-decoration-none " style="color: #888;" href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{ song.seller }}</a>
                                         </small>
                                     </a>
                                 </div>
                                 <div class="col">
                                     <div>
-                                        <a class="text-white" style="cursor: pointer;" data-id="{{ song.id }}"
+                                        <a class="btn btn-outline-light me-2 text-white" style="cursor: pointer;" data-id="{{ song.id }}"
                                             onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
                                     </div>
                                 </div>

@@ -5,7 +5,7 @@
 {% block content %}
 
 <div class="container">
-    <div style=" border-bottom: 1px solid #ccc; padding-bottom: 24px;">
+    <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
         <h1 id="chart-title" class="fs-2 text-white m-0 ">{{following_user.username}}</h1>
     </div>
 
@@ -16,22 +16,22 @@
             {% for song in page_obj %}
             <div>
                 <div class="container-fluid p-0 mt-3">
-                    <div class="row justify-content-between align-items-center bg-dark p-3 shadow">
+                    <div class="row justify-content-between align-items-center bg-dark p-3 shadow" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                         <div class="col d-flex p-0">
                             {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
-                            <a href="{% url 'songs:song_detail' song.id %}"
+                            <a class="text-decoration-none " href="{% url 'songs:song_detail' song.id %}"
                                 style="padding: 0; display: inline; width: 70px; margin-right: 10px;"><img
                                     src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
                             {% endthumbnail %}
                             <a href="{% url 'songs:song_detail' song.id %}" style="display: inline-block;"
-                                class="align-content-center "> <!-- 노래 세부 내용 페이지로 링크 -->
+                                class="align-content-center text-decoration-none "> <!-- 노래 세부 내용 페이지로 링크 -->
                                 <h5 class="text-white mb-0">{{ song.title }}</h5>
                                 <small class="text-secondary text-white">발매일: {{ song.created_at }}</small>
                             </a>
                         </div>
                         <div class="col">
                             <div>
-                                <a class="text-white" style="cursor: pointer;" data-id="{{ song.id }}"
+                                <a class="btn btn-outline-light me-2" style="cursor: pointer;" data-id="{{ song.id }}"
                                     onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
                             </div>
                         </div>

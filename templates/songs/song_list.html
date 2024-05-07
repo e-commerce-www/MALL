@@ -35,19 +35,19 @@
 {% block content %}
 <div class="container">
 
-    <div style=" border-bottom: 1px solid #ccc; padding-bottom: 24px;">
+    <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
         <h1 id="chart-title" class="fs-2 text-white m-0 ">차트</h1>
     </div>
     <div>
         <div class="container">
             <div class="row mt-3 mb-3">
                 <div class="col d-flex ">
-                    <div class="btn-group" role="group" aria-label="Sort">
-                        <button type="button" class="btn btn-secondary" onclick="showRecent();">최신순</button>
-                        <button type="button" class="btn btn-secondary" onclick="showRanking();">인기순</button>
+                    <div class="btn-group m-0" role="group" aria-label="Sort" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                        <button type="button" class="btn btn-dark m-0" onclick="showRecent();">최신순</button>
+                        <button type="button" class="btn btn-dark m-0" onclick="showRanking();">인기순</button>
                     </div>
                     <div style="display: inline-block; margin-left: 10px;">
-                        <select id="genre-select" class="form-select bg-secondary text-white " onchange="filterByGenre(this.value)">
+                        <select id="genre-select" class="form-select bg-dark text-white" style="border: 1px solid hsla(0, 0%, 100%, .3);" onchange="filterByGenre(this.value)">
                             <option value="">전체 장르</option>
                             <option value="pop">팝</option>
                             <option value="dance">댄스</option>
@@ -69,7 +69,7 @@
                         </select>
                     </div>
                     <div style="display: inline-block; margin-left: 10px;">
-                        <select id="tempo-select" class="form-select bg-secondary text-white" onchange="filterByTempo(this.value)">
+                        <select id="tempo-select" class="form-select bg-dark text-white" onchange="filterByTempo(this.value)" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                             <option value="">템포 선택</option>
                             <option value="slower">아주 느림</option>
                             <option value="slow">느림</option>
@@ -81,8 +81,10 @@
                     <div style="display: inline-block; margin-left: 10px;">
                         <div class="d-flex ">
                             <form class="d-flex " id="search-form">
-                                <input type="text" id="search-input" title="title" class="form-control" style="width: 300px; margin-right: 10px;" placeholder="검색어를 입력하세요. (노래명;아티스트명)">
-                                <button type="submit" class="btn btn-outline-light bg-secondary ">검색</button>
+                                <div class="input-group ">
+                                    <input type="text" id="search-input" title="title" class="form-control" style="width: 300px; border: 1px solid hsla(0, 0%, 100%, .3);" placeholder="검색어를 입력하세요. (노래명;아티스트명)">
+                                    <button type="submit" class="btn btn-outline-light bg-dark " style="border: 1px solid hsla(0, 0%, 100%, .3);">검색</button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -93,12 +95,12 @@
         <div id="songs-container">
             {% for song, _ in page_obj %}
             <div class="container p-0 mt-1 px-3">
-                <div class="row justify-content-between align-items-center bg-dark p-3 shadow">
+                <div class="row justify-content-between align-items-center bg-dark p-3 shadow" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
                         <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
                     {% endthumbnail %}
                     <div class="col">
-                        {% if forloop.counter <= 3 %} 
+                        {% if forloop.counter <= 3 and page_obj.number == 1 %} 
                             <span style="margin-right: 2px; color: yellow;">{{ page_obj.start_index | add:forloop.counter0 }}</span><span style="color: yellow;">위</span>
                         {% else %}
                             <span class="text-white" style="margin-right: 2px;">{{ page_obj.start_index | add:forloop.counter0 }}</span><span
@@ -108,13 +110,13 @@
                             <!-- 노래 세부 내용 페이지로 링크 -->
                             <h5 class="text-white mb-0">{{ song.title }}</h5>
                             <small class="fs-6" style="color: #888888;">
-                                <a href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{ song.seller }}</a>
+                                <a class="text-decoration-none " style="color: #888;" href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{ song.seller }}</a>
                             </small>
                         </a>
                     </div>
                     <div class="col">
                         <div>
-                            <a class="text-white" style="cursor: pointer;" data-id="{{ song.id }}"
+                            <a class="btn btn-outline-light me-2 text-white " style="cursor: pointer;" data-id="{{ song.id }}"
                                 onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
                         </div>
                     </div>
@@ -154,29 +156,28 @@
                 </div>
             </div>
             {% endfor %}
-        </div>
-
-        <div class="container mt-3">
-            <div class="d-flex justify-content-center">
-                <div>
-                    <ul class="pagination">
-                        {% if page_obj.has_other_pages %}
-                        {% if page_obj.has_previous %}
-                        <li class="page-item"><a class="page-link"
-                                href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
-                        {% endif %}
-
-                        {% for num in page_range %}
-                        <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link"
-                                href="?page={{ num }}">{{ num }}</a></li>
-                        {% endfor %}
-
-                        {% if page_obj.has_next %}
-                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next
-                                &raquo;</a></li>
-                        {% endif %}
-                        {% endif %}
-                    </ul>
+            <div class="container mt-3">
+                <div class="d-flex justify-content-center">
+                    <div>
+                        <ul class="pagination">
+                            {% if page_obj.has_other_pages %}
+                            {% if page_obj.has_previous %}
+                            <li class="page-item"><a class="page-link text-bg-dark "
+                                    href="?page={{ page_obj.previous_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">&laquo; Previous</a></li>
+                            {% endif %}
+    
+                            {% for num in page_range %}
+                            <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link text-bg-dark "
+                                    href="?page={{ num }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">{{ num }}</a></li>
+                            {% endfor %}
+    
+                            {% if page_obj.has_next %}
+                            <li class="page-item"><a class="page-link text-bg-dark " href="?page={{ page_obj.next_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">Next
+                                    &raquo;</a></li>
+                            {% endif %}
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
