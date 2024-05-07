@@ -18,7 +18,7 @@
             <h1 class="card-title fs-2" style="color: aquamarine;">{{ song.title }}
                 {% if user.is_authenticated %}
                     {% if like %}
-                        <a class="btn btn-danger" id="like-btn" onclick="likeFunc('{{song.id}}');">좋아요 퓌소</a>
+                        <a class="btn btn-danger" id="like-btn" onclick="likeFunc('{{song.id}}');">좋아요 취소</a>
                     {% else %}
                         <a class="btn btn-outline-danger" id="like-btn" onclick="likeFunc('{{song.id}}');">좋아요</a>
                     {% endif %}
