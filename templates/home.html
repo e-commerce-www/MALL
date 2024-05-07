@@ -15,23 +15,11 @@
     }
 
     .form-control {
-        border-radius: 20px 0 0 20px;
         padding: 12px 20px;
         font-size: 16px;
-        background-color: #ffffff;
         /* 입력창 배경색 */
         color: #333;
         /* 입력창 텍스트 색상 */
-    }
-
-    .btn-search {
-        border-radius: 0 20px 20px 0;
-        padding: 5px 30px;
-        font-size: 16px;
-        background-color: rgb(70, 163, 210);
-        /* 버튼 배경색 */
-        color: #ffffff;
-        /* 버튼 텍스트 색상 */
     }
 
     .search-result {
@@ -80,32 +68,32 @@
     <form id="search-form" class="search-form">
         {% csrf_token %}
         <div class="input-group">
-            <input type="text" id="search-input" title="title" class="form-control" placeholder="검색어를 입력하세요. (노래명;아티스트명)">
-            <button type="submit" class="btn-search btn-primary">검색</button>
+            <input type="text" id="search-input" title="title" class="form-control" placeholder="검색어를 입력하세요. (노래명;아티스트명)" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+            <button type="submit" class="btn btn-outline-light bg-dark  " style="border: 1px solid hsla(0, 0%, 100%, .3)">검색</button>
         </div>
     </form>
 
     <!-- 검색 결과 -->
     <div class="search-result">
-        <div id="display-content"></div>
+        <div id="display-content" class="text-white "></div>
     </div>
 
     <div class="container ">
         <div class="row">
             <div class="col-12 mb-4">
-                <div style=" border-bottom: 1px solid #ccc; padding-bottom: 24px;">
+                <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
                     <h1 id="chart-title" class="fs-2 text-white m-0 ">신곡</h1>
                 </div>
                 <div class="row mt-3">
                     {% for song in object %}
-                    <div class="col-sm-6 col-md-3 mb-4">
-                        <div class="card text-center ">
+                    <div class="col-sm-6 col-md-3 mb-4" >
+                        <div class="card text-center bg-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                             <a href="{% url 'songs:song_detail' pk=song.id %}" class="text-decoration-none ">
                                 {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
                                 <img src="{{ thumb.url }}" class="card-img-top food-image" alt="{{ song.title }}">
                                 <div class="card-body row">
-                                    <h5 class="card-title">{{ song.title }}</h5>
-                                    <p class="p-0 m-0 "><a href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{song.seller}}</a></p>
+                                    <h5 class="card-title text-white ">{{ song.title }}</h5>
+                                    <p class="p-0 m-0 "><a class="text-decoration-none " href="{% url 'sellers:seller_artist' song.seller.user.id %}" style="color:#888;">{{song.seller}}</a></p>
                                 </div>
                                 {% endthumbnail %}
                             </a>
@@ -119,13 +107,13 @@
     
 
     <div class="container">
-        <div style=" border-bottom: 1px solid #ccc; padding-bottom: 24px;">
-            <h1 id="chart-title" class="fs-2 text-white m-0 ">TOP10</h1>
+        <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
+            <h1 id="chart-title" class="fs-2 text-white m-0 ">TOP5</h1>
         </div>
         <div class="row mt-3 px-4">
             {% for song, score in ranking_songs %}
             <div class="container-fluid p-0 mt-1">
-                <div class="row justify-content-between align-items-center bg-dark p-3 shadow">
+                <div class="row justify-content-between align-items-center bg-dark p-3 shadow" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
                         <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
                     {% endthumbnail %}
@@ -140,12 +128,12 @@
                         <a class="text-decoration-none " href="{% url 'songs:song_detail' song.id %}">
                             <!-- 노래 세부 내용 페이지로 링크 -->
                             <h5 class="text-white mb-0">{{ song.title }}</h5>
-                            <small class="fs-6" style="color: #888888;"><a href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{ song.seller }}</a></small>
+                            <small class="fs-6" style="color: #888888;"><a class="text-decoration-none " href="{% url 'sellers:seller_artist' song.seller.user.id %}" style="color:#888;" >{{ song.seller }}</a></small>
                         </a>
                     </div>
                     <div class="col">
                         <div>
-                            <a class="text-white" style="cursor: pointer;" data-id="{{ song.id }}"
+                            <a class="btn btn-outline-light me-2" style="cursor: pointer;" data-id="{{ song.id }}"
                                 onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
                         </div>
                     </div>

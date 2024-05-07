@@ -6,8 +6,8 @@
     .remenu {
         margin-top: 15px;
         padding-top: 10px;
-        border-top: 1px solid #ccc;
-        border-bottom: 1px solid #ccc;
+        border-top: 1px solid hsla(0, 0%, 100%, .3);
+        border-bottom: 1px solid hsla(0, 0%, 100%, .3);
     }
 
     .remenu a {
@@ -63,7 +63,7 @@
             {% for order in page_obj %}
                 <tr>
                     <td class = "text-white">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
-                    <td class = "text-white"><a href="{% url 'payments:payment_detail' order.id %}">{{ order.created_at|date:"Y년 n월 j일 g:i A" }}</a></td>
+                    <td class = "text-white"><a href="{% url 'payments:payment_detail' order.id %}" style="color: aquamarine;">{{ order.created_at|date:"Y년 n월 j일 g:i A" }}</a></td>
                     <td class = "text-white">{{ order.song.title }}</td>
                     <td class = "text-white">{{ order.song.seller }}</td>
                     <td class = "text-white">{{ order.amount|intcomma  }}원</td>

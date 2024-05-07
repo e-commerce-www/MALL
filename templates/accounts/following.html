@@ -5,8 +5,8 @@
     .remenu {
         margin-top: 15px;
         padding-top: 10px;
-        border-top: 1px solid #ccc;
-        border-bottom: 1px solid #ccc;
+        border-top: 1px solid hsla(0, 0%, 100%, .3);
+        border-bottom: 1px solid hsla(0, 0%, 100%, .3);
     }
 
     .remenu a {
@@ -64,7 +64,7 @@
             </tr>
             <tr id="data-{{follow.following.id}}">
                 <td class = "text-white">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
-                <td><a href = "{% url 'follows:following' pk=follow.id %}" class = "text-white">{{ follow.following.username }}</a></td>
+                <td><a href = "{% url 'follows:following' pk=follow.id %}" style="color: aquamarine;">{{ follow.following.username }}</a></td>
                 <td class = "text-white">
                     {% if follow.recent_songs %}
                         <a class="text-decoration-none text-bg-info" href="{% url 'songs:song_detail' follow.recent_songs.0.id %}">{{follow.recent_songs.0.title}}</a>을 등록하셨습니다.

@@ -9,25 +9,25 @@
     <div class="container px-5">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <label for="{{ form.title.id_for_label }}">타이틀</label>
+            <label class="text-white " for="{{ form.title.id_for_label }}">타이틀</label>
             {% render_field form.title class="form-control mb-3" placeholder="음원의 제목을 입력해주세요." %}
     
-            <label for="{{ form.genre.id_for_label }}">장르</label>
+            <label class="text-white " for="{{ form.genre.id_for_label }}">장르</label>
             {% render_field form.genre class="form-control mb-3" %}
     
-            <label for="{{ form.tempo.id_for_label }}">템포</label>
+            <label class="text-white " for="{{ form.tempo.id_for_label }}">템포</label>
             {% render_field form.tempo class="form-control mb-3" %}
     
-            <label for="{{ form.thumbnail.id_for_label }}">썸네일</label>
+            <label class="text-white " for="{{ form.thumbnail.id_for_label }}">썸네일</label>
             {% render_field form.thumbnail class="form-control mb-3" %}
     
-            <label for="{{ form.mp3.id_for_label }}">음원 파일 [.mp3 파일]</label>
+            <label class="text-white " for="{{ form.mp3.id_for_label }}">음원 파일 [.mp3 파일]</label>
             {% render_field form.mp3|attr:"accept=.mp3" class="form-control mb-3"%}
     
-            <label for="{{ form.lyrics.id_for_label }}">가사 [옵션]</label>
+            <label class="text-white " for="{{ form.lyrics.id_for_label }}">가사 [옵션]</label>
             {% render_field form.lyrics class="form-control mb-3" %}
     
-            <span class="text-danger fs-6">※ 모든 음원의 가격은 3000원 입니다.</span>
+            <span class="fs-6" style="color: yellow;">※ 모든 음원의 가격은 3000원 입니다.</span>
             <button class="btn btn-outline-light  w-100 mt-3" type="submit">업로드</button>
         </form>
     </div>

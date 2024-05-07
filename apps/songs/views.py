@@ -14,7 +14,7 @@ import os
 
 def song_list(request):
     song_list = ranked_songs()
-    paginator = Paginator(song_list, 10)
+    paginator = Paginator(song_list, 5)
 
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
@@ -88,14 +88,14 @@ def song_lyrics(request):
 def song_recent(request):
     songs = Song.objects.all().order_by("-created_at")
     page_number = request.GET.get("page", 1)
-    paginator = Paginator(songs, 10)
+    paginator = Paginator(songs, 5)
     page_obj = paginator.get_page(page_number)
     return render(request, "songs/song_list_recent.html", {"page_obj": page_obj})
 
 
 def song_ranking(request):
     songs = ranked_songs()
-    paginator = Paginator(songs, 10)
+    paginator = Paginator(songs, 5)
 
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
@@ -122,7 +122,7 @@ def song_genre(request):
     else:
         songs = Song.objects.filter(genre=genre)
     
-    paginator = Paginator(songs, 10)
+    paginator = Paginator(songs, 5)
 
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)

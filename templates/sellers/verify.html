@@ -2,16 +2,23 @@
 
 {% block content %}
 
-<form method="post">
-    {% csrf_token %}
-    <div class="mb-4">
-        <label class="text-bg-dark">판매자 인증 코드</label>
-        <input type="text" name="verification_code" class="form-control" required>
+<div class="container ">
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label class="text-white">판매자 인증 코드</label>
+            <input type="text" name="verification_code" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-outline-light">제출</button>
+    </form>
+    
+    <div class="mt-3">
+        <a href="{% url 'sellers:seller_apply' %}" style="color: aquamarine;">코드가 오지 않습니다.</a>
     </div>
-    <button type="submit" class="btn btn-outline-light">제출</button>
-</form>
 
-<a href="{% url 'sellers:seller_apply' %}">코드가 오지 않습니다.</a>
+</div>
+
+
 
 {% endblock content %}
 

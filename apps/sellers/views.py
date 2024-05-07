@@ -66,16 +66,16 @@ def seller_verify(request):
         return render(request, "sellers/verify.html")
 
 
-@login_required
-def seller_detail(request, pk):
-    seller = Seller.objects.get(user_id=pk)
-    songs = Song.objects.filter(seller=seller)
+# @login_required
+# def seller_detail(request, pk):
+#     seller = Seller.objects.get(user_id=pk)
+#     songs = Song.objects.filter(seller=seller)
 
-    return render(
-        request,
-        "sellers/seller_detail.html",
-        context={"seller": seller, "songs": songs},
-    )
+#     return render(
+#         request,
+#         "sellers/seller_detail.html",
+#         context={"seller": seller, "songs": songs},
+#     )
 
 
 @login_required
