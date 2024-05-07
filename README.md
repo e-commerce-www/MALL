@@ -1,5 +1,8 @@
 # MVP
 
+![MVP_preview](https://github.com/e-commerce-www/MALL/assets/158125247/03533b64-7184-4a87-9235-e1f75e22a2ed)
+
+
 ERD : https://www.erdcloud.com/p/JYqD8jKydarZYmrxE
 -----------------------------------------------------------
 ### Music Value Platform
