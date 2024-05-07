@@ -47,13 +47,16 @@
         border-radius: 5%;
     }
 
+    .bg-dark {
+    border-radius: 10px;
+    }
+
 </style>
 {% endblock extra-style %}
 
 
 {% block content %}
-<div class="container ">
-
+<div class="container">
     <!-- 검색창 -->
     <form id="search-form" class="search-form">
         {% csrf_token %}
@@ -166,8 +169,7 @@
         </div>
     </div>
 </div>
-{%endblock%}
-
+{% endblock %}
 
 {% block extra-script %}
 <script>
@@ -273,4 +275,7 @@
         return confirm('정말 "' + title + '"을(를) 구매하시겠습니까?');
     }
 </script>
+
+
+
 {% endblock extra-script %}

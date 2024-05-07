@@ -23,6 +23,7 @@ from . import views
 
 handler404 = 'config.views.custom_404'
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='index'),

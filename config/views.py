@@ -58,5 +58,3 @@ def search(request):
     else:
         return JsonResponse({'error': 'Invalid request method'})
 
-
-
