@@ -1,6 +1,6 @@
 # MVP
 
-
+<img src="https://github.com/e-commerce-www/MALL/assets/158125247/53dd779e-7971-40c9-a5a2-57c434e0141c" alt="MVP"/>
 
 ERD : https://www.erdcloud.com/p/JYqD8jKydarZYmrxE
 -----------------------------------------------------------
