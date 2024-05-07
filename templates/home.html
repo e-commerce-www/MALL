@@ -28,7 +28,7 @@
         border-radius: 0 20px 20px 0;
         padding: 5px 30px;
         font-size: 16px;
-        background-color: rgb(129, 255, 61);
+        background-color: rgb(70, 163, 210);
         /* 버튼 배경색 */
         color: #ffffff;
         /* 버튼 텍스트 색상 */
@@ -57,6 +57,18 @@
         height: 150px;
         object-fit: cover;
         border-radius: 5%;
+    }
+
+    .bg-dark {
+    border-radius: 10px;
+    }
+
+    .card-title {
+    color: rgb(70, 163, 210); /* 제목의 글씨 색을 빨간색으로 변경 */
+    }
+
+    .card-body p a {
+        color: rgb(70, 163, 210); /* 본문의 글씨 색을 파란색으로 변경 */
     }
 </style>
 {% endblock extra-style %}
@@ -174,31 +186,12 @@
             </div>
             {% endfor %}
         </div>
->>>>>>> main
     </div>
 </div>
 {% endblock %}
 
 {% block extra-script %}
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-    document.getElementById("daily_chart").addEventListener('click', function() {
-        axios({
-            method: 'post',
-            url: '{%url "daily_chart" %}',
-            data: {},
-
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            }
-        })
-        .then(response => {
-            document.getElementById('message').innerText = response.data.data;
-        })
-        .catch(error => console.error(error));
-    });
-
     document.getElementById("search-form").addEventListener('submit', function (event) {
         event.preventDefault();
         const search_name_value = document.getElementById('search-input').value;
