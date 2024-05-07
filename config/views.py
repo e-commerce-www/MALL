@@ -32,7 +32,7 @@ def search(request):
             parts = search_title.split(';')
             song_title = parts[0].strip()
             artist_name = parts[1].strip() if len(parts) > 1 else ''
-            search_results = Song.objects.filter(title=song_title, seller__user__username=artist_name).distinct()
+            search_results = Song.objects.filter(title__icontains=song_title, seller__user__username=artist_name).distinct()
         elif len(search_title.strip()) == 0:
             search_results = None
         else:
