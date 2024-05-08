@@ -4,7 +4,7 @@
 </h1>
 
 <h4 align="center">
-한줄 설명</h4>
+A music platform for indie musicians to sell their tracks and for buyers to legally use them in creative projects.</h4>
 
 <p align="center">
 <a href="https://github.com/e-commerce-www/MALL/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue"></a>
@@ -19,9 +19,8 @@
 
 <img src="https://github.com/e-commerce-www/MALL/assets/158125247/53dd779e-7971-40c9-a5a2-57c434e0141c" alt="MVP"/>
 
-### 개요
-* 인디 음악가들이 자신의 음악을 판매하고, 구매자가 해당 음악을 다양한 창작물에 법적으로 활용할 수 있도록 지원하는 온라인 마켓플레이스입니다.
-* 다양한 창작물에 인디 음악가들의 음악이 사용되어 대중들에게 노출되어 인디 음악가의 인지도 상승 및 부가적인 수익 창출이 가능합니다.
+## What is Music Value Platform?
+
 
 ## Key Features
 * ### 로그인/회원가입 -> 구글,네이버 소셜 로그인 및 가입 지원.
