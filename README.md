@@ -65,7 +65,7 @@ The "music value platform" is an online marketplace that enables indie musicians
     Time-weighted ranking algorithm formula:
     
     ![image](https://github.com/e-commerce-www/MALL/assets/158125247/1e4a7315-fe24-40a7-a99c-c49d22511522)
-  - The ranking is determined by recent likes rather than accumulated likes.
+  - The ranking is determined by the score calculated using the time-weighted ranking algorithm formula.
 
     
 
