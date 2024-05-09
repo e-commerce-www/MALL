@@ -87,7 +87,11 @@ def seller_upload(request):
             seller_instance = request.user.seller_set.first()
             song.seller = seller_instance
             song.save()
-            return redirect("sellers:seller_songs")
+            return render(
+                request,
+                "sellers/seller_upload.html",
+                context={"form": form, "success": True},
+            )
         else:
             return render(request, "sellers/seller_upload.html", context={"form": form})
     else:
