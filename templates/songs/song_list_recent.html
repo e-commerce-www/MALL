@@ -2,6 +2,8 @@
 {% load thumbnail %}
 
 {% for song in page_obj %}
+
+
 <div class="container p-0 mt-1 px-3">
     <div class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
         {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
@@ -85,3 +87,35 @@
         </ul>
     </div>
 </div>
+
+
+{% block extra-script %} 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded');
+    
+    const audios = document.querySelectorAll('audio');
+    console.log(audios);
+
+    // Function to pause all other audios
+    function pauseAllOthers(currentAudio) {
+        console.log('Current audio:', currentAudio);
+        audios.forEach(audio => {
+            if (audio !== currentAudio) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+        });
+    }
+
+    // Add event listeners to all audio elements
+    audios.forEach(audio => {
+        console.log('Adding event listener to:', audio);
+        audio.addEventListener('play', function() {
+            pauseAllOthers(audio);
+        });
+    });
+});
+</script>
+{% endblock extra-script %}
+
