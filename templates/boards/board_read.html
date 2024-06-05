@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load session_filters %}
+
+{% block extra-style %}
+<style>
+    .custom-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .board-header {
+        margin-bottom: 15px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid white;
+    }
+
+    .author-date {
+        display: flex;
+        gap: 20px;
+    }
+
+    .main-content {
+        width: 100%;
+    }
+
+    .btn-container{
+        display: flex;
+        justify-content: center;
+    }
+
+</style>
+
+{% endblock extra-style %}
+
+{% block content %}
+
+<div class = "container mt-5 custom-container">
+    <div class = "board-header">
+        <div class = "row justify-content-between align-items-center">
+            <div class="text-white" style="font-size: 2em; font-weight: bold;">{{board.title}}</div>
+            <div class = "author-date">
+                <span>작성자 : {{ board.author }} | </span>
+                <span>입력 : {{ board.created_at|date:"Y년 m월 d일 H:i"}}</span>
+                {% if board.updated_at %}
+                    <span>수정됨 : {{ board.updated_at|date:"Y년 m월 d일 H:i"}}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class = "main-content mb-5">
+        <div class = "text-white">{{ board.content }}</div>
+    </div>
+    <div class = "btn-container mt-5 mb-5">
+        <div class="btn-group m-0" role="group" aria-label="Sort">
+            <button type="button" class="btn btn-dark m-0" style="border-radius: 20px 0 0 20px;">북마크</button>
+            <span style = "border-left: 1px solid hsla(0, 0%, 100%, .3);"></span>
+            <button type="button" class="btn btn-dark m-0" style="border-radius: 0 20px 20px 0;">좋아요</button>
+        </div>
+        <div style = "margin-left: 15px;">
+            <button type="button" class="btn btn-dark m-0" style="border-radius: 50%; padding: 6px 12px;">...</button>
+        </div>
+    </div>
+    <div>
+        <a href = "{% url 'boards:board_list' %}" class = "btn btn-dark m-0" style="border: 1px solid hsla(0, 0%, 100%, .3);">목록</a>
+        <div class = "float-end">
+            <a href = "#" class = "btn btn-dark m-0" style="border: 1px solid hsla(0, 0%, 100%, .3);">수정</a>
+            <a href = "#" class = "btn btn-dark m-0" style="border: 1px solid hsla(0, 0%, 100%, .3);">삭제</a>
+        </div>
+    </div>
+    <!-- 댓글 등록 -->
+
+    <div class = "comment-create">
+        <h2>댓글 작성</h2>
+        <form method = "post" action="{% url 'boards:board_read' pk=board.id %}">
+            {% csrf_token %}
+            <div class = "row justify-content-between align-items-center bg-dark p-3 shadow rounded-2" style="border: 1px solid hsla(0, 0%, 100%, .3);">   
+                <label style="color:white">{{form.content.label}}</label>
+                {{ form.content }}
+                <div class = "float-end">
+                    <button type = "submit" class = "btn btn-dark mt-3" style="border: 1px solid hsla(0, 0%, 100%, .3);">작성하기</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- 댓글 목록 -->
+    <div class = "comment">
+        {% if comment_list %}
+            {% for comment in comment_list %}
+            <div>
+                <p>등록일 : {{comment.updated_at}}</p>
+                <p>작성자 : {{comment.author.username}}</p>
+                <p>{{comment.content}}</p>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock content %}
+
+{% block extra-script %}  {% endblock extra-script %}

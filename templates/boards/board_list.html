@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load session_filters %}
+
+{% block extra-style %}  {% endblock extra-style %}
+
+{% block content %}
+<div class="container">
+    <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
+        <h1 id="chart-title" class="fs-2 text-white m-0 ">커뮤니티</h1>
+    </div>
+
+    <div class = "container">
+        <div class = "row mt-3">
+            <div class = "col d-flex">
+                <div class="btn-group m-0" role="group" aria-label="Sort" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                    <button type="button" class="btn btn-dark m-0">최신순</button>
+                    <button type="button" class="btn btn-dark m-0">인기순</button>
+                </div>
+
+                <div style="display: inline-block; margin-left: 10px;">
+                    <div class="d-flex ">
+                        <form class="d-flex " id="search-form">
+                            <div class="input-group ">
+                                <input type="text" id="search-input" title="title" class="form-control" style="width: 300px; border: 1px solid hsla(0, 0%, 100%, .3);" placeholder="검색어를 입력하세요.">
+                                <button type="submit" class="btn btn-outline-light bg-dark " style="border: 1px solid hsla(0, 0%, 100%, .3);">검색</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class = "row mt-1 mb-2">
+        <div class = "col d-flex justify-content-end">
+            <a href = "{% url 'boards:board_create' %}" class = "btn btn-dark m-0" style="border: 1px solid hsla(0, 0%, 100%, .3);">글쓰기</a>
+        </div>
+    </div>
+
+    <!-- 게시판 항목들 -->
+    <div id="boards-container">
+        {% for board in page_obj %}
+            <div class="container p-0 mt-1 px-3">
+                <div class = "row justify-content-between align-items-center bg-dark p-3 shadow rounded-2" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                    <div class = "col-auto">
+                        <div class = "board-number">
+                            <div class = "text-white">{{board.id}}</div>
+                        </div>
+                    </div>
+
+                    <div class = "col">
+                        <a class="text-decoration-none " href="{% url 'boards:board_read' pk=board.id %}">
+                        <div class="board-content">
+                            <div style="font-size: 2em; font-weight: bold; color:white;">{{ board.title }}</div>
+                            <div style="font-size: 1em; color:rgb(149, 148, 148);">{{ board.content|truncatewords:5 }}</div>
+    
+                            <div class = "board-actions" style= "margin-top: 10px; font-size: 0.8em;">
+                                <span class = "text-white">좋아요 {{board.likes_count}}</span>
+                                <span class = "text-white">댓글수 {{board.comments_count}}</span></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- 페이지네이션 -->
+<div class="container mt-3">
+    <div class="d-flex justify-content-center">
+        <div>
+            <ul class="pagination">
+                {% if page_obj.has_other_pages %}
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
+                    {% endif %}
+    
+                    {% for num in page_range %}
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endfor %}
+    
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a></li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra-script %}  {% endblock extra-script %}
