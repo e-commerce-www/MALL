@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% block extra-style %}
 <style>
@@ -20,8 +21,8 @@
 
 {% block content %}
 <div class="page-center">
-    <div class="container-seller justify-content-center bg-dark shadow ">
-        <div class="mb-4 " style="border-bottom: 1px solid #ccc;">
+    <div class="container-seller justify-content-center bg-dark shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
+        <div class="mb-4 " style="border-bottom: 1px solid hsla(0, 0%, 100%, .3);">
             <h1 class="fs-2 text-white pb-2 ">판매자 신청</h1>
         </div>
         
@@ -38,7 +39,7 @@
             {% csrf_token %}
             <div class="mb-4">
                 <label class="text-bg-dark">휴대폰 번호</label>
-                {{ form.phone_number }}
+                {% render_field form.phone_number class="rounded-2 text-center " placeholder='01012345678'%}
                 {% if form.phone_number.errors %}
                 {% for error in form.phone_number.errors %}
                     <div class="alert alert-danger mt-3">전화번호는 '01012345678' 형식이어야 합니다.</div>

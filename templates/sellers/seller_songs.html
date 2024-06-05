@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load session_filters %}
+{% load thumbnail %}
+
+{% block content %}
+<div class="container">
+
+    <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px; margin-bottom: 30px;">
+        <h1 id="chart-title" class="fs-2 text-white m-0 ">나의 음악</h1>
+    </div>
+    <div>
+        <div id="songs-container ">
+            {% for song in page_obj %}
+            <div class="container-fluid p-0 mt-1">
+                <div class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                    {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
+                        <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
+                    {% endthumbnail %}
+                    <div class="col">
+                        <a class="text-decoration-none " href="{% url 'songs:song_detail' song.id %}">
+                            <!-- 노래 세부 내용 페이지로 링크 -->
+                            <h5 class="text-white mb-0">{{ song.title }}</h5>
+                            <small class="fs-6" style="color: #888888;">{{ song.seller }}</small>
+                        </a>
+                    </div>
+                    <div class="col ">
+                        <div>
+                            <a class="btn btn-outline-light me-2 text-white " style="cursor: pointer;" data-id="{{ song.id }}"
+                                onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
+                        </div>
+                    </div>
+                    <div class="col-auto d-flex align-items-center">
+                        <audio controls class="me-3" controlsList="nodownload">
+                            <source src="{{song.mp3.url}}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                        <a href="{% url 'sellers:seller_edit' song.id %}">
+                            <button class="btn btn-outline-light me-2">수정하기</button>
+                        </a>
+                        <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
+                            <button class="btn btn-outline-light me-2">다운로드</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- 페이지네이션 -->
+        <div class="container mt-3">
+            <div class="d-flex justify-content-center">
+                <div>
+                    <ul class="pagination">
+                        {% if page_obj.has_other_pages %}
+                        {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
+                        {% endif %}
+
+                        {% for num in page_range %}
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link"
+                                href="?page={{ num }}">{{ num }}</a></li>
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next
+                                &raquo;</a></li>
+                        {% endif %}
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock content %}
+
+{% block extra-script %}
+<script>
+    var myAudio = document.getElementById("myAudio");
+
+    function playAudio() {
+        myAudio.play();
+    }
+
+    function pauseAudio() {
+        myAudio.pause();
+    }
+    function confirmPurchase(title) {
+        return confirm('정말 "' + title + '"을(를) 구매하시겠습니까?');
+    }
+
+    function gotoLogin() {
+        var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
+            keyboard: false
+        });
+        loginModal.show();
+    }
+
+
+    function showLyrics(songId) {
+        // 예제를 위해 가사를 고정된 값으로 설정, 실제로는 서버에서 가사를 가져오는 코드 필요
+        const lyrics = '여기에 서버에서 가져온 가사를 채웁니다.';
+        axios({
+            method: 'get',
+            url: '{% url "songs:song_lyrics" %}',
+            params: {
+                songid: songId
+            },
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => {
+                // 모달의 가사 내용을 업데이트하고 모달을 표시
+                document.getElementById('lyricsContent').innerText = response.data.success;
+
+                // 모달 창을 표시
+                var lyricsModal = new bootstrap.Modal(document.getElementById('lyricsModal'), {
+                    keyboard: true
+                });
+                lyricsModal.show();
+            })
+            .catch(error => console.log(error));
+    }
+
+    function addToCart(songId) {
+
+        const addBtn = document.getElementById('add-btn-' + (songId));
+        axios({
+            method: 'get',
+            url: '{% url "carts:add_song" %}',
+            params: {
+                songid: songId
+            }
+        })
+            .then(response => {
+                addBtn.id = 'remove-btn-' + response.data.song_id;  // Change the ID
+                addBtn.className = 'btn btn-outline-danger me-2';  // Change the classes
+                addBtn.onclick = () => removeFromCart(songId);  // Change the onclick event
+                addBtn.textContent = '찜 취소';
+                alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
+            })
+            .catch(error => console.log(error));
+    }
+
+    function removeFromCart(songId) {
+        const removeBtn = document.getElementById('remove-btn-' + (songId));
+        axios({
+            method: 'get',
+            url: '{% url "carts:remove_song" %}',
+            params: {
+                songid: songId
+            }
+        })
+            .then(response => {
+                removeBtn.id = 'add-btn-' + response.data.song_id;  // Change the ID
+                removeBtn.className = 'btn btn-outline-light me-2';  // Change the classes
+                removeBtn.onclick = () => addToCart(songId);  // Change the onclick event
+                removeBtn.textContent = '찜하기';
+                alert(response.data.success);
+            })
+            .catch(error => console.log(error));
+    }
+
+    // 추가된 confirmPurchase 함수 및 기타 필요 함수
+    function confirmPurchase(title) {
+        return confirm('정말 "' + title + '"을(를) 구매하시겠습니까?');
+    }
+
+    function gotoLogin() {
+        var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
+            keyboard: false
+        });
+        loginModal.show();
+    }
+
+
+</script>
+{% endblock extra-script %}

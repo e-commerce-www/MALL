@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
+{% load humanize %}
 
 {% block extra-style %}
 <style>
     .remenu {
         margin-top: 15px;
         padding-top: 10px;
-        border-top: 1px solid #ccc;
-        border-bottom: 1px solid #ccc;
+        border-top: 1px solid hsla(0, 0%, 100%, .3);
+        border-bottom: 1px solid hsla(0, 0%, 100%, .3);
     }
 
     .remenu a {
@@ -48,27 +50,52 @@
         </ul>
     </div>
 
-    <div class="container-fluid px-5 ">
+    <div class="SaleDetail mt-5">
         <table class="container-fluid">
             <thead>
-                <tr>
+                <tr style="color: #bcbcbc;">
                     <th scope="col">No.</th>
                     <th scope="col">등록날짜</th>
                     <th scope="col">노래제목</th>
-                    <th scope="col">가격</th>
-                    <th scope="col">총 판매횟수</th>
+                    <th scope="col">구매자 수</th>
+                    <th scope="col">총 수익</th>
                 </tr>
             </thead>
             <tbody>
+
+                {% for order in page_obj %}
                 <tr>
-                    <td>No. NNN</td>
-                    <td>등록날짜 상세</td>
-                    <td>노래제목 상세</td>
-                    <td>가격 상세</td>
-                    <td>판매날짜 상세</td>
+                    <td class = "text-white">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
+                    <td class = "text-white">{{order.song__created_at|date:"Y년 n월 j일 g:i A"}}</td>
+                    <td class = "text-white">{{order.song__title}}</td>
+                    <td class = "text-white">{{order.order_count}}명</td>
+                    <td class = "text-white">{{ order.song__price|multiply:order.order_count|intcomma }}원</td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
+    </div>
+</div>
+
+<div class="container mt-3">
+    <div class="d-flex justify-content-center">
+        <div>
+            <ul class="pagination">
+            {% if page_obj.has_other_pages %}
+                {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
+                {% endif %}
+    
+                {% for num in page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endfor %}
+    
+                {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a></li>
+                {% endif %}
+            {% endif %}
+            </ul>
+        </div>
     </div>
 </div>
 

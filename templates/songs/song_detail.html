@@ -1,200 +1,267 @@
 {% extends "base.html" %}
-
 {% load session_filters %}
+{% load thumbnail %}
 
-{% block extra-style %}
-<style>
-    .heart-white {
-        color: white;
-    }
-
-    .heart-red {
-        color: red;
-    }
-
-    .btn-sm {
-        background-color: rgb(49, 49, 49);
-        padding: auto;
-        line-height: auto; /* 줄간격 조정 */
-        height: auto; /* 버튼 높이 조정 */
-        color: rgb(255, 255, 255);
-    }
-
-    .col-md-5{
-        display: flex; 
-        flex-direction: column; 
-        justify-content: space-between;
-    }
-
-    .btn-outline-light {
-        color: rgb(255, 255, 255); 
-        background-color: none; 
-        border: none;
-        position: relative;
-        display: flex;
-        align-items: center; /* 세로 중앙 정렬 */
-        justify-content: center; /* 가로 중앙 정렬 */
-        width: 20px; /* 버튼 너비 설정 */
-        height: 20px; /* 버튼 높이 설정 */
-        margin-top: -20px;
-    }
-
-    .btn-outline-light-rm{
-        color: rgb(255, 0, 0); /* 빨간색으로 변경 */
-        background-color: transparent; 
-        border: none;
-        position: relative;
-        display: flex;
-        align-items: center; /* 세로 중앙 정렬 */
-        justify-content: center; /* 가로 중앙 정렬 */
-        width: 20px; /* 버튼 너비 설정 */
-        height: 20px; /* 버튼 높이 설정 */
-        margin-top: -20px;
-    }
-</style>
-{% endblock extra-style %}
 
 {% block content %}
 <div class="container">
     <div class="row" style="border-radius: 20px;">
         <!-- Left column for the song image -->
-        <div class="col-md-4 text-center" style="margin-left: 20%;">
-            <img src="{{ song.thumbnail.url }}" alt="{{ song.title }}" class="img-fluid rounded" style="max-width: 100%; height: auto;">
+        <div class="col-md-4 text-center " style="margin-left: 20%;">
+            {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
+            <img src="{{ thumb.url }}" alt="{{ song.title }}" class="rounded-2 " style="max-width: 100%; height: auto; border: 1px solid hsla(0, 0%, 100%, .3);">
+            {% endthumbnail %}
         </div>
 
         <!-- Right column for the song details -->
-        <div class="col-md-5">
-            <h3 class="card-title" style="color: rgb(255, 255, 255); margin-bottom: 20px;">{{ song.title }}</h3>
-            {% is_added_to_cart user song.id as added %}<!-- 찜한 목록에 있으면 -->
-            {% if not added %}
-            <button id="toggle-btn" class="btn btn-outline-light" onclick="toggleButtonColor()">🤍</button> <!-- 토글 버튼으로 변경 -->
-            {% else %}
-            <button id="toggle-btn" class="btn btn-outline-light-rm" onclick="toggleButtonColor()">❤️</button> <!-- 토글 버튼으로 변경 -->
-            {% endif %}
-            <button id="like-btn" class="btn btn-outline-primary" onclick="toggleLike()" style="color: white; width: calc(30%);">
-                Like
-            </button>
-            <button type="button" class="btn btn-outline-danger" style="width: 30%;">Musician Follow</button>
-            <div class="d-flex">
-                <div class="me-4">
-                    <h6 style="color: aliceblue;">Made by</h6>
-                    <a href="{% url 'sellers:seller_detail' song.seller.id %}" class="btn btn-sm">{{ song.seller }}</a>
-                </div>
-                <div>
-                    <h6 style="color: aliceblue;">장르</h6>
-                    <p class="btn btn-sm" style="background-color: rgb(49, 49, 49);">{{ song.genre }}</p>
-                </div>
-                <div style="margin-left: 20px;">
-                    <h6 style="color: aliceblue;">Tempo</h6>
-                    <p class="btn btn-sm" style="background-color: rgb(49, 49, 49);">{{ song.display_tempo }}</p>
-                </div>
-                
+        <div class="col">
+            <h1 class="card-title fs-2" style="color: aquamarine;">{{ song.title }}
+                {% if user.is_authenticated %}
+                    {% if like %}
+                        <a class="btn btn-danger" id="like-btn" onclick="likeFunc('{{song.id}}');">좋아요 취소</a>
+                    {% else %}
+                        <a class="btn btn-outline-danger" id="like-btn" onclick="likeFunc('{{song.id}}');">좋아요</a>
+                    {% endif %}
+                {% else %}
+                    <a class="btn btn-outline-danger" onclick="gotoLogin();">좋아요</a>
+                {% endif %}
+            </h1>
+            <div class="mt-2 align-content-center align-items-center  d-flex ">
+                <span style="background-color: black; border-radius: 8px; color: navajowhite; padding: 5px;">아티스트</span>
+                <h2 class="fs-5 text-white mx-2 m-0" style="display: inline-block; ">
+                    <a class="text-decoration-none" style="color:orange" href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{song.seller}}</a>
+                    {% if user.is_authenticated %}
+                        {% if not song.seller.user == user %}
+                            {% if follow %}
+                            <a  class="btn btn-danger" style="margin-left: 7px;" id="follow-btn" onclick="followArtist('{{song.seller.user.id}}')">팔로우 취소</a>
+                            {% else %}
+                            <a  class="btn btn-primary" style="margin-left: 7px;" id="follow-btn" onclick="followArtist('{{song.seller.user.id}}')">팔로우</a>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <a class="btn btn-outline-primary text-white" style="margin-left: 7px;" onclick="gotoLogin();">팔로우</a>
+                    {% endif %}
+                </h2>
             </div>
-            <audio controls class="w-100" controlsList="nodownload">
-                <source src="{% url 'songs:song_stream' song.id %}" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
+            <div class="mt-3 align-content-center align-items-center  d-flex ">
+                <span style="background-color: black; border-radius: 8px; color: navajowhite; padding: 5px;">장르</span>
+                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">{{ song.display_genre }}</span>
+            </div>
+            <div class="mt-3  align-content-center align-items-center  d-flex ">
+                <span style="background-color: black; border-radius: 8px; color: navajowhite; padding: 5px;">템포</span>
+                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">{{ song.display_tempo }}</span>
+            </div>
+            <div class="mt-3 align-content-center align-items-center  d-flex ">
+                <span style="background-color: black; border-radius: 8px; color: navajowhite; padding: 5px;">가사</span>
+                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">
+                    <a class="btn btn-outline-light me-2 text-white" style="cursor: pointer;" data-id="{{ song.id }}"
+                    onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
+                </span>
+            </div>
+            <div class="mt-4 d-flex ">
+                <audio controls class="me-3 " controlsList="nodownload">
+                    <source src="{{ song.mp3.url }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                {% if user.is_authenticated %}
+                    {% is_purchased user song.id as purchased %}
+                    {% is_added_to_cart user song.id as added %}
+                    {% if purchased %}
+                        <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3" class="btn btn-outline-light me-2 text-center align-items-center d-flex ">
+                            다운로드
+                        </a>
+                    {% else %}
+                        <form action="{% url 'payments:payment_pay' song.id %}" onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
+                            <button class="btn btn-outline-light me-2 " type="submit" onclick="" style="height: 100%;">구매하기</button>
+                        </form>
+                    {% endif %}
+                    {% if not added %}
+                        <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2"
+                            onclick="addToCart('{{song.id}}');">찜하기</button>
+                    {% else %}
+                        <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2"
+                            onclick="removeFromCart('{{song.id}}');">찜 취소</button>
+                    {% endif %}
+                {% else %}
+                    <button class="btn btn-outline-light me-2" onclick="gotoLogin()">구매하기</button>
+                    <button class="btn btn-outline-light me-2" onclick="gotoLogin()">찜하기</button>
+                {% endif %}
+            </div>
         </div>
     </div>
     <!-- Comments section -->
-    <div class="card my-4" style="background-color: rgb(20, 20, 20); border:none">
-        <hr style="border-top: 1px solid white;">
-        <h5 class="card-header" style="color: aliceblue;">Comments:</h5>
-        <hr style="border-top: 1px solid white;">
-        <div class="card-body">
-            <form>
-                <div class="mb-3">
-                    <textarea class="form-control" rows="3" style="background-color: rgb(46, 46, 46);"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">작성완료</button>
-            </form>
-        </div>
-    </div>
+    <div id="disqus_thread" class="mt-5"></div>
 </div>
 {% endblock content %}
 
 
 {% block extra-script %}
 <script>
-    // 버튼을 클릭했을 때 찜 목록에 추가 또는 제거하는 함수
-    function toggleButtonColor() {
-        const btn = document.getElementById('toggle-btn');
-        const added = btn.classList.contains('btn-outline-light-rm'); // 빨간색 하트인지 확인
 
-        if (added) {
-            removeFromCart(); // 찜 목록에서 제거
+    function followArtist(userId) {
+        const followBtn = document.getElementById('follow-btn');
+        if (followBtn.className == 'btn btn-primary') {
+            axios({
+                method: 'get',
+                url: '{% url "follows:follow" %}',
+                params: {
+                    userid: userId
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => {
+                    followBtn.className = 'btn btn-danger';
+                    followBtn.textContent = '팔로우 취소';
+                })
+                .catch(error => console.log(error));
         } else {
-            addToCart(); // 찜 목록에 추가
+            axios({
+                method: 'get',
+                url: '{% url "follows:unfollow" %}',
+                params: {
+                    userid: userId
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => {
+                    followBtn.className = 'btn btn-primary';
+                    followBtn.textContent = '팔로우';
+                })
+                .catch(error => console.log(error));
         }
+        
     }
 
-    // 찜 목록에 노래를 추가하는 함수
-    function addToCart() {
-        const addBtn = document.getElementById('toggle-btn');
+    function likeFunc(songId) {
+        const likeBtn = document.getElementById('like-btn');
+        if (likeBtn.className === 'btn btn-outline-danger') {
+            // 좋아요
+            axios({
+                method: 'get',
+                url: '{% url "likes:like_do" %}',
+                params: {
+                    songid: songId
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => {
+                    likeBtn.className = 'btn btn-danger';
+                    likeBtn.textContent = '좋아요 취소'
+                })
+                .catch(error => console.log(error));
+
+        } else {
+            // 좋아요 취소
+            axios({
+                method: 'get',
+                url: '{% url "likes:like_cancel" %}',
+                params: {
+                    songid: songId
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => {
+                    likeBtn.className = 'btn btn-outline-danger';
+                    likeBtn.textContent = '좋아요'
+                })
+                .catch(error => console.log(error));
+
+        }
+
+    }
+
+    function showLyrics(songId) {
+        // 예제를 위해 가사를 고정된 값으로 설정, 실제로는 서버에서 가사를 가져오는 코드 필요
+        const lyrics = '여기에 서버에서 가져온 가사를 채웁니다.';
+        axios({
+            method: 'get',
+            url: '{% url "songs:song_lyrics" %}',
+            params: {
+                songid: songId
+            },
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => {
+                // 모달의 가사 내용을 업데이트하고 모달을 표시
+                document.getElementById('lyricsContent').innerText = response.data.success;
+
+                // 모달 창을 표시
+                var lyricsModal = new bootstrap.Modal(document.getElementById('lyricsModal'), {
+                    keyboard: true
+                });
+                lyricsModal.show();
+            })
+            .catch(error => console.log(error));
+    }
+
+    function gotoLogin() {
+        var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
+            keyboard: false
+        });
+        loginModal.show();
+    }
+
+    function addToCart(songId) {
+
+        const addBtn = document.getElementById('add-btn-' + (songId));
         axios({
             method: 'get',
             url: '{% url "carts:add_song" %}',
             params: {
-                songid: '{{ song.id }}'
+                songid: songId
             }
         })
             .then(response => {
-                addBtn.classList.remove('btn-outline-light');
-                addBtn.classList.add('btn-outline-light-rm');
-                addBtn.textContent = '❤️';
-                alert('찜 목록에 "{{ song.title }}"을(를) 추가하였습니다.');
+                addBtn.id = 'remove-btn-' + response.data.song_id;  // Change the ID
+                addBtn.className = 'btn btn-outline-danger me-2';  // Change the classes
+                addBtn.onclick = () => removeFromCart(songId);  // Change the onclick event
+                addBtn.textContent = '찜 취소';
+                // alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
             })
             .catch(error => console.log(error));
-    }
+        }
 
-    // 찜 목록에서 노래를 제거하는 함수
-    function removeFromCart() {
-        const removeBtn = document.getElementById('toggle-btn');
+    function removeFromCart(songId) {
+        const removeBtn = document.getElementById('remove-btn-' + (songId));
         axios({
             method: 'get',
             url: '{% url "carts:remove_song" %}',
             params: {
-                songid: '{{ song.id }}'
+                songid: songId
             }
         })
             .then(response => {
-                removeBtn.classList.remove('btn-outline-light-rm');
-                removeBtn.classList.add('btn-outline-light');
-                removeBtn.textContent = '🤍';
-                alert(response.data.success);
+                removeBtn.id = 'add-btn-' + response.data.song_id;  // Change the ID
+                removeBtn.className = 'btn btn-outline-light me-2';  // Change the classes
+                removeBtn.onclick = () => addToCart(songId);  // Change the onclick event
+                removeBtn.textContent = '찜하기';
+                // alert(response.data.success);
             })
             .catch(error => console.log(error));
     }
 
-    // 좋아요 버튼을 토글하는 함수
-    function toggleLike() {
-        const likeBtn = document.getElementById('like-btn');
-        const liked = likeBtn.classList.contains('liked'); // 이미 좋아요를 눌렀는지 확인
+    // DISQUS
+    var disqus_config = function () {
+        this.page.identifier = '{{ disqus_id }}';
+        this.page.url = '{{ disqus_url }}';
+        this.page.title = '{{ disqus_title }}';
+    };
 
-        if (liked) {
-            dislike(); // 좋아요 취소
-        } else {
-            like(); // 좋아요
-        }
-    }
-
-        // 좋아요 버튼을 누를 때의 동작
-    function like() {
-        const likeBtn = document.getElementById('like-btn');
-        likeBtn.textContent = 'Liked!';
-        likeBtn.style.backgroundColor = '#007bff'; // primary 색상으로 내부 색상 변경
-        likeBtn.style.color = '#ffffff'; // 텍스트 색상을 흰색으로 변경
-        likeBtn.style.borderColor = '#007bff'; // 테두리 색상을 primary로 유지
-        likeBtn.classList.add('liked'); // 좋아요 상태로 클래스 추가
-    }
-
-    function dislike() {
-        const likeBtn = document.getElementById('like-btn');
-        likeBtn.textContent = 'Like';
-        likeBtn.style.backgroundColor = ''; // 내부 색상 초기화
-        likeBtn.style.color = ''; // 텍스트 색상 초기화
-        likeBtn.style.borderColor = ''; // 테두리 색상 초기화
-        likeBtn.classList.remove('liked'); // 좋아요 상태 클래스 제거
-    }
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = 'https://music-value-platform.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
 {% endblock extra-script %}
