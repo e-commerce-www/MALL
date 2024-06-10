@@ -326,7 +326,7 @@
         console.log(genre);
         axios({
             method: 'get',
-            url: '{% url "songs:song_filter" %}',  // 적절한 URL로 교체하세요
+            url: '{% url "songs:song_filter" %}',  
             params: {
                 tempo: tempo,
                 genre: genre

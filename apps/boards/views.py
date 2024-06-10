@@ -38,9 +38,21 @@ def get_disqus_comment_count(disqus_id):
 
 # 게시글 목록
 def board_list(request):
-    boards = Board.objects.annotate(
-        likes_count = Count('board_likes')
-    ).order_by('-id')
+    sort = request.GET.get('sort','latest')
+
+    if sort == 'popular':
+        boards = Board.objects.annotate(
+            likes_count=Count('board_likes')
+        ).order_by('-likes_count', '-created_at')
+    
+    else: 
+        boards = Board.objects.annotate(
+            likes_count=Count('board_likes')
+        ).order_by('-created_at')
+
+    # boards = Board.objects.annotate(
+    #     likes_count = Count('board_likes')
+    # ).order_by('-id')
 
     paginator = Paginator(boards, 10)
 
@@ -60,7 +72,7 @@ def board_list(request):
     #     disqus_id = f"board-{board.id}"
     #     board.comments_count = get_disqus_comment_count(disqus_id)
 
-    return render(request, 'boards/board_list.html', context={'page_obj': page_obj, 'page_range': page_range})
+    return render(request, 'boards/board_list.html', context={'page_obj': page_obj, 'page_range': page_range, 'sort':sort})
 
 
 def comment_count(request):
@@ -163,3 +175,9 @@ def bookmarked_boards(request):
     return render(request, 'boards/bookmark_list.html', context={'page_obj': page_obj, 'page_range': page_range}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      )
 
 
+# def board_recent(request):
+#     boards = Board.objects.all().order_by("-created_at")
+#     page_number = request.GET.get("page", 1)
+#     paginator = Paginator(boards, 10)
+#     page_obj = paginator.get_page(page_number)
+#     return render(request, "boards/board_list_recent.html", {"page_obj": page_obj})
