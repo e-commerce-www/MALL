@@ -433,16 +433,16 @@
                 title.textContent = '음원 목록 | 전체';
             } else if (tempo === ""){
                 title.textContent = '장르별 음원 | ' + genre;
-
             } else if (genre === ""){
-
+                title.textContent = '템포별 음원 | ' + tempo;
+            } else {
+                title.textContent = '음원 목록 | 장르 : ' + genre + ' | 템포 : ' + tempo;
             }
             document.getElementById('songs-container').innerHTML = response.data;
         })
-        .then(() => {
-            bindAudioControls(); // 바인딩 함수 호출
-            })
-        .catch(error => console.log(error));
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
     }
 
 
