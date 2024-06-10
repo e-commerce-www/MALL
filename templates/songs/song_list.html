@@ -191,43 +191,24 @@
 {% block extra-script %}
 <script>
     const audios = document.querySelectorAll('audio');
-        // Function to pause all other audios
-        function pauseAllOthers(currentAudio) {
-            audios.forEach(audio => {
-                if (audio != currentAudio) {
-                    audio.pause();
-                    console.log(currentAudio, "정지됨");
-                    audio.currentTime = 0;
-                }
-            });
-        }
-        // Add event listeners to all audio elements
-        audios.forEach(audio => {
-            audio.addEventListener('play', function() {
-                pauseAllOthers(audio);
-            });
-        });
-        
+
     // Function to pause all other audios
-    function bindAudioControls() {
-        const audios = document.querySelectorAll('audio');
-        // Function to pause all other audios
-        function pauseAllOthers(currentAudio) {
-            audios.forEach(audio => {
-                if (audio != currentAudio) {
-                    audio.pause();
-                    console.log(currentAudio, "정지됨");
-                    audio.currentTime = 0;
-                }
-            });
-        }
-        // Add event listeners to all audio elements
+    function pauseAllOthers(currentAudio) {
         audios.forEach(audio => {
-            audio.addEventListener('play', function() {
-                pauseAllOthers(audio);
-            });
+            if (audio != currentAudio) {
+                audio.pause();
+                console.log(currentAudio,"정지됨")
+                audio.currentTime = 0;
+            }
         });
     }
+
+    // Add event listeners to all audio elements
+    audios.forEach(audio => {
+        audio.addEventListener('play', function() {
+            pauseAllOthers(audio);
+        });
+    });        
 
     function confirmPurchase(title) {
         return confirm('정말 "' + title + '"을(를) 구매하시겠습니까?');
@@ -318,7 +299,8 @@
     }
 
     function showRecent(pageNumber = 1) {
-        const title = document.getElementById('chart-title');
+        const title = document.getElementById('chart-title')
+        console.log("제목:", title)
         axios({
             method: 'get',
             url: '{% url "songs:song_recent" %}',
@@ -329,16 +311,13 @@
             .then(response => {
                 title.textContent = '차트 | 최신순';
                 document.getElementById('songs-container').innerHTML = response.data;
-                console.log(response.data)
-            })
-            .then(() => {
-            bindAudioControls(); // 바인딩 함수 호출
+                console.log("응답:",response)
             })
             .catch(error => console.log(error));
     }
 
     function showRanking(pageNumber = 1) {
-        const title = document.getElementById('chart-title');
+        const title = document.getElementById('chart-title')
         axios({
             method: 'get',
             url: '{% url "songs:song_ranking" %}',
@@ -349,9 +328,6 @@
             .then(response => {
                 title.textContent = '차트 | 인기순';
                 document.getElementById('songs-container').innerHTML = response.data;
-            })
-            .then(() => {
-            bindAudioControls(); // 바인딩 함수 호출
             })
             .catch(error => console.log(error));
     }
@@ -373,9 +349,6 @@
             }
             document.getElementById('songs-container').innerHTML = response.data;
         })
-        .then(() => {
-            bindAudioControls(); // 바인딩 함수 호출
-            })
         .catch(error => console.log(error));
     }
 
@@ -429,7 +402,6 @@
             })
             .catch(error => console.log(error));
     });
-
 
 </script>
 {% endblock extra-script %}
