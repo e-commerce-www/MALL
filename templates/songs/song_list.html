@@ -29,6 +29,63 @@
         object-fit: cover;
         border-radius: 5%;
     }
+    @media (max-width: 576px) {
+    .col-auto.d-flex.align-items-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .col-auto.d-flex.align-items-center button {
+      margin-top: 5px;
+      width: 100%;
+      max-width: 100px;
+    }
+
+    .col.d-flex {
+      flex-direction: column;
+    }
+
+    .btn-group,
+    #search-form {
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .search-item {
+      width: 100%;
+      margin: 10px 0;
+    }
+
+    .pagination {
+      justify-content: center;
+    }
+
+    .modal-dialog {
+      max-width: 90%;
+    }
+
+    #lyricsContent {
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+    .input-group {
+      flex-direction: row;
+    }
+    .form-control {
+      flex: 1;
+      margin-right: 5px;
+    }
+
+    .search-form {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-control {
+        width: 100%; /* 모바일 화면에서 입력창이 검색 폼의 너비에 맞도록 조정 */
+    }
+    }
 </style>
 
 {% endblock extra-style %}

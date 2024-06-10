@@ -50,6 +50,19 @@
     .shopping-cart {
         color: #f0f0f0;
     }
+    @media (max-width: 576px) {
+    
+    .col-auto.d-flex.align-items-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+    }
+    
+    .col-auto.d-flex.align-items-center button {
+        margin-top: 5px; /* 버튼들 간의 간격 조정 */
+    }
+   }
 </style>
 {% endblock extra-style %}
 
