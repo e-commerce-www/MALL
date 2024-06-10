@@ -124,6 +124,7 @@
             <div class="text-white" style="font-size: 2em; font-weight: bold;">{{board.title}}</div>
             <div class = "author-date">
                 <span>작성자 : {{ board.author }} &nbsp; |</span>
+                <span>좋아요 {{board.likes_count}} &nbsp; | </span>
                 <span>입력 : {{ board.created_at|date:"Y년 m월 d일 H : i"}}</span>
                 {% if board.updated_at %}
                     <span>수정됨 : {{ board.updated_at|date:"Y년 m월 d일 H : i"}}</span>
@@ -158,7 +159,7 @@
                     ...
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item " href="#">카카오톡 공유</a>
+                    <a class="dropdown-item kakao-link-btn" href="javascript:sendLink()">카카오톡 공유</a>
                     <a class="dropdown-item instagram-btn" href="https://www.instagram.com/direct/inbox/">인스타그램 공유</a>
                     <a class="dropdown-item" id="copy-url">URL 복사</a>
                 </div>
@@ -190,6 +191,8 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+
 <script>
     var disqus_config = function () {
         this.page.identifier = '{{ disqus_id }}';
@@ -302,8 +305,23 @@
             console.error('복사를 실패했습니다: ', error);
         });
     });
+
+    // 카카오톡 공유
+    Kakao.init("3b9fa38a430a9d653116c4f0d6b9bf7f");   // 아까 복사해둔 JavaScript 키
+        function sendLink() {
+            Kakao.Link.sendCustom({
+                templateId: 108578,   // 복사해둔 템플릿 ID
+                templateArgs: {
+                    title: "{{ board.title }}",
+                    author: "{{board.author.username }}",
+                    description: "{{ page.excerpt }}",
+                    url: "{{ board.get_absolute_url }}",
+                },
+            });
+        }
     
 
 </script>
+
 
 {% endblock extra-script %}

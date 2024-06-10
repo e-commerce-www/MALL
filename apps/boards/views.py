@@ -39,8 +39,7 @@ def get_disqus_comment_count(disqus_id):
 # 게시글 목록
 def board_list(request):
     boards = Board.objects.annotate(
-        likes_count = Count('board_likes'),
-        # comments_count = Count('reply')
+        likes_count = Count('board_likes')
     ).order_by('-id')
 
     paginator = Paginator(boards, 10)
@@ -56,7 +55,7 @@ def board_list(request):
 
     page_range = range(start_page, end_page + 1)
 
-    # # 각 게시물의 댓글 수를 가져와서 저장 => 서버측 호출
+    # 각 게시물의 댓글 수를 가져와서 저장
     # for board in page_obj:
     #     disqus_id = f"board-{board.id}"
     #     board.comments_count = get_disqus_comment_count(disqus_id)
@@ -96,7 +95,7 @@ def board_create(request):
 
 # 게시글 보기
 def board_read(request,pk):
-    board = get_object_or_404(Board, pk=pk)
+    board = Board.objects.annotate(likes_count=Count('board_likes')).get(pk=pk)
     board_like = BoardLike.objects.filter(user=request.user, board=board).exists()
     bookmark = Bookmark.objects.filter(user=request.user, board=board).exists()
 
@@ -116,6 +115,7 @@ def board_read(request,pk):
         }
 
     return render(request, 'boards/board_read.html', context = context)
+
 
 # 게시글 수정
 def board_update(request, pk):
@@ -145,7 +145,7 @@ def board_delete(request, pk):
 
 # 북마크 글
 def bookmarked_boards(request):
-    bookmarks = Bookmark.objects.filter(user=request.user).select_related('board')
+    bookmarks = Bookmark.objects.filter(user=request.user).select_related('board').order_by('-created_at')
 
     paginator = Paginator(bookmarks, 10)
 
