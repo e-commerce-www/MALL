@@ -1,4 +1,3 @@
-# board_list.html
 {% extends 'base.html' %}
 {% load session_filters %}
 
@@ -17,7 +16,6 @@
                     <button type="button" class="btn btn-dark m-0">최신순</button>
                     <button type="button" class="btn btn-dark m-0">인기순</button>
                 </div>
-
                 <div style="display: inline-block; margin-left: 10px;">
                     <div class="d-flex ">
                         <form class="d-flex " id="search-form">
@@ -28,21 +26,26 @@
                         </form>
                     </div>
                 </div>
+                <div class = "col d-flex justify-content-end">
+                    <a href = "{% url 'boards:bookmarked_boards' %}" class = "btn btn-dark m-0" style="border: 1px solid hsla(0, 0%, 100%, .3);">북마크 글</a>
+                </div>
+            </div>
+        </div>
+
+        <div class = "row mt-1 mb-2">
+            <div class = "col d-flex justify-content-end">
+                <a href = "{% url 'boards:board_create' %}" class = "btn btn-dark m-0" style="border: 1px solid hsla(0, 0%, 100%, .3);">글쓰기</a>
             </div>
         </div>
     </div>
 
-    <div class = "row mt-1 mb-2">
-        <div class = "col d-flex justify-content-end">
-            <a href = "{% url 'boards:board_create' %}" class = "btn btn-dark m-0" style="border: 1px solid hsla(0, 0%, 100%, .3);">글쓰기</a>
-        </div>
-    </div>
+    
 
     <!-- 게시판 항목들 -->
     <div id="boards-container">
         {% for board in page_obj %}
             <div class="container p-0 mt-1 px-3">
-                <div class = "row justify-content-between align-items-center bg-dark p-3 shadow rounded-2" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                <div class = "row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 board" data-board-id="{{ board.id }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     <div class = "col-auto">
                         <div class = "board-number">
                             <div class = "text-white">{{board.id}}</div>
@@ -50,14 +53,14 @@
                     </div>
 
                     <div class = "col">
-                        <a class="text-decoration-none " href="{% url 'boards:board_read' pk=board.id %}">
+                        <a class="text-decoration-none " href="{{ board.get_absolute_url }}">
                         <div class="board-content">
                             <div style="font-size: 2em; font-weight: bold; color:white;">{{ board.title }}</div>
                             <div style="font-size: 1em; color:rgb(149, 148, 148);">{{ board.content|truncatewords:5 }}</div>
     
                             <div class = "board-actions" style= "margin-top: 10px; font-size: 0.8em;">
                                 <span class = "text-white">좋아요 {{board.likes_count}}</span>
-                                <span class = "text-white">댓글수 {{board.comments_count}}</span></a>
+                                <span class = "text-white comment-count">댓글 수 불러오는 중..</span></a>
                             </div>
                         </div>
                     </div>
@@ -92,4 +95,59 @@
 </div>
 {% endblock content %}
 
-{% block extra-script %}  {% endblock extra-script %}
+
+{% block extra-script %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const boards = document.querySelectorAll('.board');
+        const requests = [];
+
+        boards.forEach(board => {
+            const boardId = board.dataset.boardId;
+            const commentCountSpan = board.querySelector('.comment-count');
+            commentCountSpan.textContent = '댓글수 불러오는 중...'; // 로딩 중 메시지
+
+            const request = axios.get(`/boards/comment_counts/?board_id=${boardId}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            // 각 요청과 관련된 span을 함께 저장
+            requests.push({ request, commentCountSpan });
+        });
+
+        // 모든 요청이 완료되면 responses 배열이 반환됨
+        Promise.all(requests.map(req => req.request))
+            .then(responses => {
+                responses.forEach((response, index) => {
+                    const commentCountSpan = requests[index].commentCountSpan;
+                    if (response.status === 200) {
+                        commentCountSpan.textContent = `댓글수 ${response.data.comment_count}`;
+                    } else {
+                        commentCountSpan.textContent = '댓글수 불러오기 실패';
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching some comment counts:', error);
+                requests.forEach(req => {
+                    req.commentCountSpan.textContent = '댓글수 불러오기 실패';
+                });
+            });
+
+    });
+
+    // 게시글 삭제 팝업
+    document.addEventListener("DOMContentLoaded", function() {
+        {% if messages %}
+            {% for message in messages %}
+                alert("{{ message }}");
+            {% endfor %}
+        {% endif %}
+    });
+
+</script>
+{% endblock extra-script %}
+
+

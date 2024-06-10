@@ -1,46 +1,46 @@
+import requests
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Board, Reply, Like
-from .forms import BoardForm, ReplyForm
+from django.contrib.auth.decorators import login_required
+from .models import Board
+from apps.likes.models import BoardLike, Bookmark
+from .forms import BoardForm
 from django.core.paginator import Paginator
 from django.db.models import Count
+from django.conf import settings
+# from .utils import get_disqus_comment_count
+from django.http import JsonResponse
+from django.contrib import messages
 
 
 # Create your views here.
-def index(request):
-    boards = Board.objects.all().order_by("-id")
-    paginator = Paginator(boards, 10)
 
-    page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
-    current_page = page_obj.number
-    range_size = 5
-    half_range = range_size // 2
+def get_disqus_comment_count(disqus_id):
+    api_url = 'https://disqus.com/api/3.0/threads/details.json'
+    params = {
+        'api_key': settings.DISQUS_API_KEY,
+        'forum': settings.DISQUS_SHORTNAME_2,
+        'thread:ident': disqus_id
+    }
 
-    start_page = max(current_page - half_range, 1)
-    end_page = min(start_page + range_size - 1, paginator.num_pages)
-
-    page_range = range(start_page, end_page + 1)
-
-    board_data = []
-
-    for board in page_obj:
-        likes_count = Like.objects.filter(board=board).count()
-        comments_count = Reply.objects.filter(board=board).count()
-        board_data.append({
-            'board':board,
-            'likes_count': likes_count,
-            'comment_count': comments_count,
-        })
-
-    return render(request,'boards/index.html', 
-                  context={'page_obj': page_obj, 'page_range': page_range, 'board_data' : board_data})
+    response = requests.get(api_url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        print(data)
+        return data['response']['posts']
+    
+    elif response.status_code == 400 and response.json().get('code') == 2:
+        print(f"Thread not found for ID {disqus_id}")
+        return 0  # 스레드가 존재하지 않는 경우
+    
+    # print("Error: ", response.status_code, response.json())
+    return 0
 
 
 # 게시글 목록
 def board_list(request):
     boards = Board.objects.annotate(
         likes_count = Count('board_likes'),
-        comments_count = Count('reply')
+        # comments_count = Count('reply')
     ).order_by('-id')
 
     paginator = Paginator(boards, 10)
@@ -56,10 +56,28 @@ def board_list(request):
 
     page_range = range(start_page, end_page + 1)
 
+    # # 각 게시물의 댓글 수를 가져와서 저장 => 서버측 호출
+    # for board in page_obj:
+    #     disqus_id = f"board-{board.id}"
+    #     board.comments_count = get_disqus_comment_count(disqus_id)
+
     return render(request, 'boards/board_list.html', context={'page_obj': page_obj, 'page_range': page_range})
 
 
+def comment_count(request):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        board_id = request.GET.get('board_id')
+        disqus_id = f"board-{board_id}"
+        comment_count = get_disqus_comment_count(disqus_id)
+        
+        # print(f"comment count : {disqus_id} : ", comment_count) // 댓글 수 확인 위한 코드
+
+        return JsonResponse({'comment_count': comment_count})
+    return JsonResponse({'comment_count': 0})
+
+
 # 게시글 등록
+@login_required
 def board_create(request):
     if request.method == "POST":
         form = BoardForm(request.POST)
@@ -79,30 +97,69 @@ def board_create(request):
 # 게시글 보기
 def board_read(request,pk):
     board = get_object_or_404(Board, pk=pk)
-    comment_list = Reply.objects.filter(board=pk).order_by("-created_at")
+    board_like = BoardLike.objects.filter(user=request.user, board=board).exists()
+    bookmark = Bookmark.objects.filter(user=request.user, board=board).exists()
 
-    return render(request, 'boards/board_read.html', context = {"board": board, "comment_list": comment_list})
+    disqus_short = f"{settings.DISQUS_SHORTNAME_2}"
+    disqus_id = f"board-{board.id}"
+    disqus_url = f"{settings.DISQUS_MY_DOMAIN_2}{board.get_absolute_url()}"
+    disqus_title = f"{board.title}"
 
+    context = {
+        "board": board, 
+        "board_like" : board_like,
+        "bookmark" : bookmark,
+        "disqus_short": disqus_short,
+        "disqus_id": disqus_id,
+        "disqus_url": disqus_url,
+        "disqus_title": disqus_title,
+        }
 
-# 댓글 등록 
-def comment_create(request,pk):
+    return render(request, 'boards/board_read.html', context = context)
+
+# 게시글 수정
+def board_update(request, pk):
     board = get_object_or_404(Board, pk=pk)
-    comment_list = Reply.objects.filter(board=pk).order_by("-created_at")
 
-    if request.method == "POST":
-        form = ReplyForm(request.POST)
-
+    if request.method == 'POST':
+        form = BoardForm(request.POST, instance=board)
         if form.is_valid():
-            comments = form.save(commit=False)
-            comments.author = request.user
-            comments.board = board
-            comments.save()
+            board = form.save(commit=False)
+            board.save()
+            messages.success(request, '게시글이 성공적으로 수정되었습니다.')
             return redirect("boards:board_read", pk=pk)
-    
+        
     else:
-        form = ReplyForm()
-    return render(request, "boards/board_read.html", context = {
-        "form" : form,
-        "board" : board,
-        "comment_list" : comment_list,
-    })
+        form = BoardForm(instance=board)
+
+    return render(request, 'boards/board_update.html', context={"form":form, "board":board})
+
+
+# 게시글 삭제
+def board_delete(request, pk):
+    board = get_object_or_404(Board, pk=pk)
+    board.delete()
+    messages.success(request, '글을 삭제했습니다.')
+    return redirect("boards:board_list")
+
+
+# 북마크 글
+def bookmarked_boards(request):
+    bookmarks = Bookmark.objects.filter(user=request.user).select_related('board')
+
+    paginator = Paginator(bookmarks, 10)
+
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    current_page = page_obj.number
+    range_size = 5
+    half_range = range_size // 2
+
+    start_page = max(current_page - half_range, 1)
+    end_page = min(start_page + range_size - 1, paginator.num_pages)
+
+    page_range = range(start_page, end_page + 1)
+
+    return render(request, 'boards/bookmark_list.html', context={'page_obj': page_obj, 'page_range': page_range}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      )
+
+

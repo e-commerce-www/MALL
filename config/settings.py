@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,6 +37,10 @@ TWILIO_SERVICE_SID = config('TWILIO_SERVICE_SID')
 # DISQUS
 DISQUS_SHORTNAME = config('DISQUS_SHORTNAME')
 DISQUS_MY_DOMAIN = config('DISQUS_MY_DOMAIN')
+DISQUS_API_KEY = config('DISQUS_API_KEY')
+
+DISQUS_SHORTNAME_2 = config('DISQUS_SHORTNAME_2')
+DISQUS_MY_DOMAIN_2 = config('DISQUS_MY_DOMAIN_2')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
@@ -43,7 +48,7 @@ DEBUG = config('DEBUG')
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 
-SITE_ID = 12
+SITE_ID = 13
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

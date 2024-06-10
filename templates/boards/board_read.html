@@ -1,4 +1,3 @@
-# board_read.html
 {% extends 'base.html' %}
 {% load session_filters %}
 
@@ -17,6 +16,7 @@
     }
 
     .author-date {
+        color: gray;
         display: flex;
         gap: 20px;
     }
@@ -30,6 +30,88 @@
         justify-content: center;
     }
 
+    .dropdown-toggle::after {
+            display: none;
+        }
+
+    /* 토스트 메시지 스타일 */
+    #toast {
+            visibility: hidden;
+            /* 처음에는 보이지 않음 */
+            min-width: 250px;
+            /* 최소 너비 */
+            background-color: #333;
+            /* 배경 색상 */
+            color: #fff;
+            /* 글자 색상 */
+            text-align: center;
+            /* 텍스트 중앙 정렬 */
+            border-radius: 20px;
+            /* 모서리 곡률 */
+            padding: 16px;
+            /* 내부 여백 */
+            position: fixed;
+            /* 고정 위치 */
+            z-index: 1;
+            /* 다른 요소 위에 표시 */
+            left: 50%;
+            /* 왼쪽에서 50% 위치 */
+            top: 50%;
+            /* 상단에서 50% 위치 */
+            transform: translate(-50%, -50%);
+            /* 정확한 중앙 정렬을 위해 조정 */
+            font-size: 17px;
+            /* 글자 크기 */
+        }
+
+        /* 토스트창 보여주기 애니메이션 */
+        #toast.show {
+            visibility: visible;
+            /* 보이게 함 */
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @-webkit-keyframes fadein {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadein {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @-webkit-keyframes fadeout {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
 </style>
 
 {% endblock extra-style %}
@@ -41,10 +123,10 @@
         <div class = "row justify-content-between align-items-center">
             <div class="text-white" style="font-size: 2em; font-weight: bold;">{{board.title}}</div>
             <div class = "author-date">
-                <span>작성자 : {{ board.author }} | </span>
-                <span>입력 : {{ board.created_at|date:"Y년 m월 d일 H:i"}}</span>
+                <span>작성자 : {{ board.author }} &nbsp; |</span>
+                <span>입력 : {{ board.created_at|date:"Y년 m월 d일 H : i"}}</span>
                 {% if board.updated_at %}
-                    <span>수정됨 : {{ board.updated_at|date:"Y년 m월 d일 H:i"}}</span>
+                    <span>수정됨 : {{ board.updated_at|date:"Y년 m월 d일 H : i"}}</span>
                 {% endif %}
             </div>
         </div>
@@ -54,52 +136,174 @@
     </div>
     <div class = "btn-container mt-5 mb-5">
         <div class="btn-group m-0" role="group" aria-label="Sort">
-            <button type="button" class="btn btn-dark m-0" style="border-radius: 20px 0 0 20px;">북마크</button>
+            <button id = "bookmark-button" type="button" class="btn btn-dark m-0" style="border-radius: 20px 0 0 20px;" data-board-id = "{{board.id}}">
+                {% if bookmark %}
+                    <i class="fas fa-bookmark" alt="북마크 취소"></i>
+                {% else %}
+                    <i class="far fa-bookmark" alt="북마크"></i>
+                {% endif %}
+            </button>
             <span style = "border-left: 1px solid hsla(0, 0%, 100%, .3);"></span>
-            <button type="button" class="btn btn-dark m-0" style="border-radius: 0 20px 20px 0;">좋아요</button>
+            <button id = "like-button" type="button" class="btn btn-dark m-0" style="border-radius: 0 20px 20px 0;" data-board-id = "{{board.id}}">
+                {% if board_like %}
+                    <i class="fas fa-thumbs-up" alt="좋아요 취소"></i>
+                {% else %}
+                    <i class="far fa-thumbs-up" alt="좋아요"></i>
+                {% endif %}
+            </button>
         </div>
         <div style = "margin-left: 15px;">
-            <button type="button" class="btn btn-dark m-0" style="border-radius: 50%; padding: 6px 12px;">...</button>
+            <div class = "dropdown">
+                <button type="button" class="btn btn-dark dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" style="border-radius: 50%; padding: 6px 12px;">
+                    ...
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item " href="#">카카오톡 공유</a>
+                    <a class="dropdown-item instagram-btn" href="https://www.instagram.com/direct/inbox/">인스타그램 공유</a>
+                    <a class="dropdown-item" id="copy-url">URL 복사</a>
+                </div>
+
+                <div id="toast"></div>
+
+            </div>
         </div>
     </div>
     <div>
-        <a href = "{% url 'boards:board_list' %}" class = "btn btn-dark m-0" style="border: 1px solid hsla(0, 0%, 100%, .3);">목록</a>
+        <a href = "{% url 'boards:board_list' %}" id="back-to-list" class = "btn btn-dark m-0" style="border: 1px solid hsla(0, 0%, 100%, .3);">목록</a>
         <div class = "float-end">
-            <a href = "#" class = "btn btn-dark m-0" style="border: 1px solid hsla(0, 0%, 100%, .3);">수정</a>
-            <a href = "#" class = "btn btn-dark m-0" style="border: 1px solid hsla(0, 0%, 100%, .3);">삭제</a>
+            {% if board.author == request.user %}
+                <a href = "{% url 'boards:board_update' pk=board.id %}" class = "btn btn-dark m-0" style="border: 1px solid hsla(0, 0%, 100%, .3);">수정</a>
+                <a href = "{% url 'boards:board_delete' pk=board.id %}" class = "btn btn-dark m-0" style="border: 1px solid hsla(0, 0%, 100%, .3);">삭제</a>
+            {% endif %}
         </div>
     </div>
-    <!-- 댓글 등록 -->
 
-    <div class = "comment-create">
-        <h2>댓글 작성</h2>
-        <form method = "post" action="{% url 'boards:board_read' pk=board.id %}">
-            {% csrf_token %}
-            <div class = "row justify-content-between align-items-center bg-dark p-3 shadow rounded-2" style="border: 1px solid hsla(0, 0%, 100%, .3);">   
-                <label style="color:white">{{form.content.label}}</label>
-                {{ form.content }}
-                <div class = "float-end">
-                    <button type = "submit" class = "btn btn-dark mt-3" style="border: 1px solid hsla(0, 0%, 100%, .3);">작성하기</button>
-                </div>
-            </div>
-        </form>
-    </div>
+    <div id="disqus_thread" class="mt-5"></div>
 
-    <!-- 댓글 목록 -->
-    <div class = "comment">
-        {% if comment_list %}
-            {% for comment in comment_list %}
-            <div>
-                <p>등록일 : {{comment.updated_at}}</p>
-                <p>작성자 : {{comment.author.username}}</p>
-                <p>{{comment.content}}</p>
-            </div>
-            {% endfor %}
-        {% endif %}
-    </div>
+
 </div>
 
 
 {% endblock content %}
 
-{% block extra-script %}  {% endblock extra-script %}
+{% block extra-script %}
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+    var disqus_config = function () {
+        this.page.identifier = '{{ disqus_id }}';
+        this.page.url = '{{ disqus_url }}';
+        this.page.title = '{{ disqus_title }}';
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = 'https://music-value-platform-1.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+
+    // 게시글 수정 팝업
+    document.addEventListener("DOMContentLoaded", function() {
+        {% if messages %}
+            {% for message in messages %}
+                alert("{{ message }}");
+            {% endfor %}
+        {% endif %}
+    });
+
+    // 좋아요
+    document.getElementById('like-button').addEventListener('click', function() {
+        const button = this;
+        const boardId = button.getAttribute('data-board-id');
+
+        axios.get(`/likes/like_board/?boardid=${boardId}`)
+            .then(response => {
+                if (response.data.success) {
+                    const icon = button.querySelector('i');
+                    if (response.data.liked) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        icon.setAttribute('alt', '좋아요 취소');
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        icon.setAttribute('alt', '좋아요');
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('There was an error', error);
+            })
+    })
+
+    // 북마크
+    document.getElementById('bookmark-button').addEventListener('click', function() {
+        const button = this;
+        const boardId = button.getAttribute('data-board-id');
+
+        axios.get(`/likes/bookmark_do/?boardid=${boardId}`)
+            .then(response => {
+                if (response.data.success) {
+                    const icon = button.querySelector('i');
+                    if (response.data.bookmarked) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        icon.setAttribute('alt', '북마크 취소');
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        icon.setAttribute('alt', '북마크');
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('There was an error', error);
+            })
+    })
+
+    // 주소 복사
+    document.getElementById('copy-url').addEventListener('click', function() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(function() {
+                showToast('URL이 클립보드에 복사되었습니다!');
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        });
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = 'show';
+        setTimeout(function() { 
+            toast.className = toast.className.replace('show', ''); 
+        }, 2000);
+    }
+
+    // 인스타그램 공유
+    // 클래스를 사용하여 요소를 찾기 위해 querySelector 사용
+    document.querySelector('.instagram-btn').addEventListener('click', function (event) {
+        event.preventDefault();
+
+        const url = window.location.href; // 현재 페이지 URL 가져오기
+
+        // modern API를 사용하여 클립보드에 텍스트 복사
+        navigator.clipboard.writeText(url).then(function () {
+            // 사용자에게 복사 완료 메시지 표시
+            showToast('링크가 복사되었습니다!')
+            setTimeout(function () {
+                toast.className = toast.className.replace("show", "");
+                // 인스타그램 페이지를 새로운 창으로 열기
+                window.open('https://www.instagram.com/direct/inbox/', '_blank');
+            }, 1000);
+        }).catch(function (error) {
+            console.error('복사를 실패했습니다: ', error);
+        });
+    });
+    
+
+</script>
+
+{% endblock extra-script %}
