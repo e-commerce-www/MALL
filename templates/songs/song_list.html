@@ -388,31 +388,6 @@
         .catch(error => console.log(error));
     }
 
-    function filterByTempo(tempo) {
-        const title = document.getElementById('chart-title');
-        console.log(tempo);
-        axios({
-            method: 'get',
-            url: '{% url "songs:song_tempo" %}',  // 적절한 URL로 교체하세요
-            params: {
-                tempo: tempo
-            }
-        })
-        .then(response => {
-            if (tempo === "") {
-                title.textContent = '템포별 음원 | 전체';
-            } else {
-
-                title.textContent = '템포별 음원 | ' + tempo;
-            } else {
-                title.textContent = '음원 목록 | 장르 : ' + genre + ' | 템포 : ' + tempo;
-            }
-            document.getElementById('songs-container').innerHTML = response.data;
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });
-    }
 
     // 
 
