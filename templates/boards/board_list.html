@@ -1,7 +1,27 @@
 {% extends 'base.html' %}
 {% load session_filters %}
 
-{% block extra-style %}  {% endblock extra-style %}
+{% block extra-style %}
+<style>
+    .btn-group .btn {
+        background-color: #1f1e1e; /* 버튼의 기본 배경 색상 */
+        border: 1px solid hsla(0, 0%, 100%, .3);
+        color: white;
+    }
+
+    .btn-group .btn.active, .btn-group .btn:active {
+        background-color: #1f1e1e; /* 활성화된 버튼의 배경 색상 유지 */
+        color: white; /* 활성화된 버튼의 글자 색상 유지 */
+        box-shadow: none; /* 버튼 클릭 시 그림자 효과 제거 */
+        outline: none; /* 포커스 효과 제거 */
+    }
+
+    .btn-group .btn:focus {
+        box-shadow: none; /* 포커스 상태에서도 그림자 효과 제거 */
+    }
+</style>
+
+{% endblock extra-style %}
 
 {% block content %}
 <div class="container">
@@ -15,8 +35,8 @@
         <div class = "row mt-3">
             <div class = "col d-flex">
                 <div class="btn-group m-0" role="group" aria-label="Sort" style="border: 1px solid hsla(0, 0%, 100%, .3);">
-                    <a href="?sort=latest" class="btn btn-dark m-0 {% if sort == 'latest' %} active{% endif %}">최신순</button>
-                    <button type ="button" href="?sort=popular" class="btn btn-dark m-0 {% if sort == 'popular' %} active{% endif %}">인기순</button>
+                    <a href="?sort=latest" class="btn btn-dark m-0 {% if sort == 'latest' %} active{% endif %}">최신순</a>
+                    <a href="?sort=popular" class="btn btn-dark m-0 {% if sort == 'popular' %} active{% endif %}">인기순</a>
                 </div>
                 <div style="display: inline-block; margin-left: 10px;">
                     <div class="d-flex ">
