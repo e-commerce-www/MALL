@@ -12,5 +12,6 @@ urlpatterns = [
     path('ranking/', views.song_ranking, name='song_ranking'),
     path('genre/', views.song_genre, name='song_genre'),
     path('tempo/', views.song_tempo, name='song_tempo'),
+    path('filter/', views.song_filter, name='song_filter'),
     
 ]

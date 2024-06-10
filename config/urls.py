@@ -39,5 +39,6 @@ urlpatterns = [
     path('search/',views.search,name='search'),
     path('follows/', include('apps.follows.urls')),
     path('likes/', include('apps.likes.urls')),
+    path('boards/', include('apps.boards.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
