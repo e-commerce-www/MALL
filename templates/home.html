@@ -1,5 +1,7 @@
-{% extends 'base.html' %} {% load thumbnail %} {% load session_filters %}
-{%block extra-style %}
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% load session_filters %}
+{% block extra-style %}
 <style>
   .search-form {
     display: flex;
@@ -67,6 +69,7 @@
       font-size: 14px;
       padding: 8px 12px;
     }
+    
     .col-auto.d-flex.align-items-center {
       display: flex;
       flex-direction: column;
@@ -80,7 +83,8 @@
     }
   }
 </style>
-{% endblock extra-style %} {% block content %}
+{% endblock extra-style %}
+{% block content %}
 <div class="container">
   <!-- 검색창 -->
   <form id="search-form" class="search-form">
@@ -144,7 +148,7 @@
                       class="text-decoration-none"
                       href="{% url 'sellers:seller_artist' song.seller.user.id %}"
                       style="color: #888"
-                      >{{song.seller}}</a
+                      >{{ song.seller }}</a
                     >
                   </p>
                 </div>
@@ -229,8 +233,9 @@
 
             {% if user.is_authenticated %}
             <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
-            {% is_purchased user song.id as purchased %} {% is_added_to_cart
-            user song.id as added %} {% if not added %}
+            {% is_purchased user song.id as purchased %}
+            {% is_added_to_cart user song.id as added %}
+            {% if not added %}
             <button
               id="add-btn-{{song.id}}"
               type="button"
@@ -248,7 +253,8 @@
             >
               찜 취소
             </button>
-            {% endif %} {% if not purchased %}
+            {% endif %}
+            {% if not purchased %}
             <form
               action="{% url 'payments:payment_pay' song.id %}"
               onsubmit="return confirmPurchase('{{ song.title|escapejs }}')"
@@ -265,7 +271,8 @@
             <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
               <button class="btn btn-outline-light me-2">다운로드</button>
             </a>
-            {% endif %} {% else %}
+            {% endif %}
+            {% else %}
             <button
               type="button"
               class="btn btn-outline-light me-2"
@@ -289,7 +296,8 @@
     </div>
   </div>
 </div>
-{% endblock %} {% block extra-script %}
+{% endblock %}
+{% block extra-script %}
 <script>
   document
     .getElementById("search-form")
@@ -399,6 +407,25 @@
   function confirmPurchase(title) {
     return confirm('정말 "' + title + '"을(를) 구매하시겠습니까?');
   }
-</script>
 
+  // 노래 겹쳐서 들리는것 방지
+  const audios = document.querySelectorAll('audio');
+
+  // Function to pause all other audios
+  function pauseAllOthers(currentAudio) {
+    audios.forEach(audio => {
+      if (audio !== currentAudio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    });
+  }
+
+  // Add event listeners to all audio elements
+  audios.forEach(audio => {
+    audio.addEventListener('play', function() {
+      pauseAllOthers(audio);
+    });
+  });
+</script>
 {% endblock extra-script %}

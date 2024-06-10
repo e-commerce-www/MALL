@@ -104,7 +104,10 @@
                         <button type="button" class="btn btn-dark m-0" onclick="showRanking();">인기순</button>
                     </div>
                     <div style="display: inline-block; margin-left: 10px;">
-                        <select id="genre-select" class="form-select bg-dark text-white" style="border: 1px solid hsla(0, 0%, 100%, .3);" onchange="filterByGenre(this.value)">
+
+                        <select id="genre-select" class="form-select bg-dark text-white" style="border: 1px solid hsla(0, 0%, 100%, .3);" onchange="filterByBoth(document.getElementById('tempo-select').value,this.value)">
+
+                            <option value="">장르 선택</option>
                             <option value="">전체 장르</option>
                             <option value="pop">팝</option>
                             <option value="dance">댄스</option>
@@ -126,7 +129,7 @@
                         </select>
                     </div>
                     <div style="display: inline-block; margin-left: 10px;">
-                        <select id="tempo-select" class="form-select bg-dark text-white" onchange="filterByTempo(this.value)" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                        <select id="tempo-select" class="form-select bg-dark text-white" onchange="filterByBoth(this.value, document.getElementById('genre-select').value)" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                             <option value="">템포 선택</option>
                             <option value="slower">아주 느림</option>
                             <option value="slow">느림</option>
@@ -247,14 +250,43 @@
 
 {% block extra-script %}
 <script>
-    var myAudio = document.getElementById("myAudio");
-
-    function playAudio() {
-        myAudio.play();
-    }
-
-    function pauseAudio() {
-        myAudio.pause();
+    const audios = document.querySelectorAll('audio');
+        // Function to pause all other audios
+        function pauseAllOthers(currentAudio) {
+            audios.forEach(audio => {
+                if (audio != currentAudio) {
+                    audio.pause();
+                    console.log(currentAudio, "정지됨");
+                    audio.currentTime = 0;
+                }
+            });
+        }
+        // Add event listeners to all audio elements
+        audios.forEach(audio => {
+            audio.addEventListener('play', function() {
+                pauseAllOthers(audio);
+            });
+        });
+        
+    // Function to pause all other audios
+    function bindAudioControls() {
+        const audios = document.querySelectorAll('audio');
+        // Function to pause all other audios
+        function pauseAllOthers(currentAudio) {
+            audios.forEach(audio => {
+                if (audio != currentAudio) {
+                    audio.pause();
+                    console.log(currentAudio, "정지됨");
+                    audio.currentTime = 0;
+                }
+            });
+        }
+        // Add event listeners to all audio elements
+        audios.forEach(audio => {
+            audio.addEventListener('play', function() {
+                pauseAllOthers(audio);
+            });
+        });
     }
 
     function confirmPurchase(title) {
@@ -346,7 +378,7 @@
     }
 
     function showRecent(pageNumber = 1) {
-        const title = document.getElementById('chart-title')
+        const title = document.getElementById('chart-title');
         axios({
             method: 'get',
             url: '{% url "songs:song_recent" %}',
@@ -357,12 +389,16 @@
             .then(response => {
                 title.textContent = '차트 | 최신순';
                 document.getElementById('songs-container').innerHTML = response.data;
+                console.log(response.data)
+            })
+            .then(() => {
+            bindAudioControls(); // 바인딩 함수 호출
             })
             .catch(error => console.log(error));
     }
 
     function showRanking(pageNumber = 1) {
-        const title = document.getElementById('chart-title')
+        const title = document.getElementById('chart-title');
         axios({
             method: 'get',
             url: '{% url "songs:song_ranking" %}',
@@ -374,51 +410,41 @@
                 title.textContent = '차트 | 인기순';
                 document.getElementById('songs-container').innerHTML = response.data;
             })
+            .then(() => {
+            bindAudioControls(); // 바인딩 함수 호출
+            })
             .catch(error => console.log(error));
     }
 
-    function filterByGenre(genre) {
+    function filterByBoth(tempo, genre) {
         const title = document.getElementById('chart-title');
+        console.log(tempo);
+        console.log(genre);
         axios({
             method: 'get',
-            url: '{% url "songs:song_genre" %}',  // Django URL을 적절하게 설정해야 합니다.
+            url: '{% url "songs:song_filter" %}',  // 적절한 URL로 교체하세요
             params: {
+                tempo: tempo,
                 genre: genre
             }
         })
         .then(response => {
-            if (genre === "") {
-                title.textContent = '장르별 음원 | 전체';
-            } else {
+            if (tempo === "" && genre === "") {
+                title.textContent = '음원 목록 | 전체';
+            } else if (tempo === ""){
                 title.textContent = '장르별 음원 | ' + genre;
+
+            } else if (genre === ""){
+
             }
             document.getElementById('songs-container').innerHTML = response.data;
         })
+        .then(() => {
+            bindAudioControls(); // 바인딩 함수 호출
+            })
         .catch(error => console.log(error));
     }
 
-    function filterByTempo(tempo) {
-        const title = document.getElementById('chart-title');
-        console.log(tempo);
-        axios({
-            method: 'get',
-            url: '{% url "songs:song_tempo" %}',  // 적절한 URL로 교체하세요
-            params: {
-                tempo: tempo
-            }
-        })
-        .then(response => {
-            if (tempo === "") {
-                title.textContent = '템포별 음원 | 전체';
-            } else {
-                title.textContent = '템포별 음원 | ' + tempo;
-            }
-            document.getElementById('songs-container').innerHTML = response.data;
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });
-    }
 
     // 
 
@@ -447,6 +473,7 @@
             })
             .catch(error => console.log(error));
     });
+
 
 </script>
 {% endblock extra-script %}
