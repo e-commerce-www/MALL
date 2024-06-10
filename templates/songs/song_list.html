@@ -48,6 +48,7 @@
                     </div>
                     <div style="display: inline-block; margin-left: 10px;">
                         <select id="genre-select" class="form-select bg-dark text-white" style="border: 1px solid hsla(0, 0%, 100%, .3);" onchange="filterByGenre(this.value)">
+                            <option value="">장르 선택</option>
                             <option value="">전체 장르</option>
                             <option value="pop">팝</option>
                             <option value="dance">댄스</option>
@@ -190,14 +191,43 @@
 
 {% block extra-script %}
 <script>
-    var myAudio = document.getElementById("myAudio");
-
-    function playAudio() {
-        myAudio.play();
-    }
-
-    function pauseAudio() {
-        myAudio.pause();
+    const audios = document.querySelectorAll('audio');
+        // Function to pause all other audios
+        function pauseAllOthers(currentAudio) {
+            audios.forEach(audio => {
+                if (audio != currentAudio) {
+                    audio.pause();
+                    console.log(currentAudio, "정지됨");
+                    audio.currentTime = 0;
+                }
+            });
+        }
+        // Add event listeners to all audio elements
+        audios.forEach(audio => {
+            audio.addEventListener('play', function() {
+                pauseAllOthers(audio);
+            });
+        });
+        
+    // Function to pause all other audios
+    function bindAudioControls() {
+        const audios = document.querySelectorAll('audio');
+        // Function to pause all other audios
+        function pauseAllOthers(currentAudio) {
+            audios.forEach(audio => {
+                if (audio != currentAudio) {
+                    audio.pause();
+                    console.log(currentAudio, "정지됨");
+                    audio.currentTime = 0;
+                }
+            });
+        }
+        // Add event listeners to all audio elements
+        audios.forEach(audio => {
+            audio.addEventListener('play', function() {
+                pauseAllOthers(audio);
+            });
+        });
     }
 
     function confirmPurchase(title) {
@@ -289,7 +319,7 @@
     }
 
     function showRecent(pageNumber = 1) {
-        const title = document.getElementById('chart-title')
+        const title = document.getElementById('chart-title');
         axios({
             method: 'get',
             url: '{% url "songs:song_recent" %}',
@@ -300,12 +330,16 @@
             .then(response => {
                 title.textContent = '차트 | 최신순';
                 document.getElementById('songs-container').innerHTML = response.data;
+                console.log(response.data)
+            })
+            .then(() => {
+            bindAudioControls(); // 바인딩 함수 호출
             })
             .catch(error => console.log(error));
     }
 
     function showRanking(pageNumber = 1) {
-        const title = document.getElementById('chart-title')
+        const title = document.getElementById('chart-title');
         axios({
             method: 'get',
             url: '{% url "songs:song_ranking" %}',
@@ -316,6 +350,9 @@
             .then(response => {
                 title.textContent = '차트 | 인기순';
                 document.getElementById('songs-container').innerHTML = response.data;
+            })
+            .then(() => {
+            bindAudioControls(); // 바인딩 함수 호출
             })
             .catch(error => console.log(error));
     }
@@ -337,6 +374,9 @@
             }
             document.getElementById('songs-container').innerHTML = response.data;
         })
+        .then(() => {
+            bindAudioControls(); // 바인딩 함수 호출
+            })
         .catch(error => console.log(error));
     }
 
@@ -390,6 +430,7 @@
             })
             .catch(error => console.log(error));
     });
+
 
 </script>
 {% endblock extra-script %}
