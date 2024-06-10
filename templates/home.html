@@ -270,8 +270,28 @@
     function confirmPurchase(title) {
         return confirm('정말 "' + title + '"을(를) 구매하시겠습니까?');
     }
+    
+
+    // 노래 겹쳐서 들리는것 방지
+    const audios = document.querySelectorAll('audio');
+
+        // Function to pause all other audios
+        function pauseAllOthers(currentAudio) {
+            audios.forEach(audio => {
+                if (audio !== currentAudio) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            });
+        }
+
+        // Add event listeners to all audio elements
+        audios.forEach(audio => {
+            audio.addEventListener('play', function() {
+                pauseAllOthers(audio);
+            });
+        });
+
 </script>
-
-
 
 {% endblock extra-script %}
