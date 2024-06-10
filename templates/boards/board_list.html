@@ -48,7 +48,7 @@
                 <div class = "row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 board" data-board-id="{{ board.id }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     <div class = "col-auto">
                         <div class = "board-number">
-                            <div class = "text-white">{{board.id}}</div>
+                            <div class = "text-white">{{ page_obj.start_index | add:forloop.counter0 }}</div>
                         </div>
                     </div>
 
