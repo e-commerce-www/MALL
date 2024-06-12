@@ -1,26 +1,28 @@
 {% extends 'base.html' %}
 {% load session_filters %}
 
-{% block extra-style %}  {% endblock extra-style %}
+{% block extra-style %}
+
+{% endblock extra-style %}
 
 {% block content %}
 <div class="container">
     <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
-        <h1 id="chart-title" class="fs-2 text-white m-0 ">커뮤니티</h1>
+        <h1 id="board-title" class="fs-2 text-white m-0 ">커뮤니티</h1>
     </div>
 
     <div class = "container">
         <div class = "row mt-3">
             <div class = "col d-flex">
                 <div class="btn-group m-0" role="group" aria-label="Sort" style="border: 1px solid hsla(0, 0%, 100%, .3);">
-                    <button type="button" class="btn btn-dark m-0">최신순</button>
-                    <button type="button" class="btn btn-dark m-0">인기순</button>
+                    <a href="?sort=latest" class="btn btn-dark m-0 {% if sort == 'latest' %} active {% endif %}">최신순</a>
+                    <a href="?sort=popular" class="btn btn-dark m-0 {% if sort == 'popular' %} active {% endif %}">인기순</a>
                 </div>
                 <div style="display: inline-block; margin-left: 10px;">
                     <div class="d-flex ">
                         <form class="d-flex " id="search-form">
                             <div class="input-group ">
-                                <input type="text" id="search-input" title="title" class="form-control" style="width: 300px; border: 1px solid hsla(0, 0%, 100%, .3);" placeholder="검색어를 입력하세요.">
+                                <input type="text" name="search" id="search-input" title="title" class="form-control" style="width: 300px; border: 1px solid hsla(0, 0%, 100%, .3);" placeholder="검색어를 입력하세요." value="{{ search|default:'' }}">
                                 <button type="submit" class="btn btn-outline-light bg-dark " style="border: 1px solid hsla(0, 0%, 100%, .3);">검색</button>
                             </div>
                         </form>
@@ -146,6 +148,38 @@
             {% endfor %}
         {% endif %}
     });
+
+    function showRecent(pageNumber = 1) {
+        const title = document.getElementById('board-title')
+        axios({
+            method: 'get',
+            url: '{% url "boards:board_list" %}',
+            params: {
+                page: pageNumber
+            }
+        })
+            .then(response => {
+                title.textContent = '차트 | 최신순';
+                document.getElementById('boards-container').innerHTML = response.data;
+            })
+            .catch(error => console.log(error));
+    }
+
+    function showRanking(pageNumber = 1) {
+        const title = document.getElementById('board-title')
+        axios({
+            method: 'get',
+            url: '{% url "songs:song_ranking" %}',
+            params: {
+                page: pageNumber
+            }
+        })
+            .then(response => {
+                title.textContent = '차트 | 인기순';
+                document.getElementById('boards-container').innerHTML = response.data;
+            })
+            .catch(error => console.log(error));
+    }
 
 </script>
 {% endblock extra-script %}
