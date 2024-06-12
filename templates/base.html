@@ -1,353 +1,554 @@
-{% load socialaccount %}
+{% load socialaccount %} 
 {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
     <title>MVP:Music Value Platform</title>
 
     <!-- Favicon-->
-    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.png' %}">
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="{% static 'favicon.png' %}"
+    />
 
     <!-- Bootstrap icons-->
-    <link href="https://unpkg.com/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link
+      href="https://unpkg.com/bootstrap-icons@1.8.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
 
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="https://unpkg.com/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://unpkg.com/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
-    <link href="https://unpkg.com/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" rel="stylesheet">
+    <link
+      href="https://unpkg.com/@fortawesome/fontawesome-free@5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
     <style>
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
 
+      .navbar-bg {
+        background-color: #000;
+      }
+
+      .wrapper {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background-color: #000000;
+      }
+
+      .main-content {
+        flex: 1;
+        background-color: rgb(0, 0, 0);
+      }
+
+      footer {
+        padding: 20px 0;
+        background: #111;
+      }
+
+      .top-bar {
+        font-size: 12px;
+      }
+
+      .modal-header,
+      .modal-body,
+      .modal-footer {
+        border-color: #444;
+        /* 헤더와 푸터의 구분선 색상을 변경 */
+      }
+
+      .btn-close {
+        filter: invert(1);
+        /* 닫기 버튼을 밝게 조정 */
+      }
+
+      .img-render {
+        image-rendering: -mon-crisp-edges;
+        image-rendering: -o-crisp-edges;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+        -ms-interpolation-mode: nearest-neighbor;
+      }
+
+      .footer_link {
+        color: #999;
+      }
+
+      .footer_link:hover {
+        color: white;
+      }
+      @media (max-width: 576px) {
+        .navbar-nav {
+          display: flex;
+          flex-direction: column;
+          align-items: center; 
+        }
+        .navbar-brand img {
+          width: 80px;
+        }
+        .navbar-toggler {
+          font-size: 1rem;
         }
 
-        .navbar-bg {
-            background-color: #000;
+        .container {
+          padding: 5px;
         }
-
-        .wrapper {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            background-color: #000000;
+        footer .widget-title {
+          font-size: 1rem;
         }
-
-        .main-content {
-            flex: 1;
-            background-color: rgb(0, 0, 0);
-
+        footer .widget p,
+        footer .widget a {
+          font-size: 0.8rem;
         }
-
-        footer {
-            padding: 20px 0;
-            background: #111
+        footer .widget ul {
+          padding-left: 0;
         }
-
-        .top-bar {
-            font-size: 12px;
+        footer .widget ul li {
+          margin-bottom: 3px;
         }
-
-        .modal-header,
-        .modal-body,
-        .modal-footer {
-            border-color: #444;
-            /* 헤더와 푸터의 구분선 색상을 변경 */
-        }
-
-        .btn-close {
-            filter: invert(1);
-            /* 닫기 버튼을 밝게 조정 */
-        }
-
-        .img-render {
-            image-rendering: -mon-crisp-edges;
-            image-rendering: -o-crisp-edges;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-            -ms-interpolation-mode: nearest-neighbor;
-        }
-
-        .footer_link {
-            color: #999;
-        }
-
-        .footer_link:hover {
-            color: white;
-        }
+      }
     </style>
     <!-- CSS-->
     {% block extra-style %} {% endblock extra-style %}
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="wrapper">
-        <!-- Navigation-->
-        <nav class="navbar navbar-expand-sm navbar-dark navbar-background-asd">
-            <div class="container">
-                <a class="navbar-brand p-0 img-render" href="{% url 'home' %}"><img src="{% static 'logo.png' %}" alt="MVP"></a>
-                <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+      <!-- Navigation-->
+      <nav class="navbar navbar-expand-sm navbar-dark navbar-background-asd">
+        <div class="container">
+          <a class="navbar-brand p-0 img-render" href="{% url 'home' %}"
+            ><img src="{% static 'logo.png' %}" alt="MVP"
+          /></a>
+          <button
+            class="navbar-toggler d-lg-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapsibleNavId"
+            aria-controls="collapsibleNavId"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="collapsibleNavId">
+            <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+              <li class="nav-item">
+                <a
+                  class="nav-link text-white"
+                  href="{% url 'songs:song_list' %}"
+                  >음악</a
+                >
+              </li>
+              <li class="nav-item">
+                <button class="nav-link text-white" onclick="mySongFunc()">
+                  찜한 음악
                 </button>
-                <div class="collapse navbar-collapse " id="collapsibleNavId">
-                    <ul class="navbar-nav me-auto mt-2 mt-lg-0">
-                        <li class="nav-item "><a class="nav-link text-white " href="{% url 'songs:song_list' %}">음악</a></li>
-                        <li class="nav-item"><button class="nav-link text-white " onclick="mySongFunc()">찜한 음악</button></li>
-                    </ul>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link text-white"
+                  href="{% url 'boards:board_list' %}"
+                  >커뮤니티</a
+                >
+              </li>
+            </ul>
 
-                    {% if user.is_authenticated %}
-                    <ul class="navbar-nav d-flex">
-                        <li class="nav-item "><a class="nav-link text-white " href="{% url 'oauth:profile' %}">마이페이지</a></li>
-                        <li class="nav-item "><a class="nav-link text-white" href="{% url 'account_logout' %}">로그아웃</a></li>
-                    </ul>
-                    {% else %}
-                    <form class="d-flex">
-                        <ul class="navbar-nav d-flex">
-                            <li class="nav-item "><a class="nav-link text-white " data-bs-toggle="modal"
-                                    data-bs-target="#loginModal" onclick="updateModalText('로그인')" href="#">
-                                    로그인
-                                </a></li>
-                            <li class="nav-item ">
-                                <a class="nav-link text-white " data-bs-toggle="modal" data-bs-target="#loginModal"
-                                    onclick="updateModalText('가입')" href="#">
-                                    회원가입
-                                </a>
-                            </li>
-                        </ul>
-                    </form>
-                    {% endif %}
-                </div>
-            </div>
-        </nav>
-
-        <!-- Header-->
-        {% block header %} {% endblock header %}
-
-        <div class="main-content">
-            <!-- Section-->
-            <section class="py-5">
-                <div class="container px-4 px-lg-5">
-                    {% block content %} {% endblock content %}
-                </div>
-            </section>
+            {% if user.is_authenticated %}
+            <ul class="navbar-nav d-flex">
+              <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'oauth:profile' %}"
+                  >마이페이지</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'account_logout' %}"
+                  >로그아웃</a
+                >
+              </li>
+            </ul>
+            {% else %}
+            <form class="d-flex">
+              <ul class="navbar-nav d-flex">
+                <li class="nav-item">
+                  <a
+                    class="nav-link text-white"
+                    data-bs-toggle="modal"
+                    data-bs-target="#loginModal"
+                    onclick="updateModalText('로그인')"
+                    href="#"
+                  >
+                    로그인
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link text-white"
+                    data-bs-toggle="modal"
+                    data-bs-target="#loginModal"
+                    onclick="updateModalText('가입')"
+                    href="#"
+                  >
+                    회원가입
+                  </a>
+                </li>
+              </ul>
+            </form>
+            {% endif %}
+          </div>
         </div>
+      </nav>
 
-        <!-- Footer-->
-        <footer class="bg-black" style="border-top: 1px solid hsla(0, 0%, 100%, .3);">
-            <div class="container">
-                <!-- Widgets - Bootstrap Brain Component -->
-                <section class=" py-4 py-md-5 py-xl-8">
-                    <div class="container overflow-hidden">
-                        <div class="row gy-4 gy-lg-0 justify-content-xl-between">
-                            <div class="col-12 col-md-4 col-lg-3 col-xl-2">
-                                <div class="widget">
-                                    <a href="#!">
-                                        <img class="img-render" src="{% static 'img/footer_logo.png' %}" alt="BootstrapBrain Logo">
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4 col-lg-3 col-xl-2">
-                                <div class="widget">
-                                    <h4 class="widget-title mb-4" style="color: #666;">GitHub</h4>
-                                    <div class="mb-4">
-                                        <a class="text-decoration-none footer_link" href="https://github.com/e-commerce-www/MALL.git">
-                                            Music Value<br>
-                                            Platform Repository
-                                        </a>
-                                    </div>
-                                    <h4 class="widget-title mb-4" style="color: #666;">Security Issues</h4>
-                                    <p class="mb-0">
-                                        <span style="color:#666;">Please contact</span>
-                                        <a class="text-decoration-none footer_link"
-                                            href="mailto:madeffort0903@gmail.com">madeffort0903@gmail.com</a>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4 col-lg-3 col-xl-2">
-                                <div class="widget">
-                                    <h4 class="widget-title mb-4" style="color: #666;">Members</h4>
-                                    <ul class="list-unstyled">
-                                        <li class="mb-2">
-                                            <a href="https://github.com/madEffort" class="text-decoration-none footer_link">Hyunwoo Kim (Lead)</a>
-                                        </li>
-                                        <li class="mb-2">
-                                            <a href="https://github.com/KMJ7916" class="text-decoration-none footer_link">Mijin Kim</a>
-                                        </li>
-                                        <li class="mb-2">
-                                            <a href="https://github.com/ieunchan" class="text-decoration-none footer_link">Eunchan Lee</a>
-                                        </li>
-                                        <li class="mb-2">
-                                            <a href="https://github.com/chlryddk" class="text-decoration-none footer_link">Yoona Choi</a>
-                                        </li>
-                                        <li class="mb-2">
-                                            <a href="https://github.com/2taeyeon" class="text-decoration-none footer_link">Taeyeon Lee</a>
-                                        </li>
-                                        <li class="mb-2">
-                                            <a href="https://github.com/HalalGuys1232" class="text-decoration-none footer_link">Chanyeong Lee</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-3 col-xl-4">
-                                <div class="widget">
-                                    <div>
-                                        <h4 class="widget-title mb-4" style="color: #666;">What is Music Value Platform?</h4>
-                                        <p class="mb-4" style="color: #999;">Our platform facilitates the sale of indie music while enabling legal utilization in diverse creative projects.</p>
-                                    </div>
-                                    <div>
-                                        <h4 class="widget-title mb-4" style="color: #666;">Support</h4>
-                                        <p class="mb-4" style="color: #999;"><a class="btn btn-outline-secondary border-1 " style="color:#999; border: 1px solid #999;" href="https://www.paypal.com/paypalme/madEffort">DONATE NOW</a></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+      <!-- Header-->
+      {% block header %} {% endblock header %}
+
+      <div class="main-content">
+        <!-- Section-->
+        <section class="py-5">
+          <div class="container px-4 px-lg-5">
+            {% block content %} {% endblock content %}
+          </div>
+        </section>
+      </div>
+
+      <!-- Footer-->
+      <footer
+        class="bg-black"
+        style="border-top: 1px solid hsla(0, 0%, 100%, 0.3)"
+      >
+        <div class="container">
+          <!-- Widgets - Bootstrap Brain Component -->
+          <section class="py-4 py-md-5 py-xl-8">
+            <div class="container overflow-hidden">
+              <div class="row gy-4 gy-lg-0 justify-content-xl-between">
+                <div class="col-12 col-md-4 col-lg-3 col-xl-2">
+                  <div class="widget">
+                    <a href="#!">
+                      <img
+                        class="img-render"
+                        src="{% static 'img/footer_logo.png' %}"
+                        alt="BootstrapBrain Logo"
+                      />
+                    </a>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4 col-lg-3 col-xl-2">
+                  <div class="widget">
+                    <h4 class="widget-title mb-4" style="color: #666">
+                      GitHub
+                    </h4>
+                    <div class="mb-4">
+                      <a
+                        class="text-decoration-none footer_link"
+                        href="https://github.com/e-commerce-www/MALL.git"
+                      >
+                        Music Value<br />
+                        Platform Repository
+                      </a>
                     </div>
-                </section>
-
-                <!-- Copyright - Bootstrap Brain Component -->
-                <div class="py-4 py-md-5 py-xl-8">
-                    <div class="container overflow-hidden">
-                        <div class="row gy-4 gy-md-0 align-items-md-center">
-                            <div class="col-xs-12 col-md-7 order-1 order-md-0">
-                                <div class="copyright text-center text-md-start" style="color:#666;">
-                                    &copy; 2024. All Rights Reserved.
-                                </div>
-                            </div>
-
-                            <div class="col-xs-12 col-md-5 order-0 order-md-1">
-                                <div class="social-media-wrapper">
-                                    <ul class="list-unstyled m-0 p-0 d-flex justify-content-center justify-content-md-end">
-                                        <li class="me-3">
-                                            <a href="https://github.com/e-commerce-www/MALL.git" class="link-dark link-opacity-75-hover">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#666666" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                    <h4 class="widget-title mb-4" style="color: #666">
+                      Security Issues
+                    </h4>
+                    <p class="mb-0">
+                      <span style="color: #666">Please contact</span>
+                      <a
+                        class="text-decoration-none footer_link"
+                        href="mailto:madeffort0903@gmail.com"
+                        >madeffort0903@gmail.com</a
+                      >
+                    </p>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4 col-lg-3 col-xl-2">
+                  <div class="widget">
+                    <h4 class="widget-title mb-4" style="color: #666">
+                      Members
+                    </h4>
+                    <ul class="list-unstyled">
+                      <li class="mb-2">
+                        <a
+                          href="https://github.com/madEffort"
+                          class="text-decoration-none footer_link"
+                          >Hyunwoo Kim (Lead)</a
+                        >
+                      </li>
+                      <li class="mb-2">
+                        <a
+                          href="https://github.com/KMJ7916"
+                          class="text-decoration-none footer_link"
+                          >Mijin Kim</a
+                        >
+                      </li>
+                      <li class="mb-2">
+                        <a
+                          href="https://github.com/ieunchan"
+                          class="text-decoration-none footer_link"
+                          >Eunchan Lee</a
+                        >
+                      </li>
+                      <li class="mb-2">
+                        <a
+                          href="https://github.com/chlryddk"
+                          class="text-decoration-none footer_link"
+                          >Yoona Choi</a
+                        >
+                      </li>
+                      <li class="mb-2">
+                        <a
+                          href="https://github.com/2taeyeon"
+                          class="text-decoration-none footer_link"
+                          >Taeyeon Lee</a
+                        >
+                      </li>
+                      <li class="mb-2">
+                        <a
+                          href="https://github.com/HalalGuys1232"
+                          class="text-decoration-none footer_link"
+                          >Chanyeong Lee</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-3 col-xl-4">
+                  <div class="widget">
+                    <div>
+                      <h4 class="widget-title mb-4" style="color: #666">
+                        What is Music Value Platform?
+                      </h4>
+                      <p class="mb-4" style="color: #999">
+                        Our platform facilitates the sale of indie music while
+                        enabling legal utilization in diverse creative projects.
+                      </p>
                     </div>
+                    <div>
+                      <h4 class="widget-title mb-4" style="color: #666">
+                        Support
+                      </h4>
+                      <p class="mb-4" style="color: #999">
+                        <a
+                          class="btn btn-outline-secondary border-1"
+                          style="color: #999; border: 1px solid #999"
+                          href="https://www.paypal.com/paypalme/madEffort"
+                          >DONATE NOW</a
+                        >
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Copyright - Bootstrap Brain Component -->
+          <div class="py-4 py-md-5 py-xl-8">
+            <div class="container overflow-hidden">
+              <div class="row gy-4 gy-md-0 align-items-md-center">
+                <div class="col-xs-12 col-md-7 order-1 order-md-0">
+                  <div
+                    class="copyright text-center text-md-start"
+                    style="color: #666"
+                  >
+                    &copy; 2024. All Rights Reserved.
+                  </div>
                 </div>
 
-                {% block footer %} {% endblock footer %}
+                <div class="col-xs-12 col-md-5 order-0 order-md-1">
+                  <div class="social-media-wrapper">
+                    <ul
+                      class="list-unstyled m-0 p-0 d-flex justify-content-center justify-content-md-end"
+                    >
+                      <li class="me-3">
+                        <a
+                          href="https://github.com/e-commerce-www/MALL.git"
+                          class="link-dark link-opacity-75-hover"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="#666666"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                            />
+                          </svg>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
-        </footer>
+          </div>
 
-        <!-- JS-->
-        <script src="https://unpkg.com/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-        
-        <script>
-            function updateModalText(action) {
-                const modalKind = document.getElementById('loginModalLabel');
-                const googleButton = document.getElementById('google-modal-text');
-                const naverButton = document.getElementById('naver-modal-text');
-                if (action === '가입') {
-                    modalKind.textContent = `회원${action}`;
-                } else {
-                    modalKind.textContent = `${action}`;
+          {% block footer %} {% endblock footer %}
+        </div>
+      </footer>
 
-                }
-                googleButton.textContent = `구글로 ${action}`;
-                naverButton.textContent = `네이버로 ${action}`;
+      <!-- JS-->
+      <script src="https://unpkg.com/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+      <script
+        src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+        crossorigin="anonymous"
+      ></script>
+
+      <script>
+        function updateModalText(action) {
+            const modalKind = document.getElementById('loginModalLabel');
+            const googleButton = document.getElementById('google-modal-text');
+            const naverButton = document.getElementById('naver-modal-text');
+            if (action === '가입') {
+                modalKind.textContent = `회원${action}`;
+            } else {
+                modalKind.textContent = `${action}`;
 
             }
+            googleButton.textContent = `구글로 ${action}`;
+            naverButton.textContent = `네이버로 ${action}`;
 
-            function mySongFunc() {
-                {% if user.is_authenticated %}
-                window.location.href = "{% url 'carts:my_songs' %}"; // Django URL 리버싱 사용
-                {% else %}
-                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
-                    keyboard: false
-                });
-                loginModal.show();
-                {% endif %}
+        }
+
+        function mySongFunc() {
+            {% if user.is_authenticated %}
+            window.location.href = "{% url 'carts:my_songs' %}"; // Django URL 리버싱 사용
+            {% else %}
+            var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
+                keyboard: false
+            });
+            loginModal.show();
+            {% endif %}
+        }
+
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123) { // F12 Key
+                return false;
             }
-
-            // document.addEventListener('contextmenu', event => event.preventDefault());
-
-            // document.onkeydown = function(e) {
-            //     if (e.keyCode == 123) { // F12 Key
-            //         return false;
-            //     }
-            //     if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { // Ctrl + Shift + I
-            //         return false;
-            //     }
-            //     if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { // Ctrl + Shift + J
-            //         return false;
-            //     }
-            //     if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { // Ctrl + U
-            //         return false;
-            //     }
-            // }
-
-        </script>
-        {% block extra-script %} {% endblock extra-script %}
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { // Ctrl + Shift + I
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { // Ctrl + Shift + J
+                return false;
+            }
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { // Ctrl + U
+                return false;
+            }
+        }
+      </script>
+      {% block extra-script %} {% endblock extra-script %}
     </div>
 
-
     <!--로그인 모달-->
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark ">
-                <div class="modal-header">
-                    <h5 class="modal-title text-white " id="loginModalLabel">로그인</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{% provider_login_url 'google' %}" method='post' class="mb-3 ">
-                        {% csrf_token %}
-                        <button class="btn btn-danger  w-100 ">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="20" fill="currentColor"
-                                class="bi bi-google" viewBox="0 0 16 16">
-                                <path
-                                    d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z" />
-                            </svg>
-                            <span id="google-modal-text">구글로 로그인</span>
-                        </button>
-                    </form>
+    <div
+      class="modal fade"
+      id="loginModal"
+      tabindex="-1"
+      aria-labelledby="loginModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark">
+          <div class="modal-header">
+            <h5 class="modal-title text-white" id="loginModalLabel">로그인</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form
+              action="{% provider_login_url 'google' %}"
+              method="post"
+              class="mb-3"
+            >
+              {% csrf_token %}
+              <button class="btn btn-danger w-100">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="40"
+                  height="20"
+                  fill="currentColor"
+                  class="bi bi-google"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z"
+                  />
+                </svg>
+                <span id="google-modal-text">구글로 로그인</span>
+              </button>
+            </form>
 
-                    <a href="{% provider_login_url 'naver' %}" class=" w-100">
-                        <button class="btn btn-success  w-100">
-                            <svg width="40" height="25" viewBox="-32 0 512 512" version="1.1"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#ffffff"
-                                    d="M16 32C11.8333 32 8.125 33.5833 4.875 36.75C1.625 39.9167 0 43.6667 0 48V464C0 468.333 1.625 472.083 4.875 475.25C8.125 478.417 11.8333 480 16 480H432C436.167 480 439.875 478.417 443.125 475.25C446.375 472.083 448 468.333 448 464V48C448 43.6667 446.375 39.9167 443.125 36.75C439.875 33.5833 436.167 32 432 32H16ZM100.25 144H186.5L261.5 256V144H347.75V368H261.5L186.5 256V368H100.25V144Z">
-                                </path>
-                            </svg>
-                            <span id="naver-modal-text">네이버로 로그인</span>
-                        </button>
-                    </a>
-                </div>
-            </div>
+            <a href="{% provider_login_url 'naver' %}" class="w-100">
+              <button class="btn btn-success w-100">
+                <svg
+                  width="40"
+                  height="25"
+                  viewBox="-32 0 512 512"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill="#ffffff"
+                    d="M16 32C11.8333 32 8.125 33.5833 4.875 36.75C1.625 39.9167 0 43.6667 0 48V464C0 468.333 1.625 472.083 4.875 475.25C8.125 478.417 11.8333 480 16 480H432C436.167 480 439.875 478.417 443.125 475.25C446.375 472.083 448 468.333 448 464V48C448 43.6667 446.375 39.9167 443.125 36.75C439.875 33.5833 436.167 32 432 32H16ZM100.25 144H186.5L261.5 256V144H347.75V368H261.5L186.5 256V368H100.25V144Z"
+                  ></path>
+                </svg>
+                <span id="naver-modal-text">네이버로 로그인</span>
+              </button>
+            </a>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- 가사 모달 -->
-    <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content bg-dark">
-                <div class="modal-header">
-                    <h5 class="modal-title text-white" id="lyricsModalLabel">가사</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-white" id="lyricsContent">
-                    <!-- 여기에 JavaScript를 통해 동적으로 가사 내용을 채울 예정 -->
-                </div>
-            </div>
+    <div
+      class="modal fade"
+      id="lyricsModal"
+      tabindex="-1"
+      aria-labelledby="lyricsModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-dark">
+          <div class="modal-header">
+            <h5 class="modal-title text-white" id="lyricsModalLabel">가사</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body text-white" id="lyricsContent">
+            <!-- 여기에 JavaScript를 통해 동적으로 가사 내용을 채울 예정 -->
+          </div>
         </div>
+      </div>
     </div>
-
-</body>
-
+  </body>
 </html>

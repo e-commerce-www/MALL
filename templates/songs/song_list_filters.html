@@ -3,7 +3,7 @@
 
 {% for song in page_obj %}
 <div class="container p-0 mt-1 px-3">
-    <div class="row justify-content-between align-items-center bg-dark p-3 shadow" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+    <div class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
         {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
             <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
         {% endthumbnail %}
@@ -63,16 +63,18 @@
         <ul class="pagination">
             {% if page_obj.has_other_pages %}
             {% if page_obj.has_previous %}
-            <li class="page-item"><a class="page-link"
-                    href="javascript:showRecent({{ page_obj.previous_page_number }})">&laquo; Previous</a></li>
+            <li class="page-item"><a class="page-link text-bg-dark "
+                    href="?page={{ page_obj.previous_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">&laquo; Previous</a></li>
             {% endif %}
-            {% for num in page_obj.paginator.page_range %}
-            <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link"
-                    href="javascript:showRecent({{ num }})">{{ num }}</a></li>
+
+            {% for num in page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link text-bg-dark "
+                    href="?page={{ num }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">{{ num }}</a></li>
             {% endfor %}
+
             {% if page_obj.has_next %}
-            <li class="page-item"><a class="page-link"
-                    href="javascript:showRecent({{ page_obj.next_page_number }})">Next &raquo;</a></li>
+            <li class="page-item"><a class="page-link text-bg-dark " href="?page={{ page_obj.next_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">Next
+                    &raquo;</a></li>
             {% endif %}
             {% endif %}
         </ul>

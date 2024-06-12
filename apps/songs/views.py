@@ -115,39 +115,71 @@ def song_ranking(request):
         context={"page_obj": page_obj, "page_range": page_range},
     )
 
-def song_genre(request):
-    genre = request.GET.get("genre")
-    if genre == "":
-        songs = Song.objects.all()
-    else:
-        songs = Song.objects.filter(genre=genre)
+# def song_genre(request):
+#     genre = request.GET.get("genre")
+#     if genre == "":
+#         songs = Song.objects.all()
+#     else:
+#         songs = Song.objects.filter(genre=genre)
     
-    paginator = Paginator(songs, 5)
+#     paginator = Paginator(songs, 5)
 
-    page_number = request.GET.get("page", 1)
-    page_obj = paginator.get_page(page_number)
+#     page_number = request.GET.get("page", 1)
+#     page_obj = paginator.get_page(page_number)
 
-    current_page = page_obj.number
-    range_size = 5
-    half_range = range_size // 2
+#     current_page = page_obj.number
+#     range_size = 5
+#     half_range = range_size // 2
 
-    start_page = max(current_page - half_range, 1)
-    end_page = min(start_page + range_size - 1, paginator.num_pages)
+#     start_page = max(current_page - half_range, 1)
+#     end_page = min(start_page + range_size - 1, paginator.num_pages)
 
-    page_range = range(start_page, end_page + 1)
+#     page_range = range(start_page, end_page + 1)
     
-    return render(
-        request,
-        "songs/song_list_filters.html",
-        context={"page_obj": page_obj, "page_range": page_range},
-    )
+#     return render(
+#         request,
+#         "songs/song_list_filters.html",
+#         context={"page_obj": page_obj, "page_range": page_range},
+#     )
     
-def song_tempo(request):
-    tempo = request.GET.get("tempo")
-    if tempo == "":
-        songs = Song.objects.all()
-    else:
-        songs = Song.objects.filter(tempo=tempo)
+# def song_tempo(request):
+#     tempo = request.GET.get("tempo")
+#     if tempo == "":
+#         songs = Song.objects.all()
+#     else:
+#         songs = Song.objects.filter(tempo=tempo)
+
+#     paginator = Paginator(songs, 10)
+
+#     page_number = request.GET.get("page", 1)
+#     page_obj = paginator.get_page(page_number)
+
+#     current_page = page_obj.number
+#     range_size = 5
+#     half_range = range_size // 2
+
+#     start_page = max(current_page - half_range, 1)
+#     end_page = min(start_page + range_size - 1, paginator.num_pages)
+
+#     page_range = range(start_page, end_page + 1)
+    
+#     return render(
+#         request,
+#         "songs/song_list_filters.html",
+#         context={"page_obj": page_obj, "page_range": page_range},
+#     )
+
+def song_filter(request):
+    tempo = request.GET.get("tempo", "")
+    genre = request.GET.get("genre", "")
+
+    songs = Song.objects.all()
+
+    if genre:
+        songs = songs.filter(genre=genre)
+
+    if tempo:
+        songs = songs.filter(tempo=tempo)
 
     paginator = Paginator(songs, 10)
 
@@ -162,9 +194,9 @@ def song_tempo(request):
     end_page = min(start_page + range_size - 1, paginator.num_pages)
 
     page_range = range(start_page, end_page + 1)
-    
+
     return render(
         request,
         "songs/song_list_filters.html",
-        context={"page_obj": page_obj, "page_range": page_range},
+        context={"page_obj": page_obj, "page_range": page_range,},
     )
