@@ -22,3 +22,4 @@ def like_cancel(request):
     like.delete()
     
     return JsonResponse({'success': True})
+

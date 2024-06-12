@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.http import JsonResponse, Http404
 from apps.likes.models import Like
+# from apps.oauth.models import User
 from apps.follows.models import Follows
 from .models import Song
 from .services import ranked_songs
@@ -168,3 +169,7 @@ def song_tempo(request):
         "songs/song_list_filters.html",
         context={"page_obj": page_obj, "page_range": page_range},
     )
+
+
+
+

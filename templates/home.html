@@ -67,18 +67,19 @@
         <div id="display-content" class="text-white "></div>
     </div>
 
+    
     <div class="container ">
         <div class="row">
-            <div class="col-12 mb-4">
+            <div class="col-12 mb-2">
                 <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
-                    <h1 id="chart-title" class="fs-2 text-white m-0 ">신곡</h1>
+                    <h1 id="chart-title" class="fs-2 text-white m-0 ">추천곡</h1>
                 </div>
                 <div class="row mt-3">
-                    {% for song in object %}
-                    <div class="col-sm-6 col-md-3 mb-4" >
+                    {% for song in recommended_songs %}
+                    <div class="col-sm-6 col-md-3 mb-3" >
                         <div class="card text-center bg-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                             <a href="{% url 'songs:song_detail' pk=song.id %}" class="text-decoration-none ">
-                                {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
+                                {% thumbnail song.thumbnail "200x200" crop="center" as thumb %}
                                 <img src="{{ thumb.url }}" class="card-img-top food-image" alt="{{ song.title }}">
                                 <div class="card-body row">
                                     <h5 class="card-title text-white ">{{ song.title }}</h5>
@@ -94,17 +95,19 @@
         </div>
     </div>
     
-
+            
+    
+    
     <div class="container">
         <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
             <h1 id="chart-title" class="fs-2 text-white m-0 ">TOP5</h1>
         </div>
-        <div class="row mt-3 px-4">
-            {% for song, score in ranking_songs %}
+        <div class="row mt-3 px-4 mb-2">
+            {% for song in object %}
             <div class="container-fluid p-0 mt-1">
                 <div class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
-                        <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
+                        <a href="{% url 'songs:song_detail' pk=song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
                     {% endthumbnail %}
                     <div class="col">
                         <span class="text-white" style="margin-right: 2px;">{{ forloop.counter }}</span>
@@ -164,6 +167,34 @@
             {% endfor %}
         </div>
     </div>
+
+    <div class="container ">
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
+                    <h1 id="chart-title" class="fs-2 text-white m-0 ">신곡</h1>
+                </div>
+                <div class="row mt-3">
+                    {% for song in object %}
+                    <div class="col-sm-6 col-md-3 mb-3" >
+                        <div class="card text-center bg-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                            <a href="{% url 'songs:song_detail' pk=song.id %}" class="text-decoration-none ">
+                                {% thumbnail song.thumbnail "200x200" crop="center" as thumb %}
+                                <img src="{{ thumb.url }}" class="card-img-top food-image" alt="{{ song.title }}">
+                                <div class="card-body row">
+                                    <h5 class="card-title text-white ">{{ song.title }}</h5>
+                                    <p class="p-0 m-0 "><a class="text-decoration-none " href="{% url 'sellers:seller_artist' song.seller.user.id %}" style="color:#888;">{{song.seller}}</a></p>
+                                </div>
+                                {% endthumbnail %}
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </div>
 {% endblock %}
 
