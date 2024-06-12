@@ -4,16 +4,33 @@ from apps.songs.models import Song
 from django.http import JsonResponse
 from config.forms import SearchForm
 from apps.songs.services import ranked_songs
+from apps.carts.models import Cart
 import json
 
+def song_recommend(user):
+    # 사용자의 카트에 담긴 노래 가져오기
+    user_cart_songs = Cart.objects.filter(user=user)
+    
+    # 사용자가 카트에 담은 노래의 ID를 가져오기
+    user_song_ids = user_cart_songs.values_list('song_id', flat=True)
+    
+    # 카트에 담긴 노래와 같은 장르의 다른 노래 추천 (예시)
+    recommended_songs = Song.objects.filter(genre__in=Song.objects.filter(id__in=user_song_ids).values_list('genre', flat=True)).exclude(id__in=user_song_ids).order_by('?')[:4]
+    
+    return recommended_songs
+
+
 def home(request):
-    songs = Song.objects.all().order_by('-created_at')[:4] # 노래 가져오기 예시
+    songs = Song.objects.all().order_by('-created_at')[:5] # 노래 가져오기 예시
     ranking_songs = ranked_songs()[:5]
+    user_cart_songs = Cart.objects.filter(user=request.user)
+    recommended_songs = song_recommend(request.user)
     form = SearchForm()
     context = {
         'object':songs,
         'ranking_songs':ranking_songs,
-        'form':form
+        'form':form,
+        'recommended_songs': recommended_songs  # 추천 노래 목록 템플릿에 전달
     }
     return render(request, 'home.html', context)
 

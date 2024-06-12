@@ -68,14 +68,14 @@
     </div>
 
 <!-- 추천곡 업데이트 예정------>
-<!-- <div class="container ">
+<div class="container ">
     <div class="row">
         <div class="col-12 mb-4">
             <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
                 <h1 id="chart-title" class="fs-2 text-white m-0 ">추천곡</h1>
             </div>
             <div class="row mt-3">
-                {% for song in object %}
+                {% for song in recommended_songs %}
                 <div class="col-sm-6 col-md-3 mb-4" >
                     <div class="card text-center bg-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                         <a href="{% url 'songs:song_detail' pk=song.id %}" class="text-decoration-none ">
@@ -93,7 +93,7 @@
             </div>
         </div>
     </div>
-</div> -->
+</div>
 
 
     <div class="container ">
