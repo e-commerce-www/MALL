@@ -1,277 +1,431 @@
 {% extends 'base.html' %}
 {% load thumbnail %}
 {% load session_filters %}
-
 {% block extra-style %}
 <style>
+  .search-form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .input-group {
+    width: 50%;
+  }
+
+  .form-control {
+    padding: 12px 20px;
+    font-size: 16px;
+    /* 입력창 배경색 */
+    color: #333;
+    /* 입력창 텍스트 색상 */
+  }
+
+  .search-result {
+    text-align: center;
+  }
+
+  .search-results {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .search-item {
+    width: 200px;
+    margin: 20px;
+    text-align: center;
+  }
+
+  .search-thumbnail {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5%;
+  }
+
+  @media (max-width: 576px) {
     .search-form {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
+      flex-direction: column;
+      align-items: center;
     }
 
     .input-group {
-        width: 50%;
+      width: 100%; /* 모바일 화면에서 검색 폼을 꽉 채우도록 너비를 100%로 조정 */
+      margin-bottom: 10px; /* 모바일 화면에서 검색 폼 아래 여백 조정 */
     }
 
     .form-control {
-        padding: 12px 20px;
-        font-size: 16px;
-        /* 입력창 배경색 */
-        color: #333;
-        /* 입력창 텍스트 색상 */
+      width: 100%; /* 모바일 화면에서 입력창이 검색 폼의 너비에 맞도록 조정 */
     }
 
-    .search-result {
-        text-align: center;
+    .card {
+      padding: 10px;
     }
 
-    .search-results {
-        list-style-type: none;
-        padding: 0;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+    .btn {
+      font-size: 14px;
+      padding: 8px 12px;
+    }
+    
+    .col-auto.d-flex.align-items-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .search-item {
-        width: 200px;
-        margin: 20px;
-        text-align: center;
+    .col-auto.d-flex.align-items-center button {
+      margin-top: 5px;
+      width: 100%;
+      max-width: 85px;
     }
-
-    .search-thumbnail {
-        width: 150px;
-        height: 150px;
-        object-fit: cover;
-        border-radius: 5%;
-    }
-
+  }
 </style>
 {% endblock extra-style %}
-
-
 {% block content %}
 <div class="container">
-    <!-- 검색창 -->
-    <form id="search-form" class="search-form">
-        {% csrf_token %}
-        <div class="input-group">
-            <input type="text" id="search-input" title="title" class="form-control" placeholder="검색어를 입력하세요. (노래명;아티스트명)" style="border: 1px solid hsla(0, 0%, 100%, .3);">
-            <button type="submit" class="btn btn-outline-light bg-dark  " style="border: 1px solid hsla(0, 0%, 100%, .3)">검색</button>
-        </div>
-    </form>
-
-    <!-- 검색 결과 -->
-    <div class="search-result">
-        <div id="display-content" class="text-white "></div>
+  <!-- 검색창 -->
+  <form id="search-form" class="search-form">
+    {% csrf_token %}
+    <div class="input-group">
+      <input
+        type="text"
+        id="search-input"
+        title="title"
+        class="form-control"
+        placeholder="검색어를 입력하세요. (노래명;아티스트명)"
+        style="border: 1px solid hsla(0, 0%, 100%, 0.3)"
+      />
+      <button
+        type="submit"
+        class="btn btn-outline-light bg-dark search-button"
+        style="border: 1px solid hsla(0, 0%, 100%, 0.3)"
+      >
+        검색
+      </button>
     </div>
+  </form>
 
-    <div class="container ">
-        <div class="row">
-            <div class="col-12 mb-4">
-                <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
-                    <h1 id="chart-title" class="fs-2 text-white m-0 ">신곡</h1>
+  <!-- 검색 결과 -->
+  <div class="search-result">
+    <div id="display-content" class="text-white"></div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12 mb-4">
+        <div
+          style="
+            border-bottom: 1px solid hsla(0, 0%, 100%, 0.3);
+            padding-bottom: 24px;
+          "
+        >
+          <h1 id="chart-title" class="fs-2 text-white m-0">신곡</h1>
+        </div>
+        <div class="row mt-3">
+          {% for song in object %}
+          <div class="col-sm-6 col-md-3 mb-4">
+            <div
+              class="card text-center bg-dark"
+              style="border: 1px solid hsla(0, 0%, 100%, 0.3)"
+            >
+              <a
+                href="{% url 'songs:song_detail' pk=song.id %}"
+                class="text-decoration-none"
+              >
+                {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
+                <img
+                  src="{{ thumb.url }}"
+                  class="card-img-top food-image"
+                  alt="{{ song.title }}"
+                />
+                <div class="card-body row">
+                  <h5 class="card-title text-white">{{ song.title }}</h5>
+                  <p class="p-0 m-0">
+                    <a
+                      class="text-decoration-none"
+                      href="{% url 'sellers:seller_artist' song.seller.user.id %}"
+                      style="color: #888"
+                      >{{ song.seller }}</a
+                    >
+                  </p>
                 </div>
-                <div class="row mt-3">
-                    {% for song in object %}
-                    <div class="col-sm-6 col-md-3 mb-4" >
-                        <div class="card text-center bg-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);">
-                            <a href="{% url 'songs:song_detail' pk=song.id %}" class="text-decoration-none ">
-                                {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
-                                <img src="{{ thumb.url }}" class="card-img-top food-image" alt="{{ song.title }}">
-                                <div class="card-body row">
-                                    <h5 class="card-title text-white ">{{ song.title }}</h5>
-                                    <p class="p-0 m-0 "><a class="text-decoration-none " href="{% url 'sellers:seller_artist' song.seller.user.id %}" style="color:#888;">{{song.seller}}</a></p>
-                                </div>
-                                {% endthumbnail %}
-                            </a>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
+                {% endthumbnail %}
+              </a>
             </div>
+          </div>
+          {% endfor %}
         </div>
+      </div>
     </div>
-    
+  </div>
 
-    <div class="container">
-        <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
-            <h1 id="chart-title" class="fs-2 text-white m-0 ">TOP5</h1>
-        </div>
-        <div class="row mt-3 px-4">
-            {% for song, score in ranking_songs %}
-            <div class="container-fluid p-0 mt-1">
-                <div class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
-                    {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
-                        <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
-                    {% endthumbnail %}
-                    <div class="col">
-                        <span class="text-white" style="margin-right: 2px;">{{ forloop.counter }}</span>
-                        <span class="text-white ">위</span> 
-                        {% if score >= 50 %}
-                            <span style="color: deeppink;">Hot!</span>    
-                        {% elif score < 50 and score >= 20 %}
-                            <span style="color: aquamarine;">Recommended!!!</span>
-                            {% endif %}
-                        <a class="text-decoration-none " href="{% url 'songs:song_detail' song.id %}">
-                            <!-- 노래 세부 내용 페이지로 링크 -->
-                            <h5 class="text-white mb-0">{{ song.title }}</h5>
-                            <small class="fs-6" style="color: #888888;"><a class="text-decoration-none " href="{% url 'sellers:seller_artist' song.seller.user.id %}" style="color:#888;" >{{ song.seller }}</a></small>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <div>
-                            <a class="btn btn-outline-light me-2" style="cursor: pointer;" data-id="{{ song.id }}"
-                                onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
-                        </div>
-                    </div>
-                    <div class="col-auto d-flex align-items-center">
-                        <audio controls class="me-3" controlsList="nodownload">
-                            <source src="{{ song.mp3.url }}" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio>
-
-                        {% if user.is_authenticated %}
-                        <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
-                            {% is_purchased user song.id as purchased %}
-                            {% is_added_to_cart user song.id as added %}
-                            {% if not added %}
-                            <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2"
-                                onclick="addToCart('{{song.id}}');">찜하기</button>
-                            {% else %}
-                            <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2"
-                                onclick="removeFromCart('{{song.id}}');">찜 취소</button>
-                            {% endif %}
-
-                            {% if not purchased %}
-                                <form action="{% url 'payments:payment_pay' song.id %}" onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                                    <button class="btn btn-outline-light me-2" type="submit" onclick="">구매하기</button>
-                                </form>
-                            {% else %}
-                                <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
-                                    <button class="btn btn-outline-light me-2">다운로드</button>
-                                </a>
-                            {% endif %}
-                        {% else %}
-                            <button type="button" class="btn btn-outline-light me-2 " onclick="gotoLogin();">찜하기</button>
-                            <!-- 다운로드 버튼 -->
-                            <button class="btn btn-outline-light me-2" type="submit" onclick="gotoLogin();">구매하기</button>
-                        {% endif %}
-                    </div>
-                </div>
+  <div class="container">
+    <div
+      style="
+        border-bottom: 1px solid hsla(0, 0%, 100%, 0.3);
+        padding-bottom: 24px;
+      "
+    >
+      <h1 id="chart-title" class="fs-2 text-white m-0">TOP5</h1>
+    </div>
+    <div class="row mt-3 px-4">
+      {% for song, score in ranking_songs %}
+      <div class="container-fluid p-0 mt-1">
+        <div
+          class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2"
+          style="border: 1px solid hsla(0, 0%, 100%, 0.3)"
+        >
+          {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
+          <a
+            href="{% url 'songs:song_detail' song.id %}"
+            style="padding: 0; display: inline; width: 70px"
+            ><img
+              src="{{ thumb.url }}"
+              alt=""
+              style="width: 70px; height: 70px; padding: 0"
+          /></a>
+          {% endthumbnail %}
+          <div class="col">
+            <span class="text-white" style="margin-right: 2px"
+              >{{ forloop.counter }}</span
+            >
+            <span class="text-white">위</span>
+            {% if score >= 50 %}
+            <span style="color: deeppink">Hot!</span>
+            {% elif score < 50 and score >= 20 %}
+            <span style="color: aquamarine">Recommended!!!</span>
+            {% endif %}
+            <a
+              class="text-decoration-none"
+              href="{% url 'songs:song_detail' song.id %}"
+            >
+              <!-- 노래 세부 내용 페이지로 링크 -->
+              <h5 class="text-white mb-0">{{ song.title }}</h5>
+              <small class="fs-6" style="color: #888888"
+                ><a
+                  class="text-decoration-none"
+                  href="{% url 'sellers:seller_artist' song.seller.user.id %}"
+                  style="color: #888"
+                  >{{ song.seller }}</a
+                ></small
+              >
+            </a>
+          </div>
+          <div class="col">
+            <div>
+              <a
+                class="btn btn-outline-light me-2"
+                style="cursor: pointer"
+                data-id="{{ song.id }}"
+                onclick="showLyrics(this.getAttribute('data-id'))"
+                >가사 보기</a
+              >
             </div>
-            {% endfor %}
+          </div>
+          <div class="col-auto d-flex align-items-center">
+            <audio controls class="me-3" controlsList="nodownload">
+              <source src="{{ song.mp3.url }}" type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </audio>
+
+            {% if user.is_authenticated %}
+            <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
+            {% is_purchased user song.id as purchased %}
+            {% is_added_to_cart user song.id as added %}
+            {% if not added %}
+            <button
+              id="add-btn-{{song.id}}"
+              type="button"
+              class="btn btn-outline-light me-2"
+              onclick="addToCart('{{song.id}}');"
+            >
+              찜하기
+            </button>
+            {% else %}
+            <button
+              id="remove-btn-{{song.id}}"
+              type="button"
+              class="btn btn-outline-danger me-2"
+              onclick="removeFromCart('{{song.id}}');"
+            >
+              찜 취소
+            </button>
+            {% endif %}
+            {% if not purchased %}
+            <form
+              action="{% url 'payments:payment_pay' song.id %}"
+              onsubmit="return confirmPurchase('{{ song.title|escapejs }}')"
+            >
+              <button
+                class="btn btn-outline-light me-2"
+                type="submit"
+                onclick=""
+              >
+                구매하기
+              </button>
+            </form>
+            {% else %}
+            <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
+              <button class="btn btn-outline-light me-2">다운로드</button>
+            </a>
+            {% endif %}
+            {% else %}
+            <button
+              type="button"
+              class="btn btn-outline-light me-2"
+              onclick="gotoLogin();"
+            >
+              찜하기
+            </button>
+            <!-- 다운로드 버튼 -->
+            <button
+              class="btn btn-outline-light me-2"
+              type="submit"
+              onclick="gotoLogin();"
+            >
+              구매하기
+            </button>
+            {% endif %}
+          </div>
         </div>
+      </div>
+      {% endfor %}
     </div>
+  </div>
 </div>
 {% endblock %}
-
 {% block extra-script %}
 <script>
-    document.getElementById("search-form").addEventListener('submit', function (event) {
-        event.preventDefault();
-        const search_name_value = document.getElementById('search-input').value;
-        const display_content = document.getElementById('display-content');
-        axios({
-            method: 'post',
-            url: '{% url "search" %}',
-            data: JSON.stringify({
-                title: search_name_value
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            }
+  document
+    .getElementById("search-form")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
+      const search_name_value = document.getElementById("search-input").value;
+      const display_content = document.getElementById("display-content");
+      axios({
+        method: "post",
+        url: '{% url "search" %}',
+        data: JSON.stringify({
+          title: search_name_value,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+      })
+        .then((response) => {
+          if (response.data.success === "true") {
+            display_content.innerHTML = response.data.data;
+          } else {
+            display_content.textContent = response.data.message;
+          }
         })
-            .then(response => {
-                if (response.data.success === 'true') {
-                    display_content.innerHTML = response.data.data;
-                } else {
-                    display_content.textContent = response.data.message;
-                }
-            })
-            .catch(error => console.log(error));
+        .catch((error) => console.log(error));
     });
 
+  function showLyrics(songId) {
+    // 예제를 위해 가사를 고정된 값으로 설정, 실제로는 서버에서 가사를 가져오는 코드 필요
+    const lyrics = "여기에 서버에서 가져온 가사를 채웁니다.";
+    axios({
+      method: "get",
+      url: '{% url "songs:song_lyrics" %}',
+      params: {
+        songid: songId,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        // 모달의 가사 내용을 업데이트하고 모달을 표시
+        document.getElementById("lyricsContent").innerText =
+          response.data.success;
 
-    function showLyrics(songId) {
-        // 예제를 위해 가사를 고정된 값으로 설정, 실제로는 서버에서 가사를 가져오는 코드 필요
-        const lyrics = '여기에 서버에서 가져온 가사를 채웁니다.';
-        axios({
-            method: 'get',
-            url: '{% url "songs:song_lyrics" %}',
-            params: {
-                songid: songId
-            },
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-            .then(response => {
-                // 모달의 가사 내용을 업데이트하고 모달을 표시
-                document.getElementById('lyricsContent').innerText = response.data.success;
+        // 모달 창을 표시
+        var lyricsModal = new bootstrap.Modal(
+          document.getElementById("lyricsModal"),
+          {
+            keyboard: true,
+          }
+        );
+        lyricsModal.show();
+      })
+      .catch((error) => console.log(error));
+  }
 
-                // 모달 창을 표시
-                var lyricsModal = new bootstrap.Modal(document.getElementById('lyricsModal'), {
-                    keyboard: true
-                });
-                lyricsModal.show();
-            })
-            .catch(error => console.log(error));
-    }
+  function gotoLogin() {
+    var loginModal = new bootstrap.Modal(
+      document.getElementById("loginModal"),
+      {
+        keyboard: false,
+      }
+    );
+    loginModal.show();
+  }
 
-    function gotoLogin() {
-        var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
-            keyboard: false
-        });
-        loginModal.show();
-    }
+  function addToCart(songId) {
+    const addBtn = document.getElementById("add-btn-" + songId);
+    axios({
+      method: "get",
+      url: '{% url "carts:add_song" %}',
+      params: {
+        songid: songId,
+      },
+    })
+      .then((response) => {
+        addBtn.id = "remove-btn-" + response.data.song_id; // Change the ID
+        addBtn.className = "btn btn-outline-danger me-2"; // Change the classes
+        addBtn.onclick = () => removeFromCart(songId); // Change the onclick event
+        addBtn.textContent = "찜 취소";
+        // alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
+      })
+      .catch((error) => console.log(error));
+  }
 
-    function addToCart(songId) {
+  function removeFromCart(songId) {
+    const removeBtn = document.getElementById("remove-btn-" + songId);
+    axios({
+      method: "get",
+      url: '{% url "carts:remove_song" %}',
+      params: {
+        songid: songId,
+      },
+    })
+      .then((response) => {
+        removeBtn.id = "add-btn-" + response.data.song_id; // Change the ID
+        removeBtn.className = "btn btn-outline-light me-2"; // Change the classes
+        removeBtn.onclick = () => self.addToCart(songId); // Change the onclick event
+        removeBtn.textContent = "찜하기";
+        // alert(response.data.success);
+      })
+      .catch((error) => console.log(error));
+  }
 
-        const addBtn = document.getElementById('add-btn-' + (songId));
-        axios({
-            method: 'get',
-            url: '{% url "carts:add_song" %}',
-            params: {
-                songid: songId
-            }
-        })
-            .then(response => {
-                addBtn.id = 'remove-btn-' + response.data.song_id;  // Change the ID
-                addBtn.className = 'btn btn-outline-danger me-2';  // Change the classes
-                addBtn.onclick = () => removeFromCart(songId);  // Change the onclick event
-                addBtn.textContent = '찜 취소';
-                // alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
-            })
-            .catch(error => console.log(error));
-    }
+  function confirmPurchase(title) {
+    return confirm('정말 "' + title + '"을(를) 구매하시겠습니까?');
+  }
 
-    function removeFromCart(songId) {
-        const removeBtn = document.getElementById('remove-btn-' + (songId));
-        axios({
-            method: 'get',
-            url: '{% url "carts:remove_song" %}',
-            params: {
-                songid: songId
-            }
-        })
-            .then(response => {
-                removeBtn.id = 'add-btn-' + response.data.song_id;  // Change the ID
-                removeBtn.className = 'btn btn-outline-light me-2';  // Change the classes
-                removeBtn.onclick = () => self.addToCart(songId);  // Change the onclick event
-                removeBtn.textContent = '찜하기';
-                // alert(response.data.success);
-            })
-            .catch(error => console.log(error));
-    }
+  // 노래 겹쳐서 들리는것 방지
+  const audios = document.querySelectorAll('audio');
 
-    function confirmPurchase(title) {
-        return confirm('정말 "' + title + '"을(를) 구매하시겠습니까?');
-    }
+  // Function to pause all other audios
+  function pauseAllOthers(currentAudio) {
+    audios.forEach(audio => {
+      if (audio !== currentAudio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    });
+  }
+
+  // Add event listeners to all audio elements
+  audios.forEach(audio => {
+    audio.addEventListener('play', function() {
+      pauseAllOthers(audio);
+    });
+  });
 </script>
-
-
-
 {% endblock extra-script %}

@@ -4,12 +4,13 @@ from django.contrib.auth.decorators import login_required
 from .models import Board
 from apps.likes.models import BoardLike, Bookmark
 from .forms import BoardForm
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count
 from django.conf import settings
-# from .utils import get_disqus_comment_count
 from django.http import JsonResponse
 from django.contrib import messages
+from django.db.models import Q
+from .utils import *
 
 
 # Create your views here.
@@ -39,40 +40,56 @@ def get_disqus_comment_count(disqus_id):
 # 게시글 목록
 def board_list(request):
     sort = request.GET.get('sort','latest')
+    search = request.GET.get('search')
 
+    boards = Board.objects.annotate(
+        likes_count = Count('board_likes')
+    )
+
+    ## 게시글 정렬
     if sort == 'popular':
-        boards = Board.objects.annotate(
-            likes_count=Count('board_likes')
-        ).order_by('-likes_count', '-created_at')
-    
-    else: 
-        boards = Board.objects.annotate(
-            likes_count=Count('board_likes')
-        ).order_by('-created_at')
+        boards = boards.order_by('-likes_count', '-created_at')
+    else:
+        boards = boards.order_by('-created_at')
 
-    # boards = Board.objects.annotate(
-    #     likes_count = Count('board_likes')
-    # ).order_by('-id')
 
+    ## 게시글 검색
+    if search:
+        search_no_spaces = search.replace(' ', '')
+        english_search = get_english_variants(search_no_spaces)
+        
+        search_query = Q(title__icontains=search) | Q(content__icontains=search)
+        english_query = Q(title__icontains=english_search) | Q(content__icontains=english_search)
+        
+        boards = boards.filter(search_query | english_query)
+
+
+    ## 페이지네이션 적용
     paginator = Paginator(boards, 10)
-
     page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
+
+    try:
+        page_obj = paginator.page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+
+
     current_page = page_obj.number
     range_size = 5
     half_range = range_size // 2
 
     start_page = max(current_page - half_range, 1)
     end_page = min(start_page + range_size - 1, paginator.num_pages)
-
     page_range = range(start_page, end_page + 1)
 
-    # 각 게시물의 댓글 수를 가져와서 저장
-    # for board in page_obj:
-    #     disqus_id = f"board-{board.id}"
-    #     board.comments_count = get_disqus_comment_count(disqus_id)
-
-    return render(request, 'boards/board_list.html', context={'page_obj': page_obj, 'page_range': page_range, 'sort':sort})
+    return render(request, 'boards/board_list.html', context={
+        'page_obj': page_obj, 
+        'page_range': page_range, 
+        'sort':sort,
+        'search' : search,
+    })
 
 
 def comment_count(request):
@@ -172,12 +189,4 @@ def bookmarked_boards(request):
 
     page_range = range(start_page, end_page + 1)
 
-    return render(request, 'boards/bookmark_list.html', context={'page_obj': page_obj, 'page_range': page_range}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      )
-
-
-# def board_recent(request):
-#     boards = Board.objects.all().order_by("-created_at")
-#     page_number = request.GET.get("page", 1)
-#     paginator = Paginator(boards, 10)
-#     page_obj = paginator.get_page(page_number)
-#     return render(request, "boards/board_list_recent.html", {"page_obj": page_obj})
+    return render(request, 'boards/bookmark_list.html', context={'page_obj': page_obj, 'page_range': page_range,})
