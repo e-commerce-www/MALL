@@ -195,7 +195,7 @@
                 Kakao.init("javascriptkey");   // 아까 복사해둔 JavaScript 키
                 function sendLink() {
                     Kakao.Link.sendCustom({
-                        templateId: tempId,   // 복사해둔 템플릿 ID
+                        templateId: Tempid,   // 복사해둔 템플릿 ID
                         templateArgs: {
                             thumb: "{{song.thumbnail.url}}",
                             title: "{{song.title}}",
