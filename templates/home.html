@@ -16,9 +16,7 @@
   .form-control {
     padding: 12px 20px;
     font-size: 16px;
-    /* 입력창 배경색 */
     color: #333;
-    /* 입력창 텍스트 색상 */
   }
 
   .search-result {
@@ -53,12 +51,12 @@
     }
 
     .input-group {
-      width: 100%; /* 모바일 화면에서 검색 폼을 꽉 채우도록 너비를 100%로 조정 */
-      margin-bottom: 10px; /* 모바일 화면에서 검색 폼 아래 여백 조정 */
+      width: 100%;
+      margin-bottom: 10px;
     }
 
     .form-control {
-      width: 100%; /* 모바일 화면에서 입력창이 검색 폼의 너비에 맞도록 조정 */
+      width: 100%;
     }
 
     .card {
@@ -69,7 +67,7 @@
       font-size: 14px;
       padding: 8px 12px;
     }
-    
+
     .col-auto.d-flex.align-items-center {
       display: flex;
       flex-direction: column;
@@ -90,19 +88,10 @@
   <form id="search-form" class="search-form">
     {% csrf_token %}
     <div class="input-group">
-      <input
-        type="text"
-        id="search-input"
-        title="title"
-        class="form-control"
-        placeholder="검색어를 입력하세요. (노래명;아티스트명)"
-        style="border: 1px solid hsla(0, 0%, 100%, 0.3)"
-      />
-      <button
-        type="submit"
-        class="btn btn-outline-light bg-dark search-button"
-        style="border: 1px solid hsla(0, 0%, 100%, 0.3)"
-      >
+      <input type="text" id="search-input" title="title" class="form-control" placeholder="검색어를 입력하세요. (노래명;아티스트명)"
+        style="border: 1px solid hsla(0, 0%, 100%, 0.3)" />
+      <button type="submit" class="btn btn-outline-light bg-dark search-button"
+        style="border: 1px solid hsla(0, 0%, 100%, 0.3)">
         검색
       </button>
     </div>
@@ -112,6 +101,7 @@
   <div class="search-result">
     <div id="display-content" class="text-white"></div>
   </div>
+
 
     
     <div class="container ">
@@ -136,6 +126,7 @@
                         </div>
                     </div>
                     {% endfor %}
+
                 </div>
             </div>
         </div>
@@ -181,6 +172,7 @@
                             Your browser does not support the audio element.
                         </audio>
 
+
                         {% if user.is_authenticated %}
                         <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
                             {% is_purchased user song.id as purchased %}
@@ -209,10 +201,12 @@
                         {% endif %}
                     </div>
                 </div>
+
             </div>
             {% endfor %}
         </div>
     </div>
+
 
     <div class="container ">
         <div class="row">
@@ -238,6 +232,7 @@
                     {% endfor %}
                 </div>
             </div>
+
         </div>
     </div>
     
@@ -273,7 +268,6 @@
     });
 
   function showLyrics(songId) {
-    // 예제를 위해 가사를 고정된 값으로 설정, 실제로는 서버에서 가사를 가져오는 코드 필요
     const lyrics = "여기에 서버에서 가져온 가사를 채웁니다.";
     axios({
       method: "get",
@@ -286,29 +280,19 @@
       },
     })
       .then((response) => {
-        // 모달의 가사 내용을 업데이트하고 모달을 표시
-        document.getElementById("lyricsContent").innerText =
-          response.data.success;
-
-        // 모달 창을 표시
-        var lyricsModal = new bootstrap.Modal(
-          document.getElementById("lyricsModal"),
-          {
-            keyboard: true,
-          }
-        );
+        document.getElementById("lyricsContent").innerText = response.data.success;
+        var lyricsModal = new bootstrap.Modal(document.getElementById("lyricsModal"), {
+          keyboard: true,
+        });
         lyricsModal.show();
       })
       .catch((error) => console.log(error));
   }
 
   function gotoLogin() {
-    var loginModal = new bootstrap.Modal(
-      document.getElementById("loginModal"),
-      {
-        keyboard: false,
-      }
-    );
+    var loginModal = new bootstrap.Modal(document.getElementById("loginModal"), {
+      keyboard: false,
+    });
     loginModal.show();
   }
 
@@ -322,11 +306,10 @@
       },
     })
       .then((response) => {
-        addBtn.id = "remove-btn-" + response.data.song_id; // Change the ID
-        addBtn.className = "btn btn-outline-danger me-2"; // Change the classes
-        addBtn.onclick = () => removeFromCart(songId); // Change the onclick event
+        addBtn.id = "remove-btn-" + response.data.song_id;
+        addBtn.className = "btn btn-outline-danger me-2";
+        addBtn.onclick = () => removeFromCart(songId);
         addBtn.textContent = "찜 취소";
-        // alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
       })
       .catch((error) => console.log(error));
   }
@@ -341,11 +324,10 @@
       },
     })
       .then((response) => {
-        removeBtn.id = "add-btn-" + response.data.song_id; // Change the ID
-        removeBtn.className = "btn btn-outline-light me-2"; // Change the classes
-        removeBtn.onclick = () => self.addToCart(songId); // Change the onclick event
+        removeBtn.id = "add-btn-" + response.data.song_id;
+        removeBtn.className = "btn btn-outline-light me-2";
+        removeBtn.onclick = () => addToCart(songId);
         removeBtn.textContent = "찜하기";
-        // alert(response.data.success);
       })
       .catch((error) => console.log(error));
   }
@@ -354,10 +336,8 @@
     return confirm('정말 "' + title + '"을(를) 구매하시겠습니까?');
   }
 
-  // 노래 겹쳐서 들리는것 방지
   const audios = document.querySelectorAll('audio');
 
-  // Function to pause all other audios
   function pauseAllOthers(currentAudio) {
     audios.forEach(audio => {
       if (audio !== currentAudio) {
@@ -367,9 +347,8 @@
     });
   }
 
-  // Add event listeners to all audio elements
   audios.forEach(audio => {
-    audio.addEventListener('play', function() {
+    audio.addEventListener('play', function () {
       pauseAllOthers(audio);
     });
   });
