@@ -47,6 +47,48 @@
         border-radius: 5%;
     }
 
+    @media (max-width: 576px) {
+    .search-form {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .input-group {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .form-control {
+        width: 100%;
+    }
+
+    .card {
+        padding: 10px;
+    }
+
+    .btn {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    .col-auto.d-flex.align-items-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .col-auto.d-flex.align-items-center button {
+        margin-top: 5px;
+        width: 100%;
+        max-width: 100%;
+    }
+    .col-auto.d-flex.align-items-center form,
+    .col-auto.d-flex.align-items-center a,
+    .col-auto.d-flex.align-items-center button {
+        width: 100%;
+        max-width: 100%;
+    }
+    }
 </style>
 {% endblock extra-style %}
 
@@ -68,32 +110,37 @@
     </div>
 
 <!-- 추천곡 업데이트 예정------>
-<div class="container ">
+{% if user.is_authenticated %}
+<div class="container">
     <div class="row">
         <div class="col-12 mb-4">
-            <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
-                <h1 id="chart-title" class="fs-2 text-white m-0 ">추천곡</h1>
+            <div style="border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
+                <h1 id="chart-title" class="fs-2 text-white m-0 ">{{ user.username }}님을 위한 추천곡</h1>
             </div>
             <div class="row mt-3">
-                {% for song in recommended_songs %}
-                <div class="col-sm-6 col-md-3 mb-4" >
-                    <div class="card text-center bg-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);">
-                        <a href="{% url 'songs:song_detail' pk=song.id %}" class="text-decoration-none ">
-                            {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
-                            <img src="{{ thumb.url }}" class="card-img-top food-image" alt="{{ song.title }}">
-                            <div class="card-body row">
-                                <h5 class="card-title text-white ">{{ song.title }}</h5>
-                                <p class="p-0 m-0 "><a class="text-decoration-none " href="{% url 'sellers:seller_artist' song.seller.user.id %}" style="color:#888;">{{song.seller}}</a></p>
+                    {% for song in recommended_songs %}
+                        <div class="col-sm-6 col-md-3 mb-4">
+                            <div class="card text-center bg-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                                <a href="{% url 'songs:song_detail' pk=song.id %}" class="text-decoration-none">
+                                    {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
+                                        <img src="{{ thumb.url }}" class="card-img-top food-image" alt="{{ song.title }}">
+                                        <div class="card-body row">
+                                            <h5 class="card-title text-white">{{ song.title }}</h5>
+                                            <p class="p-0 m-0">
+                                                <a class="text-decoration-none" href="{% url 'sellers:seller_artist' song.seller.id %}" style="color:#888;">{{ song.seller }}</a>
+                                            </p>
+                                        </div>
+                                    {% endthumbnail %}
+                                </a>
                             </div>
-                            {% endthumbnail %}
-                        </a>
-                    </div>
-                </div>
-                {% endfor %}
+                        </div>
+                    {% endfor %}
             </div>
         </div>
     </div>
 </div>
+{% endif %}
+
 
 
     <div class="container ">
