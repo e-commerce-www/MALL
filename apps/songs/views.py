@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.http import JsonResponse, Http404
 from apps.likes.models import Like
+# from apps.oauth.models import User
 from apps.follows.models import Follows
 from .models import Song
 from .services import ranked_songs
@@ -115,60 +116,6 @@ def song_ranking(request):
         context={"page_obj": page_obj, "page_range": page_range},
     )
 
-# def song_genre(request):
-#     genre = request.GET.get("genre")
-#     if genre == "":
-#         songs = Song.objects.all()
-#     else:
-#         songs = Song.objects.filter(genre=genre)
-    
-#     paginator = Paginator(songs, 5)
-
-#     page_number = request.GET.get("page", 1)
-#     page_obj = paginator.get_page(page_number)
-
-#     current_page = page_obj.number
-#     range_size = 5
-#     half_range = range_size // 2
-
-#     start_page = max(current_page - half_range, 1)
-#     end_page = min(start_page + range_size - 1, paginator.num_pages)
-
-#     page_range = range(start_page, end_page + 1)
-    
-#     return render(
-#         request,
-#         "songs/song_list_filters.html",
-#         context={"page_obj": page_obj, "page_range": page_range},
-#     )
-    
-# def song_tempo(request):
-#     tempo = request.GET.get("tempo")
-#     if tempo == "":
-#         songs = Song.objects.all()
-#     else:
-#         songs = Song.objects.filter(tempo=tempo)
-
-#     paginator = Paginator(songs, 10)
-
-#     page_number = request.GET.get("page", 1)
-#     page_obj = paginator.get_page(page_number)
-
-#     current_page = page_obj.number
-#     range_size = 5
-#     half_range = range_size // 2
-
-#     start_page = max(current_page - half_range, 1)
-#     end_page = min(start_page + range_size - 1, paginator.num_pages)
-
-#     page_range = range(start_page, end_page + 1)
-    
-#     return render(
-#         request,
-#         "songs/song_list_filters.html",
-#         context={"page_obj": page_obj, "page_range": page_range},
-#     )
-
 def song_filter(request):
     tempo = request.GET.get("tempo", "")
     genre = request.GET.get("genre", "")
@@ -200,3 +147,7 @@ def song_filter(request):
         "songs/song_list_filters.html",
         context={"page_obj": page_obj, "page_range": page_range,},
     )
+
+
+
+
