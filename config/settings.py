@@ -97,6 +97,7 @@ INSTALLED_APPS = [
     'apps.likes',
     'apps.boards',
     'apps',
+    'rest_framework',
 ]
 
 
