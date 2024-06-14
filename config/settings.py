@@ -49,7 +49,7 @@ ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 
 
-SITE_ID = 14
+SITE_ID = 10
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -212,7 +212,6 @@ DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 # AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
 # AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME')
 # AWS_QUERYSTRING_AUTH = False
-
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
