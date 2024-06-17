@@ -1,50 +1,83 @@
 {% extends 'base.html' %}
 {% load thumbnail %}
 {% load session_filters %}
-
 {% block extra-style %}
 <style>
+  .search-form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .input-group {
+    width: 50%;
+  }
+
+  .form-control {
+    padding: 12px 20px;
+    font-size: 16px;
+    color: #333;
+  }
+
+  .search-result {
+    text-align: center;
+  }
+
+  .search-results {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .search-item {
+    width: 200px;
+    margin: 20px;
+    text-align: center;
+  }
+
+  .search-thumbnail {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5%;
+  }
+
+  @media (max-width: 576px) {
     .search-form {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
+      flex-direction: column;
+      align-items: center;
     }
 
     .input-group {
-        width: 50%;
+      width: 100%;
+      margin-bottom: 10px;
     }
 
     .form-control {
-        padding: 12px 20px;
-        font-size: 16px;
-        /* 입력창 배경색 */
-        color: #333;
-        /* 입력창 텍스트 색상 */
+      width: 100%;
     }
 
-    .search-result {
-        text-align: center;
+    .card {
+      padding: 10px;
     }
 
-    .search-results {
-        list-style-type: none;
-        padding: 0;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+    .btn {
+      font-size: 14px;
+      padding: 8px 12px;
     }
 
-    .search-item {
-        width: 200px;
-        margin: 20px;
-        text-align: center;
+    .col-auto.d-flex.align-items-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .search-thumbnail {
-        width: 150px;
-        height: 150px;
-        object-fit: cover;
-        border-radius: 5%;
+    .col-auto.d-flex.align-items-center button {
+      margin-top: 5px;
+      width: 100%;
+      max-width: 85px;
     }
     /* 이건 추천곡, 신곡 전용 반응형 css입니다. */
     @media (max-width: 576px){
@@ -103,29 +136,26 @@
             margin-top: 5px;
             width: 100%;
             max-width: 185%;
+            }
         }
     }
 
-
 </style>
 {% endblock extra-style %}
-
-
 {% block content %}
 <div class="container">
-    <!-- 검색창 -->
-    <form id="search-form" class="search-form">
-        {% csrf_token %}
-        <div class="input-group">
-            <input type="text" id="search-input" title="title" class="form-control" placeholder="검색어를 입력하세요. (노래명;아티스트명)" style="border: 1px solid hsla(0, 0%, 100%, .3);">
-            <button type="submit" class="btn btn-outline-light bg-dark  " style="border: 1px solid hsla(0, 0%, 100%, .3)">검색</button>
-        </div>
-    </form>
-
-    <!-- 검색 결과 -->
-    <div class="search-result">
-        <div id="display-content" class="text-white "></div>
+<!-- 검색창 -->
+<form id="search-form" class="search-form">
+    {% csrf_token %}
+    <div class="input-group">
+    <input type="text" id="search-input" title="title" class="form-control" placeholder="검색어를 입력하세요. (노래명;아티스트명)"
+        style="border: 1px solid hsla(0, 0%, 100%, 0.3)" />
+    <button type="submit" class="btn btn-outline-light bg-dark search-button"
+        style="border: 1px solid hsla(0, 0%, 100%, 0.3)">
+        검색
+    </button>
     </div>
+</form>
 
 <!-- 추천곡 ------>
 {% if user.is_authenticated %}
@@ -279,7 +309,7 @@
             <div class="container-fluid p-0 mt-1">
                 <div class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
-                        <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
+                        <a href="{% url 'songs:song_detail' pk=song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
                     {% endthumbnail %}
                     <div class="col">
                         <span class="text-white" style="margin-right: 2px;">{{ forloop.counter }}</span>
@@ -306,6 +336,7 @@
                             <source src="{{ song.mp3.url }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
+
 
                         {% if user.is_authenticated %}
                         <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
@@ -335,76 +366,70 @@
                         {% endif %}
                     </div>
                 </div>
+
             </div>
             {% endfor %}
         </div>
     </div>
-</div>
 {% endblock %}
-
 {% block extra-script %}
 <script>
-    document.getElementById("search-form").addEventListener('submit', function (event) {
+document
+    .getElementById("search-form")
+    .addEventListener("submit", function (event) {
         event.preventDefault();
-        const search_name_value = document.getElementById('search-input').value;
-        const display_content = document.getElementById('display-content');
+        const search_name_value = document.getElementById("search-input").value;
+        const display_content = document.getElementById("display-content");
         axios({
-            method: 'post',
+            method: "post",
             url: '{% url "search" %}',
             data: JSON.stringify({
-                title: search_name_value
+            title: search_name_value,
             }),
             headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+        })
+        .then((response) => {
+            if (response.data.success === "true") {
+                display_content.innerHTML = response.data.data;
+            } else {
+                display_content.textContent = response.data.message;
             }
         })
-            .then(response => {
-                if (response.data.success === 'true') {
-                    display_content.innerHTML = response.data.data;
-                } else {
-                    display_content.textContent = response.data.message;
-                }
-            })
-            .catch(error => console.log(error));
+        .catch((error) => console.log(error));
     });
 
-
-    function showLyrics(songId) {
-        // 예제를 위해 가사를 고정된 값으로 설정, 실제로는 서버에서 가사를 가져오는 코드 필요
-        const lyrics = '여기에 서버에서 가져온 가사를 채웁니다.';
-        axios({
-            method: 'get',
-            url: '{% url "songs:song_lyrics" %}',
-            params: {
-                songid: songId
-            },
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-            .then(response => {
-                // 모달의 가사 내용을 업데이트하고 모달을 표시
-                document.getElementById('lyricsContent').innerText = response.data.success;
-
-                // 모달 창을 표시
-                var lyricsModal = new bootstrap.Modal(document.getElementById('lyricsModal'), {
-                    keyboard: true
-                });
-                lyricsModal.show();
-            })
-            .catch(error => console.log(error));
-    }
-
-    function gotoLogin() {
-        var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
-            keyboard: false
+function showLyrics(songId) {
+    const lyrics = "여기에 서버에서 가져온 가사를 채웁니다.";
+    axios({
+    method: "get",
+    url: '{% url "songs:song_lyrics" %}',
+    params: {
+        songid: songId,
+    },
+    headers: {
+        "Content-Type": "application/json",
+    },
+    })
+    .then((response) => {
+        document.getElementById("lyricsContent").innerText = response.data.success;
+        var lyricsModal = new bootstrap.Modal(document.getElementById("lyricsModal"), {
+        keyboard: true,
         });
-        loginModal.show();
+        lyricsModal.show();
+    })
+    .catch((error) => console.log(error));
+}
+
+function gotoLogin() {
+    var loginModal = new bootstrap.Modal(document.getElementById("loginModal"), {
+    keyboard: false,
+    });
+    loginModal.show();
     }
-
     function addToCart(songId) {
-
         const addBtn = document.getElementById('add-btn-' + (songId));
         axios({
             method: 'get',
@@ -445,28 +470,22 @@
     function confirmPurchase(title) {
         return confirm('정말 "' + title + '"을(를) 구매하시겠습니까?');
     }
-    
 
-    // 노래 겹쳐서 들리는것 방지
     const audios = document.querySelectorAll('audio');
 
-        // Function to pause all other audios
-        function pauseAllOthers(currentAudio) {
-            audios.forEach(audio => {
-                if (audio !== currentAudio) {
-                    audio.pause();
-                    audio.currentTime = 0;
-                }
-            });
-        }
-
-        // Add event listeners to all audio elements
+    function pauseAllOthers(currentAudio) {
         audios.forEach(audio => {
-            audio.addEventListener('play', function() {
-                pauseAllOthers(audio);
-            });
+        if (audio !== currentAudio) {
+            audio.pause();
+            audio.currentTime = 0;
+        }
         });
+    }
 
+    audios.forEach(audio => {
+        audio.addEventListener('play', function () {
+        pauseAllOthers(audio);
+        });
+    });
 </script>
-
 {% endblock extra-script %}
