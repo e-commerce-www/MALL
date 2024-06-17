@@ -174,11 +174,11 @@
             </div>
             <div class="mt-3 align-content-center align-items-center  d-flex ">
                 <span style="background-color: black; border-radius: 8px; color: navajowhite; padding: 5px;">장르</span>
-                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">{{ song.display_genre }}</span>
+                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">{{song.display_genre }}</span>
             </div>
             <div class="mt-3  align-content-center align-items-center  d-flex ">
                 <span style="background-color: black; border-radius: 8px; color: navajowhite; padding: 5px;">템포</span>
-                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">{{ song.display_tempo }}</span>
+                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">{{song.display_tempo }}</span>
 
             </div>
             <div class="mt-3 align-content-center align-items-center  d-flex ">
@@ -190,55 +190,59 @@
             </div>
             <br>
             <!-- 카카오톡 공유 -->
-            <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+            <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+                integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
+                crossorigin="anonymous"></script>
             <script>
-                Kakao.init("javascriptkey");   // 아까 복사해둔 JavaScript 키
-                function sendLink() {
-                    Kakao.Link.sendCustom({
-                        templateId: Tempid,   // 복사해둔 템플릿 ID
-                        templateArgs: {
-                            thumb: "{{song.thumbnail.url}}",
-                            title: "{{song.title}}",
-                            seller: "{{song.seller}}",
-                            description: "{{ page.excerpt }}",
-                            url: "{{ page.url }}",
-                        },
-                    });
-                }
+                Kakao.init('{{kakao_javascript_key}}'); // 사용하려는 앱의 JavaScript 키 입력
             </script>
-            <a class="kakao-link-btn" href="javascript:sendLink()">
-                <img src="//developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" />
+
+            <a id="kakaotalk-sharing-btn" class="kakao-link-btn" href="javascript:;">
+                <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                    alt="카카오톡 공유 보내기 버튼" />
             </a>
+
+            <script>
+                Kakao.Share.createCustomButton({
+                    container: '#kakaotalk-sharing-btn',
+                    templateId: 108578,
+                    templateArgs: {
+                        thumb: "{{ song.thumbnail.url }}",
+                        title: "{{ song.title }}",
+                        seller: "{{ song.seller }}",
+                    },
+                });
+            </script>
 
             <!-- 인스타그램 공유 -->
             <a href="https://www.instagram.com/direct/inbox/" class="instagram-btn">
-                    <img src="/uploads/insta.jpeg" alt="Instagram Icon" />
-                </a>
+                <img src="/uploads/insta.jpeg" alt="Instagram Icon" />
+            </a>
 
-                <div id="toast">링크가 복사되었습니다!</div>
+            <div id="toast">링크가 복사되었습니다!</div>
 
-                <script>
-                    // 클래스를 사용하여 요소를 찾기 위해 querySelector 사용
-                    document.querySelector('.instagram-btn').addEventListener('click', function (event) {
-                        event.preventDefault();
+            <script>
+                // 클래스를 사용하여 요소를 찾기 위해 querySelector 사용
+                document.querySelector('.instagram-btn').addEventListener('click', function (event) {
+                    event.preventDefault();
 
-                        const url = window.location.href; // 현재 페이지 URL 가져오기
+                    const url = window.location.href; // 현재 페이지 URL 가져오기
 
-                        // modern API를 사용하여 클립보드에 텍스트 복사
-                        navigator.clipboard.writeText(url).then(function () {
-                            // 사용자에게 복사 완료 메시지 표시
-                            var toast = document.getElementById("toast");
-                            toast.className = "show";
-                            setTimeout(function () {
-                                toast.className = toast.className.replace("show", "");
-                                // 인스타그램 페이지를 새로운 창으로 열기
-                                window.open('https://www.instagram.com/direct/inbox/', '_blank');
-                            }, 1000);
-                        }).catch(function (error) {
-                            console.error('복사를 실패했습니다: ', error);
-                        });
+                    // modern API를 사용하여 클립보드에 텍스트 복사
+                    navigator.clipboard.writeText(url).then(function () {
+                        // 사용자에게 복사 완료 메시지 표시
+                        var toast = document.getElementById("toast");
+                        toast.className = "show";
+                        setTimeout(function () {
+                            toast.className = toast.className.replace("show", "");
+                            // 인스타그램 페이지를 새로운 창으로 열기
+                            window.open('https://www.instagram.com/direct/inbox/', '_blank');
+                        }, 1000);
+                    }).catch(function (error) {
+                        console.error('복사를 실패했습니다: ', error);
                     });
-                </script>
+                });
+            </script>
             <!-- 인스타그램 공유 -->
 
 
