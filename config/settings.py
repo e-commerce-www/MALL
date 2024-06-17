@@ -49,7 +49,7 @@ ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 
 
-SITE_ID = 10
+SITE_ID = 11
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -97,7 +97,6 @@ INSTALLED_APPS = [
     'apps.likes',
     'apps.boards',
     'apps',
-    'rest_framework',
 ]
 
 
