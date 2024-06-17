@@ -65,6 +65,7 @@ def song_detail(request, pk):
         "disqus_id": disqus_id,
         "disqus_url": disqus_url,
         "disqus_title": disqus_title,
+        'kakao_javascript_key': settings.KAKAO_JS_KEY,
     }
 
     return render(request, "songs/song_detail.html", context=context)
