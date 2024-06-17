@@ -36,4 +36,5 @@ def get_english_variants(text):
     result = translator.translate(text, src='ko', dest='en').text
     result_no_spaces = result.replace(' ', '')  # 띄어쓰기 제거
     cache.set(cache_key, result_no_spaces, timeout=60*60*24)  # 24시간 동안 캐시
+
     return result_no_spaces

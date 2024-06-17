@@ -47,39 +47,53 @@
         </ul>
     </div>
 
-<div class = "followingDetail mt-5">
-    <table class = "container-fluid">
-        <thead>
-            <tr style="color: #bcbcbc;">
-                <th scope="col">No.</th>
-                <th scope="col">뮤지션 정보</th>
-                <th scope="col">최근 활동</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for follow in page_obj %}
-            <tr>
-                <td>&nbsp;</td>
-            </tr>
-            <tr id="data-{{follow.following.id}}">
-                <td class = "text-white">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
-                <td><a href = "{% url 'follows:following' pk=follow.id %}" style="color: aquamarine;">{{ follow.following.username }}</a></td>
-                <td class = "text-white">
-                    {% if follow.recent_songs %}
-                        <a class="text-decoration-none text-bg-info" href="{% url 'songs:song_detail' follow.recent_songs.0.id %}">{{follow.recent_songs.0.title}}</a>을 등록하셨습니다.
-                    {% else %}
-                        최근 활동 없음.
-                    {% endif %}
-                </td>
-                <td>
-                    <a  class="btn btn-danger me-2" onclick="unfollowArtist('{{follow.following.id}}')">팔로우 취소</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+    <div class = "row">
+        <div class = "col-md-8 following-detail">
+            <table class = "container-fluid">
+                <thead>
+                    <tr style="color: #bcbcbc;">
+                        <th scope="col">No.</th>
+                        <th scope="col">뮤지션 정보</th>
+                        <th scope="col">최근 활동</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for follow in page_obj %}
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr id="data-{{follow.following.id}}">
+                        <td class = "text-white">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
+                        <td><a href = "{% url 'follows:following' pk=follow.id %}" style="color: aquamarine;">{{ follow.following.username }}</a></td>
+                        <td class = "text-white">
+                            {% if follow.recent_songs %}
+                                <a class="text-decoration-none text-bg-info" href="{% url 'songs:song_detail' follow.recent_songs.0.id %}">{{follow.recent_songs.0.title}}</a>을 등록하셨습니다.
+                            {% else %}
+                                최근 활동 없음.
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a  class="btn btn-danger me-2" onclick="unfollowArtist('{{follow.following.id}}')">팔로우 취소</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class = "col-md-4 recommendations">
+            <h2>Recommended follow</h2>
+            {% if recommendations %}
+                <ul>
+                    {% for user in recommendations %}
+                    <li class = "text-white">{{ user.username }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No recommendations available.</p>
+            {% endif %}
+        </div>
+    </div>
 
 <div class="container mt-3">
     <div class="d-flex justify-content-center">

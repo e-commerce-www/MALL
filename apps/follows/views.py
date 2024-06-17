@@ -31,6 +31,7 @@ def follow_song(request, pk):
     end_page = min(start_page + range_size - 1, paginator.num_pages)
 
     page_range = range(start_page, end_page + 1)
+    
 
     context = {
         "page_obj": page_obj,
