@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.http import JsonResponse, Http404
 from apps.likes.models import Like
+# from apps.oauth.models import User
 from apps.follows.models import Follows
 from .models import Song
 from .services import ranked_songs
@@ -65,6 +66,7 @@ def song_detail(request, pk):
         "disqus_id": disqus_id,
         "disqus_url": disqus_url,
         "disqus_title": disqus_title,
+        'kakao_javascript_key': settings.KAKAO_JS_KEY,
     }
 
     return render(request, "songs/song_detail.html", context=context)
@@ -115,39 +117,17 @@ def song_ranking(request):
         context={"page_obj": page_obj, "page_range": page_range},
     )
 
-def song_genre(request):
-    genre = request.GET.get("genre")
-    if genre == "":
-        songs = Song.objects.all()
-    else:
-        songs = Song.objects.filter(genre=genre)
-    
-    paginator = Paginator(songs, 5)
+def song_filter(request):
+    tempo = request.GET.get("tempo", "")
+    genre = request.GET.get("genre", "")
 
-    page_number = request.GET.get("page", 1)
-    page_obj = paginator.get_page(page_number)
+    songs = Song.objects.all()
 
-    current_page = page_obj.number
-    range_size = 5
-    half_range = range_size // 2
+    if genre:
+        songs = songs.filter(genre=genre)
 
-    start_page = max(current_page - half_range, 1)
-    end_page = min(start_page + range_size - 1, paginator.num_pages)
-
-    page_range = range(start_page, end_page + 1)
-    
-    return render(
-        request,
-        "songs/song_list_filters.html",
-        context={"page_obj": page_obj, "page_range": page_range},
-    )
-    
-def song_tempo(request):
-    tempo = request.GET.get("tempo")
-    if tempo == "":
-        songs = Song.objects.all()
-    else:
-        songs = Song.objects.filter(tempo=tempo)
+    if tempo:
+        songs = songs.filter(tempo=tempo)
 
     paginator = Paginator(songs, 10)
 
@@ -162,10 +142,13 @@ def song_tempo(request):
     end_page = min(start_page + range_size - 1, paginator.num_pages)
 
     page_range = range(start_page, end_page + 1)
-    
+
     return render(
         request,
         "songs/song_list_filters.html",
-        context={"page_obj": page_obj, "page_range": page_range},
+        context={"page_obj": page_obj, "page_range": page_range,},
     )
+
+
+
 

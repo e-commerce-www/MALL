@@ -8,7 +8,15 @@
     justify-content: center;
     margin-bottom: 20px;
   }
+  .search-form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
 
+  .input-group {
+    width: 50%;
+  }
   .input-group {
     width: 50%;
   }
@@ -18,7 +26,15 @@
     font-size: 16px;
     color: #333;
   }
+  .form-control {
+    padding: 12px 20px;
+    font-size: 16px;
+    color: #333;
+  }
 
+  .search-result {
+    text-align: center;
+  }
   .search-result {
     text-align: center;
   }
@@ -30,7 +46,19 @@
     flex-wrap: wrap;
     justify-content: center;
   }
+  .search-results {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
+  .search-item {
+    width: 200px;
+    margin: 20px;
+    text-align: center;
+  }
   .search-item {
     width: 200px;
     margin: 20px;
@@ -140,6 +168,42 @@
         }
     }
 
+  @media (max-width: 576px) {
+    .search-form {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .input-group {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .form-control {
+      width: 100%;
+    }
+
+    .card {
+      padding: 10px;
+    }
+
+    .btn {
+      font-size: 14px;
+      padding: 8px 12px;
+    }
+
+    .col-auto.d-flex.align-items-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .col-auto.d-flex.align-items-center button {
+      margin-top: 5px;
+      width: 100%;
+      max-width: 85px;
+    }
+  }
 </style>
 {% endblock extra-style %}
 {% block content %}
@@ -310,6 +374,7 @@
                 <div class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
                         <a href="{% url 'songs:song_detail' pk=song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
+                        <a href="{% url 'songs:song_detail' pk=song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
                     {% endthumbnail %}
                     <div class="col">
                         <span class="text-white" style="margin-right: 2px;">{{ forloop.counter }}</span>
@@ -336,6 +401,7 @@
                             <source src="{{ song.mp3.url }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
+
 
 
                         {% if user.is_authenticated %}
@@ -366,6 +432,7 @@
                         {% endif %}
                     </div>
                 </div>
+
 
             </div>
             {% endfor %}

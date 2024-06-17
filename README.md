@@ -62,13 +62,13 @@ The "music value platform" is an online marketplace that enables indie musicians
 - **TOP5**
   - Shows the top five ranked tracks based on a time-weighted ranking algorithm.
 
-    Time-weighted ranking algorithm formula:
-    
-    ![image](https://github.com/e-commerce-www/MALL/assets/158125247/1e4a7315-fe24-40a7-a99c-c49d22511522)
+    Time-Weighted ranking algorithm formula:
+
+    $$L\\\_decayed = \sum_{i=1}^{n} 0.5^{\frac{t_{now} - t_i}{T}}$$
+  
+    [Go to Time-Weighted Ranking Algorithm Formula Wiki...](https://github.com/e-commerce-www/MALL/wiki/Time%E2%80%90weighted-ranking-algorithm-formula)
+
   - The ranking is determined by the score calculated using the time-weighted ranking algorithm formula.
-
-    
-
 
 **6. Chart Screen (Recent/Popular/Genre/Tempo/Search)**
 - Accessed via '**Music**' in the NavBar.
