@@ -6,7 +6,7 @@ from config.forms import SearchForm
 from apps.songs.services import ranked_songs
 from apps.carts.models import Cart
 import json
-from django.contrib.auth.decorators import login_required
+
 
 def song_recommend(user):
     # 유저의 찜한목록을 가져온다
