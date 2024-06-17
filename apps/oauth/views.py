@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from .forms import UserEditForm
 from django.core.paginator import Paginator
 from django.db.models import Count
+from apps.follows.recommend import prepare_follow_matrix, train_knn_model, recommend_follows_knn
 
 from apps.orders.models import Order
 from apps.follows.models import Follows
@@ -12,6 +14,7 @@ from apps.songs.models import Song
 from apps.sellers.models import Seller
 from apps.payments.models import Payment
 
+User = get_user_model()
 
 @login_required
 def profile(request):
@@ -100,7 +103,7 @@ def sales(request):
 
 
 @login_required
-def follower_recent(request):
+def follower(request):
     myfollow = Follows.objects.filter(follower=request.user)
     
 
@@ -122,10 +125,25 @@ def follower_recent(request):
     end_page = min(start_page + range_size - 1, paginator.num_pages)
 
     page_range = range(start_page, end_page + 1)
+
+
+    # 팔로우 추천
+    user_id = request.user.id
+    user_follow_matrix, user_ids = prepare_follow_matrix()
+    knn = train_knn_model(user_follow_matrix)
+    recommendations = recommend_follows_knn(user_id, knn, user_follow_matrix, user_ids, top_n=5)
+ 
+    print("추천된 사용자 ID (view) : ", recommendations) # 확인 위한 디버깅 출력
+
+    recommended_users = User.objects.filter(id__in=recommendations)
+    recommendations_data = [{'id': user.id, 'username':user.username} for user in recommended_users]
+
+    print("추천된 사용자 : ", recommendations_data) # 확인 위한 디버깅출력
     
     context={
         "page_obj": page_obj, 
         "page_range": page_range,
+        "recommendations" : recommendations_data,
     }
 
     return render(request, 'accounts/following.html', context)
