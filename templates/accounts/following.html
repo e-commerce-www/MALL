@@ -30,6 +30,16 @@
         color: white;
     }
 
+    .list-group-item {
+    background-color: black;
+    border: none;
+    }
+
+    .list-group-item:last-child {
+        border-bottom: none;
+    }
+
+
 </style>
 
 {% endblock extra-style %}
@@ -81,18 +91,22 @@
                 </tbody>
             </table>
         </div>
-        <div class = "col-md-4 recommendations">
-            <h2>Recommended follow</h2>
+        <div class="col-md-4 recommendations">
+            <h3 class="text-white">Recommended Follow</h3>
             {% if recommendations %}
-                <ul>
+                <ul class="list-group">
                     {% for user in recommendations %}
-                    <li class = "text-white">{{ user.username }}</li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-white">{{ user.username }}</span>
+                        <button class="btn btn-sm btn-primary" onclick="followUser({{ user.id }})">Follow</button>
+                    </li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>No recommendations available.</p>
+                <p class="text-white">No recommendations available.</p>
             {% endif %}
         </div>
+        
     </div>
 
 <div class="container mt-3">
@@ -138,5 +152,30 @@
             })
             .catch(error => console.log(error));
     }
+
+    function followUser(userId) {
+        axios.get('{% url "follows:follow" %}', {
+            params: {
+                userid: userId
+            },
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(function (response) {
+            if (response.data.success) {
+                alert('팔로우 추가되었습니다');
+                location.reload();  // 페이지 새로고침
+            } else {
+                alert('Error: ' + response.data.error);
+            }
+        })
+        .catch(function (error) {
+            alert('An error occurred: ' + error);
+        });
+    }
+
 </script>
+
+
 {% endblock extra-script %}
