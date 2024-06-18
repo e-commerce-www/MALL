@@ -31,6 +31,48 @@
         color: white;
     }
 
+    @media (max-width: 576px) {
+        .remenu {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid hsla(0, 0%, 100%, .3);
+            border-bottom: 1px solid hsla(0, 0%, 100%, .3);
+            text-align: left;
+        }
+
+        .remenu a {
+            text-decoration: none;
+            color: #bcbcbc;
+            font-weight: 500;
+        }
+
+        .remenu a:hover {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        .remenu li {
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        .left-section,
+        .right-top,
+        .right-bottom {
+            padding: 20px;
+        }
+
+        .left-section h2,
+        .right-top h2,
+        .right-bottom h2 {
+            margin-bottom: 20px;
+        }
+        
+        .purchaseDetail {
+            font-size: small;
+        }
+    }
 </style>
 
 {% endblock extra-style %}
@@ -64,7 +106,7 @@
             {% for order in page_obj %}
                 <tr>
                     <td class = "text-white">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
-                    <td class = "text-white"><a href="{% url 'payments:payment_detail' order.id %}" style="color: aquamarine;">{{ order.created_at|date:"Y년 n월 j일 g:i A" }}</a></td>
+                    <td class = "text-white"><a href="{% url 'payments:payment_detail' order.id %}" style="color: aquamarine;">{{ order.created_at|date:"Y n월 j일" }}</a></td>
                     <td class = "text-white">{{ order.song.title }}</td>
                     <td class = "text-white">{{ order.song.seller }}</td>
                     <td class = "text-white">{{ order.amount|intcomma  }}원</td>
