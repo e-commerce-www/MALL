@@ -11,6 +11,7 @@
         padding-top: 10px;
         border-top: 1px solid hsla(0, 0%, 100%, .3);
         border-bottom: 1px solid hsla(0, 0%, 100%, .3);
+        text-align: left;
     }
 
     .remenu a {
@@ -26,14 +27,13 @@
     }
 
     .remenu li {
-        display: inline;
-        margin: 0 20px;
+        display: inline-block;
+        margin: 0 10px;
     }
 
     .left-section,
     .right-top,
     .right-bottom {
-        /* border: 1px solid #ccc; */
         padding: 20px;
     }
 
@@ -51,18 +51,72 @@
     }
 
     .file-input {
-        width: 50%;
-        /* 입력 필드의 길이를 조절 */
+        width: 100%;
     }
 
     .active-link {
         color: white;
     }
 
-
     .remenu a.active {
         color: white;
     }
+
+    @media (max-width: 576px) {
+        .remenu {
+            text-align: center;
+        }
+
+        .remenu a:hover {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        .remenu li {
+            display: flex;
+            margin: 0px 0;
+        }
+
+        .left-section,
+        .right-top,
+        .right-bottom {
+            padding: 10px;
+        }
+
+        .profile-img {
+            width: 100%;
+            max-width: 50px;
+            height: auto;
+            border-radius: 50%;
+        }
+
+        .file-input {
+            width: 100%;
+        }
+
+        .left-section h2,
+        .right-top h2,
+        .right-bottom h2 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .btn {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .row > div {
+            padding: 5px;
+        }
+
+        .flip-items li img {
+            width: 100%;
+            max-width: 150px;
+        }
+    }
+
 </style>
 <link rel="stylesheet" href="{% static 'css/jquery.flipster.min.css' %}">
 {% endblock extra-style %}
@@ -115,7 +169,7 @@
                         <a class="text-bg-dark fs-4 text-decoration-none rounded-2 align-content-center " href="{% url 'carts:my_songs' %}" style="height: 64px; display: block; margin-right: 5px; padding: 10px; border: 1px solid hsla(0, 0%, 100%, .3);">찜한 음악</a>
                     </div>
                     <div class="col-md-6 text-center " style="padding-left: 5px; padding-right: 15px;">
-                        <a class="text-bg-dark fs-4 text-decoration-none rounded-2 align-content-center " href="{% url 'sellers:seller_apply' %}" style="height: 64px; display: block; margin-left: 5px; padding: 10px; border: 1px solid hsla(0, 0%, 100%, .3);">판매자 신청하러 가기</a>
+                        <a class="text-bg-dark fs-4 text-decoration-none rounded-2 align-content-center " href="{% url 'sellers:seller_apply' %}" style="height: 64px; display: block; margin-left: 5px; padding: 10px; border: 1px solid hsla(0, 0%, 100%, .3);">판매자 신청</a>
                     </div>
                 </div>
             </div>
