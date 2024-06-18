@@ -5,11 +5,30 @@ from apps.orders.models import Order
 from django.http import JsonResponse
 from config.forms import SearchForm
 from apps.songs.services import ranked_songs
+from apps.carts.models import Cart
 import json
 from django.contrib.auth.decorators import login_required
 import random
 
 
+# def song_recommend(user):
+#     # 유저의 찜한목록을 가져온다
+#     user_cart_songs = Cart.objects.filter(user=user)
+    
+#     # 유저의 찜한 목록에서 음악의 ID를 가져온다
+#     user_song_ids = user_cart_songs.values_list('song_id', flat=True)
+    
+#     # 카트에 담긴 음악의 장르들을 가져오고, 그 장르의 음악들을 뽑은 후, 유저의 찜한 음악 목록에 이미 있는 곡들은 제외한 후, 랜덤으로 4개의 곡을 표시함
+#     # 추가 하고싶은 로직은 여기에 넣으면 됩니다.
+#     recommended_songs = Song.objects.filter(genre__in=Song.objects.filter(id__in=user_song_ids).values_list('genre', flat=True)).exclude(id__in=user_song_ids).order_by('?')[:4]
+    
+#     return recommended_songs
+
+
+# def home(request):
+#     songs = Song.objects.all().order_by('-created_at')[:5] # 노래 가져오기 예시
+#     ranking_songs = ranked_songs()[:5]
+#     recommended_songs = song_recommend(request.user) if request.user.is_authenticated else None
 
 
 
@@ -78,11 +97,16 @@ def home(request):
     recommended_songs = get_recommended_songs(request.user)
 
     context = {
+        # 'object':songs,
+        # 'ranking_songs':ranking_songs,
+        # 'form':form,
         'object': songs,
         'ranking_songs': ranking_songs,
         'form': form,
         'recommended_songs': recommended_songs,
     }
+    if recommended_songs:
+        context['recommended_songs'] = recommended_songs
     return render(request, 'home.html', context)
 
 
