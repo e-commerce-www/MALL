@@ -5,9 +5,16 @@ from apps.carts.models import Cart
 
 register = template.Library()
 
+# @register.filter
+# def get_song(song_id):
+#     return Song.objects.get(id=song_id)
+
 @register.filter
 def get_song(song_id):
-    return Song.objects.get(id=song_id)
+    try:
+        return Song.objects.get(id=song_id)
+    except Song.DoesNotExist:
+        return None
 
 @register.simple_tag
 def is_purchased(user, song_id):
