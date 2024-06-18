@@ -30,6 +30,16 @@
         color: white;
     }
 
+    .list-group-item {
+    background-color: black;
+    border: none;
+    }
+
+    .list-group-item:last-child {
+        border-bottom: none;
+    }
+
+
 </style>
 
 {% endblock extra-style %}
@@ -81,18 +91,23 @@
                 </tbody>
             </table>
         </div>
-        <div class = "col-md-4 recommendations">
-            <h2>Recommended follow</h2>
+        <div class="col-md-4 recommendations">
+            <h3 class="text-white">Recommended Follow</h3>
             {% if recommendations %}
-                <ul>
+                <ul class="list-group">
                     {% for user in recommendations %}
-                    <li class = "text-white">{{ user.username }}</li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-white">{{ user.username }}</span>
+                        <button class="btn btn-sm btn-primary" onclick="followUser({{ user.id }})">Follow</button>
+                    </li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>No recommendations available.</p>
+                <p class="text-white">No recommendations available.</p>
+                <p class="text-white">모든 추천 팔로우를 이미 팔로우하고 있거나<br>팔로우하고 있는 사용자가 너무 적습니다</p>
             {% endif %}
         </div>
+        
     </div>
 
 <div class="container mt-3">
@@ -101,15 +116,16 @@
             <ul class="pagination">
             {% if page_obj.has_other_pages %}
                 {% if page_obj.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
+                <li class="page-item"><a class="page-link text-bg-dark" href="?page={{ page_obj.previous_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">&laquo; Previous</a></li>
                 {% endif %}
     
                 {% for num in page_range %}
-                    <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link text-bg-dark" 
+                        href="?page={{ num }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">{{ num }}</a></li>
                 {% endfor %}
     
                 {% if page_obj.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a></li>
+                <li class="page-item"><a class="page-link text-bg-dark" href="?page={{ page_obj.next_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">Next &raquo;</a></li>
                 {% endif %}
             {% endif %}
             </ul>
@@ -138,5 +154,30 @@
             })
             .catch(error => console.log(error));
     }
+
+    function followUser(userId) {
+        axios.get('{% url "follows:follow" %}', {
+            params: {
+                userid: userId
+            },
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(function (response) {
+            if (response.data.success) {
+                alert('팔로우 추가되었습니다');
+                location.reload();  // 페이지 새로고침
+            } else {
+                alert('Error: ' + response.data.error);
+            }
+        })
+        .catch(function (error) {
+            alert('An error occurred: ' + error);
+        });
+    }
+
 </script>
+
+
 {% endblock extra-script %}
