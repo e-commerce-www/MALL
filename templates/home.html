@@ -65,32 +65,18 @@
         text-align: center;
     }
 
-  .search-thumbnail {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 5%;
-  }
-  .button-container {
-    display:flex;
-    margin-top:5px;
-  }
-  .cartbutton-custom-style, .buybutton-custom-style {
-    white-space: nowrap;
-    display: flex;
-    justify-content: center;
-    align-items: center; /* 가운데 정렬 */
-    font-size: 1em;
-    margin-right: 10px;
-    flex: 1 1 auto; /* flex-grow, flex-shrink, flex-basis 설정 */
-    max-width: 200px; /* 최대 너비 설정 */
-    height: 50px; /* 동일한 높이 설정 */
-}
-  @media (max-width: 576px) {
-    .search-form {
-      flex-direction: column;
-      align-items: center;
+    .search-thumbnail {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 5%;
     }
+
+    @media (max-width: 576px) {
+        .search-form {
+        flex-direction: column;
+        align-items: center;
+        }
 
         .input-group {
         width: 100%;
@@ -180,21 +166,6 @@
             max-width: 185%;
             }
         }
-        .button-container {
-        margin-top: 5px;
-        flex: 1;
-        flex-wrap: wrap; /* 필요에 따라 버튼이 넘칠 경우 줄 바꿈 */
-    }
-    .cartbutton-custom-style,.buybutton-custom-style {
-        white-space: nowrap;
-        display: inline-flex;
-        justify-content: center;
-        align-items: left;
-        font-size: 1em;
-        margin-right: 10px;
-        width: auto;
-   
-    }
     }
 
     @media (max-width: 576px) {
@@ -424,8 +395,10 @@
                             <source src="{{ song.mp3.url }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
-                        <div class="button-container d-flex justify-content-left">
-                            {% if user.is_authenticated %}
+
+
+
+                        {% if user.is_authenticated %}
                         <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
                             {% is_purchased user song.id as purchased %}
                             {% is_added_to_cart user song.id as added %}

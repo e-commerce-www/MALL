@@ -106,16 +106,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for follow in page_obj %}
+                    {% for follow, recent_songs in page_obj %}
                     <tr>
                         <td>&nbsp;</td>
                     </tr>
                     <tr id="data-{{follow.following.id}}">
                         <td class = "text-white">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
-                        <td><a href = "{% url 'follows:following' pk=follow.id %}" style="color: aquamarine;">{{ follow.following.username }}</a></td>
+                        <td><a href = "{% url 'follows:following' pk=follow.following.id %}" style="color: aquamarine;">{{ follow.following.username }}</a></td>
                         <td class = "text-white">
-                            {% if follow.recent_songs %}
-                                <a class="text-decoration-none text-bg-info" href="{% url 'songs:song_detail' follow.recent_songs.0.id %}">{{follow.recent_songs.0.title}}</a>을 등록하셨습니다.
+                            {% if recent_songs %}
+                                <a class="text-decoration-none text-bg-info" href="{% url 'songs:song_detail' recent_songs.0.id %}">{{recent_songs.0.title}}</a>을 등록하셨습니다.
                             {% else %}
                                 최근 활동 없음.
                             {% endif %}
