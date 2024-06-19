@@ -389,6 +389,7 @@
                             <small class="fs-6" style="color: #888888;"><a class="text-decoration-none " href="{% url 'sellers:seller_artist' song.seller.user.id %}" style="color:#888;" >{{ song.seller }}</a></small>
                         </a>
                     </div>
+
                     <div class="col-auto d-flex align-items-center">
                         <audio controls class="me-3" controlsList="nodownload">
                             <source src="{{ song.mp3.url }}" type="audio/mpeg">
@@ -402,34 +403,35 @@
                             {% is_purchased user song.id as purchased %}
                             {% is_added_to_cart user song.id as added %}
                             {% if not added %}
-                            <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2"
+
+                            <button id="add-btn-{{song.id}}" type="button" class="btn btn me-2"
                                 onclick="addToCart('{{song.id}}');">🤍</button>
                             <!-- 가사 버튼 -->
-                            <a class="btn btn-outline-light me-2" style="cursor: pointer;" data-id="{{ song.id }}"
+                            <a class="btn btn me-2" style="cursor: pointer;" data-id="{{ song.id }}"
                             onclick="showLyrics('{{ song.id }}')">📃</a>
                             {% else %}
-                            <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2"
+                            <button id="remove-btn-{{song.id}}" type="button" class="btn btn me-2"
                                 onclick="removeFromCart('{{song.id}}');">❤️</button>
                             <!-- 가사 버튼 -->
-                            <a class="btn btn-outline-light me-2" style="cursor: pointer;" data-id="{{ song.id }}"
+                            <a class="btn btn me-2" style="cursor: pointer;" data-id="{{ song.id }}"
                             onclick="showLyrics('{{ song.id }}')">📃</a>
                             {% endif %}
 
                             {% if not purchased %}
                                 <form action="{% url 'payments:payment_pay' song.id %}" onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                                    <button class="btn btn-outline-light me-2" type="submit" onclick="">💳</button>
+                                    <button class="btn btn me-2" type="submit" onclick="">💳</button>
                                 </form>
                             {% else %}
                                 <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
-                                    <button class="btn btn-outline-light me-2">💾</button>
+                                    <button class="btn btn me-2">💾</button>
                                 </a>
                             {% endif %}
                         {% else %}
-                            <button type="button" class="btn btn-outline-light me-2 " onclick="gotoLogin();">🤍</button>
+                            <button type="button" class="btn btn me-2 " onclick="gotoLogin();">🤍</button>
                             <!-- 다운로드 버튼 -->
-                            <button class="btn btn-outline-light me-2" type="submit" onclick="gotoLogin();">💳</button>
+                            <button class="btn btn me-2" type="submit" onclick="gotoLogin();">💳</button>
                             <!-- 가사 버튼 -->
-                            <a class="btn btn-outline-light me-2" style="cursor: pointer;" data-id="{{ song.id }}"
+                            <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}"
                             onclick="showLyrics('{{ song.id }}')">📃</a>
                             {% endif %}
                     </div>
@@ -509,14 +511,14 @@ function gotoLogin() {
         })
             .then(response => {
                 addBtn.id = 'remove-btn-' + response.data.song_id;  // Change the ID
-                addBtn.className = 'btn btn-outline-danger me-2';  // Change the classes
+                addBtn.className = 'btn btn me-2';  // Change the classes
                 addBtn.onclick = () => removeFromCart(songId);  // Change the onclick event
                 addBtn.textContent = '❤️';
                 // alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
             })
             .catch(error => console.log(error));
     }
-
+ 
     function removeFromCart(songId) {
         const removeBtn = document.getElementById('remove-btn-' + (songId));
         axios({
@@ -528,7 +530,7 @@ function gotoLogin() {
         })
             .then(response => {
                 removeBtn.id = 'add-btn-' + response.data.song_id;  // Change the ID
-                removeBtn.className = 'btn btn-outline-light me-2';  // Change the classes
+                removeBtn.className = 'btn btn me-2';  // Change the classes
                 removeBtn.onclick = () => self.addToCart(songId);  // Change the onclick event
                 removeBtn.textContent = '🤍';
                 // alert(response.data.success);

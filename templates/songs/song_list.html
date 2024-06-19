@@ -36,6 +36,7 @@
         align-items: center;
         }
 
+    /* 찜하기 버튼 */
     .col-auto.d-flex.align-items-center button {
         margin-top: 5px;
         width: 100%;
@@ -256,7 +257,6 @@
             audios.forEach(audio => {
                 if (audio != currentAudio) {
                     audio.pause();
-                    console.log(currentAudio, "정지됨");
                     audio.currentTime = 0;
                 }
             });
@@ -278,7 +278,6 @@
             audios.forEach(audio => {
                 if (audio != currentAudio) {
                     audio.pause();
-                    console.log(currentAudio, "정지됨");
                     audio.currentTime = 0;
                 }
             });

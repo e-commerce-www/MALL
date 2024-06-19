@@ -104,14 +104,23 @@ def sales(request):
 
 @login_required
 def follower(request):
-    myfollow = Follows.objects.filter(follower=request.user)
+    # myfollow = Follows.objects.filter(follower=request.user)
 
+    # for se_follow in myfollow:
+    #     # 각 팔로우한 유저 최근 음악 1개 가져오기
+    #     seller_of_following = Seller.objects.get(user=se_follow.following)
+    #     se_follow.recent_songs = Song.objects.filter(seller=seller_of_following).order_by('-id')[:1]
+
+    myfollow = Follows.objects.filter(follower=request.user).select_related('following').prefetch_related('following__seller_set__song_set')
+
+    follow_data = []
     for se_follow in myfollow:
-        # 각 팔로우한 유저 최근 음악 1개 가져오기
-        seller_of_following = Seller.objects.get(user=se_follow.following)
-        se_follow.recent_songs = Song.objects.filter(seller=seller_of_following).order_by('-id')[:1]
+        seller_of_following = se_follow.following.seller_set.first()
+        if seller_of_following:
+            recent_songs = seller_of_following.song_set.order_by('-id')[:1]
+            follow_data.append((se_follow, recent_songs))
 
-    paginator = Paginator(myfollow, 3)
+    paginator = Paginator(follow_data, 3)
 
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
