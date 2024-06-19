@@ -1,5 +1,6 @@
 import requests
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import Board
 from apps.likes.models import BoardLike, Bookmark
@@ -9,6 +10,8 @@ from django.db.models import Count
 from django.conf import settings
 from django.http import JsonResponse
 from django.contrib import messages
+from django.http import HttpResponseRedirect
+from urllib.parse import urlencode
 from django.db.models import Q
 from .utils import *
 
@@ -105,8 +108,10 @@ def comment_count(request):
 
 
 # 게시글 등록
-@login_required
 def board_create(request):
+    if request.user.is_anonymous:
+        return render(request, 'boards/board_create.html', {'show_login_modal': True, 'next': request.get_full_path()})
+
     if request.method == "POST":
         form = BoardForm(request.POST)
 
@@ -124,14 +129,17 @@ def board_create(request):
 
 # 게시글 보기
 def board_read(request,pk):
+    if request.user.is_anonymous:
+        return render(request, 'boards/board_read.html', {'show_login_modal': True, 'next': request.get_full_path()})
+
     board = Board.objects.annotate(likes_count=Count('board_likes')).get(pk=pk)
     board_like = BoardLike.objects.filter(user=request.user, board=board).exists()
     bookmark = Bookmark.objects.filter(user=request.user, board=board).exists()
 
     disqus_short = f"{settings.DISQUS_SHORTNAME_2}"
-    disqus_id = f"board-{board.id}"
+    disqus_id = f"board-{board.author}-{board.id}"
     disqus_url = f"{settings.DISQUS_MY_DOMAIN_2}{board.get_absolute_url()}"
-    disqus_title = f"{board.title}"
+    disqus_title = f"{board.title}-{board.author}"
 
     context = {
         "board": board, 
@@ -141,6 +149,7 @@ def board_read(request,pk):
         "disqus_id": disqus_id,
         "disqus_url": disqus_url,
         "disqus_title": disqus_title,
+        'kakao_javascript_key': settings.KAKAO_JS_KEY,
         }
 
     return render(request, 'boards/board_read.html', context = context)
@@ -155,8 +164,10 @@ def board_update(request, pk):
         if form.is_valid():
             board = form.save(commit=False)
             board.save()
-            messages.success(request, '게시글이 성공적으로 수정되었습니다.')
-            return redirect("boards:board_read", pk=pk)
+            base_url = reverse("boards:board_read", kwargs={"pk": pk})
+            query_string = urlencode({'updated': 'true'})
+            url = f"{base_url}?{query_string}"
+            return HttpResponseRedirect(url)
         
     else:
         form = BoardForm(instance=board)
@@ -166,14 +177,25 @@ def board_update(request, pk):
 
 # 게시글 삭제
 def board_delete(request, pk):
-    board = get_object_or_404(Board, pk=pk)
-    board.delete()
-    messages.success(request, '글을 삭제했습니다.')
-    return redirect("boards:board_list")
+    try:
+        board = get_object_or_404(Board, pk=pk)
+        board.delete()
+        base_url = reverse("boards:board_list")
+        query_string = urlencode({'deleted': 'true'})
+        url = f"{base_url}?{query_string}"
+        return HttpResponseRedirect(url)
+    except Board.DoesNotExist:
+        base_url = reverse("boards:board_list")
+        query_string = urlencode({'error': 'Board not found'})
+        url = f"{base_url}?{query_string}"
+        return HttpResponseRedirect(url)
 
 
 # 북마크 글
 def bookmarked_boards(request):
+    if request.user.is_anonymous:
+        return render(request, 'boards/bookmark_list.html', {'show_login_modal': True, 'next': request.get_full_path()})
+    
     bookmarks = Bookmark.objects.filter(user=request.user).select_related('board').order_by('-created_at')
 
     paginator = Paginator(bookmarks, 10)

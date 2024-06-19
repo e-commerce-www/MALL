@@ -159,7 +159,7 @@
                     ...
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item kakao-link-btn" href="javascript:sendLink()">카카오톡 공유</a>
+                    <a id="kakaotalk-sharing-btn" class="dropdown-item kakao-link-btn" href="javascript:;">카카오톡 공유</a>
                     <a class="dropdown-item instagram-btn" href="https://www.instagram.com/direct/inbox/">인스타그램 공유</a>
                     <a class="dropdown-item" id="copy-url">URL 복사</a>
                 </div>
@@ -191,7 +191,15 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+
+
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+                integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
+                crossorigin="anonymous"></script>
+
+<script>
+        Kakao.init('{{kakao_javascript_key}}'); // 사용하려는 앱의 JavaScript 키 입력
+</script>
 
 <script>
     var disqus_config = function () {
@@ -209,12 +217,13 @@
 
     // 게시글 수정 팝업
     document.addEventListener("DOMContentLoaded", function() {
-        {% if messages %}
-            {% for message in messages %}
-                alert("{{ message }}");
-            {% endfor %}
-        {% endif %}
-    });
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('updated')) {
+                alert("게시글이 수정되었습니다.");
+                const newUrl = window.location.href.split("?")[0];
+                window.history.replaceState(null, null, newUrl);
+            }
+        });
 
     // 좋아요
     document.getElementById('like-button').addEventListener('click', function() {
@@ -306,19 +315,18 @@
         });
     });
 
+
     // 카카오톡 공유
-    Kakao.init("3b9fa38a430a9d653116c4f0d6b9bf7f");   // 아까 복사해둔 JavaScript 키
-        function sendLink() {
-            Kakao.Link.sendCustom({
-                templateId: 108578,   // 복사해둔 템플릿 ID
-                templateArgs: {
-                    title: "{{ board.title }}",
-                    author: "{{board.author.username }}",
-                    description: "{{ page.excerpt }}",
-                    url: "{{ board.get_absolute_url }}",
-                },
-            });
-        }
+    Kakao.Share.createCustomButton({
+        container: '#kakaotalk-sharing-btn',
+        templateId: 108578,
+        templateArgs: {
+            title: "{{ board.title }}",
+            author: "{{board.author.username }}",
+            url: "{{ board.get_absolute_url }}",
+        },
+    });
+
     
 
 </script>
