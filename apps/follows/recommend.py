@@ -9,6 +9,9 @@ User = get_user_model()
 
 def prepare_follow_matrix():
     follows = Follows.objects.all().values('follower_id', 'following_id')
+    if not follows:
+        return pd.DataFrame(), []
+    
     df = pd.DataFrame(list(follows))
     user_ids = list(User.objects.values_list('id', flat=True))
 
@@ -18,13 +21,16 @@ def prepare_follow_matrix():
 
 
 def train_knn_model(user_follow_matrix):
+    if user_follow_matrix.empty:
+        return None
+
     knn = NearestNeighbors(metric='cosine', algorithm='brute')
     knn.fit(user_follow_matrix)
     return knn
 
 
 def recommend_follows_knn(user_id, knn, user_follow_matrix, user_ids, top_n=5):
-    if user_id not in user_ids:
+    if knn is None or user_id not in user_ids:
         return []
 
     user_vector = user_follow_matrix.loc[user_id].values.reshape(1, -1)
@@ -33,8 +39,8 @@ def recommend_follows_knn(user_id, knn, user_follow_matrix, user_ids, top_n=5):
     similar_indices = indices.flatten()[1:]  # 첫 번째 인덱스는 자기 자신이므로 제외
     similar_users = [user_ids[idx] for idx in similar_indices]
 
-
-    followed_users = set(user_follow_matrix.columns[user_follow_matrix.loc[user_id] == 1]) # 사용자 이미 팔로우한 사용자 집합
+    # 사용자 이미 팔로우한 사용자 집합
+    followed_users = set(user_follow_matrix.columns[user_follow_matrix.loc[user_id] == 1])
     recommendations = set()
 
     for similar_user in similar_users:

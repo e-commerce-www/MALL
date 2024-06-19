@@ -77,7 +77,7 @@
       margin-right: 5px;
     }
 
-    .search-form {
+    #search-form {
         flex-direction: column;
         align-items: center;
     }
@@ -250,8 +250,8 @@
 
 {% block extra-script %}
 <script>
+    // 음악 탭에 들어갔을때 나오는 음악 리스트의 중복 재생 방지
     const audios = document.querySelectorAll('audio');
-        // Function to pause all other audios
         function pauseAllOthers(currentAudio) {
             audios.forEach(audio => {
                 if (audio != currentAudio) {
@@ -268,7 +268,9 @@
             });
         });
         
-    // Function to pause all other audios
+
+    
+    // 최신순, 인기순, 장르별 중복 재생 방지
     function bindAudioControls() {
         const audios = document.querySelectorAll('audio');
         // Function to pause all other audios
@@ -473,7 +475,5 @@
             })
             .catch(error => console.log(error));
     });
-
-
 </script>
 {% endblock extra-script %}

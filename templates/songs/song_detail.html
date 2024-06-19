@@ -294,7 +294,7 @@
                     <source src="{{ song.mp3.url }}" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
-                <div class="button-container d-flex justify-content-between">
+                <div class="button-container d-flex justify-content-left">
                     {% if user.is_authenticated %}
                     {% is_purchased user song.id as purchased %}
                     {% is_added_to_cart user song.id as added %}
