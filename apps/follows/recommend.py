@@ -44,8 +44,8 @@ def recommend_follows_knn(user_id, knn, user_follow_matrix, user_ids, top_n=5):
     similar_indices = indices.flatten()[1:]  # 첫 번째 인덱스는 자기 자신이므로 제외
     similar_users = [user_ids[idx] for idx in similar_indices]
 
-    # 사용자 이미 팔로우한 사용자 집합
-    followed_users = set(user_follow_matrix.columns[user_follow_matrix.loc[user_id] == 1])
+
+    followed_users = set(user_follow_matrix.columns[user_follow_matrix.loc[user_id] == 1]) # 사용자 이미 팔로우한 사용자 집합
     recommendations = set()
 
     for similar_user in similar_users:
@@ -56,4 +56,3 @@ def recommend_follows_knn(user_id, knn, user_follow_matrix, user_ids, top_n=5):
             recommendations.update(similar_user_followings - followed_users)
 
     return list(recommendations)[:top_n]
-
