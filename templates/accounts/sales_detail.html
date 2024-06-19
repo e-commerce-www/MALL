@@ -44,6 +44,51 @@
         margin-top: 5px; /* 버튼들 간의 간격 조정 */
     }
     }
+
+    @media (max-width: 576px) {
+        .remenu {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid hsla(0, 0%, 100%, .3);
+            border-bottom: 1px solid hsla(0, 0%, 100%, .3);
+            text-align: left;
+        }
+
+        .remenu a {
+            text-decoration: none;
+            color: #bcbcbc;
+            font-weight: 500;
+        }
+
+        .remenu a:hover {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        .remenu li {
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        .left-section,
+        .right-top,
+        .right-bottom {
+            padding: 20px;
+        }
+
+        .left-section h2,
+        .right-top h2,
+        .right-bottom h2 {
+            margin-bottom: 20px;
+        }
+
+        .SaleDetail {
+            font-size: small;
+        }
+
+    }
+
 </style>
 
 {% endblock extra-style %}
@@ -78,7 +123,7 @@
                 {% for order in page_obj %}
                 <tr>
                     <td class = "text-white">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
-                    <td class = "text-white">{{order.song__created_at|date:"Y년 n월 j일 g:i A"}}</td>
+                    <td class = "text-white">{{order.song__created_at|date:"Y년 n월 j일"}}</td>
                     <td class = "text-white">{{order.song__title}}</td>
                     <td class = "text-white">{{order.order_count}}명</td>
                     <td class = "text-white">{{ order.song__price|multiply:order.order_count|intcomma }}원</td>

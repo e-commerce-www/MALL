@@ -11,6 +11,7 @@
         padding-top: 10px;
         border-top: 1px solid hsla(0, 0%, 100%, .3);
         border-bottom: 1px solid hsla(0, 0%, 100%, .3);
+        text-align: left;
     }
 
     .remenu a {
@@ -26,14 +27,13 @@
     }
 
     .remenu li {
-        display: inline;
-        margin: 0 20px;
+        display: inline-block;
+        margin: 0 10px;
     }
 
     .left-section,
     .right-top,
     .right-bottom {
-        /* border: 1px solid #ccc; */
         padding: 20px;
     }
 
@@ -51,17 +51,56 @@
     }
 
     .file-input {
-        width: 50%;
-        /* 입력 필드의 길이를 조절 */
+        width: 100%;
     }
 
     .active-link {
         color: white;
     }
 
-
     .remenu a.active {
         color: white;
+    }
+
+    @media (max-width: 576px) {
+        .left-section {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .profile-img {
+            max-width: 100px;
+            margin-bottom: 10px;
+            border-radius: 50%;
+        }
+
+        .file-input {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+
+        .button-container a {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .col-4, .col-8 {
+            padding: 0;
+        }
     }
 </style>
 <link rel="stylesheet" href="{% static 'css/jquery.flipster.min.css' %}">
@@ -69,7 +108,7 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="fs-2 mb-4 text-white" >마이페이지</h1>
+    <h1 class="fs-2 mb-4 text-white">마이페이지</h1>
     <div class="remenu mb-4">
         <ul>
             <li><a href="{% url 'oauth:profile' %}" {% if request.path == '/accounts/profile/' %}class="active"{% endif %}>홈</a></li>
@@ -79,25 +118,25 @@
         </ul>
     </div>
     <div class="row">
-        <div class="col-4 text-center">
-            <form method="post" enctype="multipart/form-data" class="left-section bg-dark shadow text-white rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
+        <div class="col-md-4 col-12 text-center">
+            <form method="post" enctype="multipart/form-data" class="left-section bg-dark shadow text-white rounded-2" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                 {% csrf_token %}
                 <h2>프로필</h2>
                 {% thumbnail user.profile "200x200" crop="center" as profile %}
-                <img src="{{ profile.url }}" alt="{{ user.username }}" class="profile-img mb-2" style="width: 200px; height: 200px;">
+                <img src="{{ profile.url }}" alt="{{ user.username }}" class="profile-img mb-2">
                 {% endthumbnail %}
-                <div class="mb-3 ">
+                <div class="mb-3">
                     <input class="file-input" type="file" name="{{ form.profile.name }}"
                         id="{{ form.profile.id_for_label }}" accept="image/png, image/jpeg, image/gif" onchange="previewFile()"/>
                 </div>
                 <div class="mb-3">
                     <div class="d-flex align-items-center">
-                        <label class="flex-shrink-0" for="{{ form.username.id_for_label }}" style="margin-left:30px; margin-right: 3px;">닉네임</label>
-                        {% render_field form.username class="rounded-2 text-center flex-grow-1 w-100 " style="margin-right:30px;" %}
+                        <label class="flex-shrink-0" for="{{ form.username.id_for_label }}">닉네임</label>
+                        {% render_field form.username class="rounded-2 text-center flex-grow-1 w-100" %}
                     </div>
                     {% if form.username.errors %}
                     {% for error in form.username.errors %}
-                    <div class="alert alert-danger mt-2">이미 존재하는 닉네임입니다.<br>다른 닉네임으로 변경해주세요.</div>
+                    <div class="alert alert-danger mt-2">{{ error }}</div>
                     {% endfor %}
                     {% endif %}
                 </div>
@@ -107,16 +146,14 @@
                 <button class="btn btn-outline-light me-2" style="border: 1px solid hsla(0, 0%, 100%, .3);" type="submit">저장</button>
             </form>
         </div>
-        <div class="col-8 text-center">
+        <div class="col-md-8 col-12 text-center">
             {% if not user.is_seller %}
-            <div class="col mb-2 " style="margin-right: 2px;">
-                <div class="row" style="height: 64px;">
-                    <div class="col-md-6 text-center" style="padding-right: 5px; padding-left: 15px; ">
-                        <a class="text-bg-dark fs-4 text-decoration-none rounded-2 align-content-center " href="{% url 'carts:my_songs' %}" style="height: 64px; display: block; margin-right: 5px; padding: 10px; border: 1px solid hsla(0, 0%, 100%, .3);">찜한 음악</a>
-                    </div>
-                    <div class="col-md-6 text-center " style="padding-left: 5px; padding-right: 15px;">
-                        <a class="text-bg-dark fs-4 text-decoration-none rounded-2 align-content-center " href="{% url 'sellers:seller_apply' %}" style="height: 64px; display: block; margin-left: 5px; padding: 10px; border: 1px solid hsla(0, 0%, 100%, .3);">판매자 신청하러 가기</a>
-                    </div>
+            <div class="row mb-2">
+                <div class="col-md-6" style="padding-right: 5px; padding-left: 15px;">
+                    <a class="btn btn-outline-light fs-4 rounded-2 align-content-center w-100" href="{% url 'carts:my_songs' %}">찜한 음악</a>
+                </div>
+                <div class="col-md-6" style="padding-left: 5px; padding-right: 15px;">
+                    <a class="btn btn-outline-light fs-4 rounded-2 align-content-center w-100" href="{% url 'sellers:seller_apply' %}">판매자 신청</a>
                 </div>
             </div>
 
@@ -135,14 +172,12 @@
             {% endif %}
             {% if user.is_authenticated %}
                 {% if user.is_seller %}
-                <div class="col mb-2 " style="margin-right: 2px;">
-                    <div class="row" style="height: 64px;">
-                        <div class="col-md-6 text-center " style="padding-right: 5px; padding-left: 15px;">
-                            <a class="text-bg-dark fs-4 text-decoration-none rounded-2 align-content-center " href="{% url 'carts:my_songs' %}" style="height: 64px; display: block; margin-right: 5px; padding: 10px; border: 1px solid hsla(0, 0%, 100%, .3);">찜한 음악</a>
-                        </div>
-                        <div class="col-md-6 text-center  " style="padding-left: 5px; padding-right: 15px;">
-                            <a class="text-bg-dark fs-4 text-decoration-none rounded-2 align-content-center" href="{% url 'sellers:seller_upload' %}" style="height: 64px; display: block; margin-left: 5px; padding: 10px; border: 1px solid hsla(0, 0%, 100%, .3);">음악 업로드하러 가기</a>
-                        </div>
+                <div class="row mb-2">
+                    <div class="col-md-6" style="padding-right: 5px; padding-left: 15px;">
+                        <a class="btn btn-outline-dark fs-4 rounded-2 align-content-center w-100" href="{% url 'carts:my_songs' %}">찜한 음악</a>
+                    </div>
+                    <div class="col-md-6" style="padding-left: 5px; padding-right: 15px;">
+                        <a class="btn btn-outline-dark fs-4 rounded-2 align-content-center w-100" href="{% url 'sellers:seller_upload' %}">음악 업로드하러 가기</a>
                     </div>
                 </div>
                 
@@ -158,8 +193,8 @@
                     </ul>
                 </div>
 
-                <div class="row text-bg-dark rounded-2 " style="margin-left: 2px; margin-right: 5px; border: 1px solid hsla(0, 0%, 100%, .3);">
-                    <div class="col-md-12 mb-3 mt-3" >
+                <div class="row text-bg-dark rounded-2" style="margin-left: 2px; margin-right: 5px; border: 1px solid hsla(0, 0%, 100%, .3);">
+                    <div class="col-md-12 mb-3 mt-3">
                         <a class="text-decoration-none" href="{% url 'sellers:seller_songs' %}"><span class="fs-4 text-white">나의 음악 보러가기</span></a>
                     </div>
                 </div>
@@ -180,16 +215,15 @@
         const reader = new FileReader();
 
         reader.addEventListener("load", function () {
-            // 파일을 읽은 후 src 속성에 결과 데이터 URL을 설정
+            // 파일을 읽은 후 src 속성에 데이터 URL을 설정
             preview.src = reader.result;
         }, false);
 
         if (file) {
-            reader.readAsDataURL(file); // 파일을 읽어 데이터 URL로 변환
+            reader.readAsDataURL(file);
         }
     }
 </script>
-
 
 
 

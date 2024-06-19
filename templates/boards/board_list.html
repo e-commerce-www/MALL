@@ -2,6 +2,35 @@
 {% load session_filters %}
 
 {% block extra-style %}
+<style>
+    @media (max-width:576px){
+
+        .btn-group.m-0 {
+    text-align: center; /* 가운데 정렬 */
+    white-space: nowrap;
+}
+        .btn.btn-dark.m-0 {
+    text-align: center; /* 가운데 정렬 */
+    font-size: small;
+    margin: 0px;
+    padding: 10px 0px;
+
+}        
+
+    #search-form{
+        flex : 1;
+        margin-left: 5px;
+        margin-right: 5px;
+        white-space: nowrap;
+        flex-direction: column; /* 세로로 배치 */
+        align-items: stretch; /* 길이 맞춤 */
+        margin-bottom: 10px; /* 아래 여백 */
+  }
+    .bookmarked_button-custom-style{
+        right: 0%;
+    }
+}
+</style>
 
 {% endblock extra-style %}
 
@@ -13,24 +42,18 @@
 
     <div class = "container">
         <div class = "row mt-3">
-            <div class = "col d-flex">
+            <div class = "col d-flex align-items-center justify-content-between">
                 <div class="btn-group m-0" role="group" aria-label="Sort" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     <a href="?sort=latest" class="btn btn-dark m-0 {% if sort == 'latest' %} active {% endif %}">최신순</a>
                     <a href="?sort=popular" class="btn btn-dark m-0 {% if sort == 'popular' %} active {% endif %}">인기순</a>
                 </div>
-                <div style="display: inline-block; margin-left: 10px;">
-                    <div class="d-flex ">
-                        <form class="d-flex " id="search-form">
+                    <form class="d-flex align-items-center ml-2" id="search-form">
                             <div class="input-group ">
-                                <input type="text" name="search" id="search-input" title="title" class="form-control" style="width: 300px; border: 1px solid hsla(0, 0%, 100%, .3);" placeholder="검색어를 입력하세요." value="{{ search|default:'' }}">
-                                <button type="submit" class="btn btn-outline-light bg-dark " style="border: 1px solid hsla(0, 0%, 100%, .3);">검색</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class = "col d-flex justify-content-end">
-                    <a href = "{% url 'boards:bookmarked_boards' %}" class = "btn btn-dark m-0" style="border: 1px solid hsla(0, 0%, 100%, .3);">북마크 글</a>
-                </div>
+                            <input type="text" name="search" id="search-input" title="title" class="form-control" style=" border: 1px solid hsla(0, 0%, 100%, .3);" placeholder="검색어를 입력하세요." value="{{ search|default:'' }}">
+                            <button type="submit" class="btn btn-outline-light bg-dark " style="border: 1px solid hsla(0, 0%, 100%, .3);">검색</button>
+                        </div>
+                    </form>
+                    <a href = "{% url 'boards:bookmarked_boards' %}" class = "btn btn-dark m-0 bookmarked_button-custom-style" style="border: 1px solid hsla(0, 0%, 100%, .3); right: 0%;">북마크 글</a>
             </div>
         </div>
 
