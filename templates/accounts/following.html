@@ -97,7 +97,7 @@
                 <ul class="list-group">
                     {% for user in recommendations %}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span class="text-white">{{ user.username }}</span>
+                        <a ><span class="text-white">{{ user.username }}</span></a>
                         <button class="btn btn-sm btn-primary" onclick="followUser({{ user.id }})">Follow</button>
                     </li>
                     {% endfor %}

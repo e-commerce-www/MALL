@@ -142,12 +142,17 @@
 
     // 게시글 삭제 팝업
     document.addEventListener("DOMContentLoaded", function() {
-        {% if messages %}
-            {% for message in messages %}
-                alert("{{ message }}");
-            {% endfor %}
-        {% endif %}
-    });
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('deleted')) {
+                alert("글을 삭제했습니다.");
+                const newUrl = window.location.href.split("?")[0];
+                window.history.replaceState(null, null, newUrl);
+            } else if (urlParams.has('error')) {
+                alert(urlParams.get('error'));
+                const newUrl = window.location.href.split("?")[0];
+                window.history.replaceState(null, null, newUrl);
+            }
+        });
 
     function showRecent(pageNumber = 1) {
         const title = document.getElementById('board-title')
