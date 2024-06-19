@@ -39,7 +39,44 @@
         border-bottom: none;
     }
 
+    @media (max-width: 576px) {
+        .remenu {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid hsla(0, 0%, 100%, .3);
+            border-bottom: 1px solid hsla(0, 0%, 100%, .3);
+            text-align: left;
+        }
 
+        .remenu a {
+            text-decoration: none;
+            color: #bcbcbc;
+            font-weight: 500;
+        }
+
+        .remenu a:hover {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        .remenu li {
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        .left-section,
+        .right-top,
+        .right-bottom {
+            padding: 20px;
+        }
+
+        .left-section h2,
+        .right-top h2,
+        .right-bottom h2 {
+            margin-bottom: 20px;
+        }
+    }
 </style>
 
 {% endblock extra-style %}
@@ -97,7 +134,7 @@
                 <ul class="list-group">
                     {% for user in recommendations %}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span class="text-white">{{ user.username }}</span>
+                        <a ><span class="text-white">{{ user.username }}</span></a>
                         <button class="btn btn-sm btn-primary" onclick="followUser({{ user.id }})">Follow</button>
                     </li>
                     {% endfor %}

@@ -192,7 +192,7 @@
                     class="nav-link text-white"
                     data-bs-toggle="modal"
                     data-bs-target="#loginModal"
-                    onclick="updateModalText('로그인')"
+                    onclick="updateModalText('로그인', '{{request.get_full_path}}')"
                     href="#"
                   >
                     로그인
@@ -203,7 +203,7 @@
                     class="nav-link text-white"
                     data-bs-toggle="modal"
                     data-bs-target="#loginModal"
-                    onclick="updateModalText('가입')"
+                    onclick="updateModalText('가입', '{{request.get_full_path}}')"
                     href="#"
                   >
                     회원가입
@@ -214,7 +214,7 @@
             {% endif %}
           </div>
         </div>
-      </nav>
+      </nav>      
 
       <!-- Header-->
       {% block header %} {% endblock header %}
@@ -414,10 +414,11 @@
       ></script>
 
       <script>
-        function updateModalText(action) {
+        function updateModalText(action, nextUrl) {
             const modalKind = document.getElementById('loginModalLabel');
             const googleButton = document.getElementById('google-modal-text');
             const naverButton = document.getElementById('naver-modal-text');
+
             if (action === '가입') {
                 modalKind.textContent = `회원${action}`;
             } else {
@@ -427,7 +428,18 @@
             googleButton.textContent = `구글로 ${action}`;
             naverButton.textContent = `네이버로 ${action}`;
 
+            // document.getElementById('google-login-form').action += `?next=${encodeURIComponent(nextUrl)}`;
+            // document.getElementById('naver-login-form').action += `?next=${encodeURIComponent(nextUrl)}`;
+            googleForm.action = googleForm.action.split('?')[0] + `?next=${encodeURIComponent(nextUrl)}`;
+            naverForm.href = naverForm.href.split('?')[0] + `?next=${encodeURIComponent(nextUrl)}`;
+
         }
+
+        {% if show_login_modal %}
+            $(document).ready(function() {
+                $('#loginModal').modal('show');
+            });
+        {% endif %}
 
         function mySongFunc() {
             {% if user.is_authenticated %}
@@ -486,6 +498,7 @@
               class="mb-3"
             >
               {% csrf_token %}
+              <input type="hidden" name="next" value="{{ next }}">
               <button class="btn btn-danger w-100">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -503,7 +516,7 @@
               </button>
             </form>
 
-            <a href="{% provider_login_url 'naver' %}" class="w-100">
+            <a href="{% provider_login_url 'naver' %}?next={{ request.path }}" class="w-100">
               <button class="btn btn-success w-100">
                 <svg
                   width="40"

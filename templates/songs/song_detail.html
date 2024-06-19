@@ -1,8 +1,51 @@
 {% extends "base.html" %}
 {% load session_filters %}
 {% load thumbnail %}
+{% block extra-style %}
+<style>
+
+@media (max-width:576px) {
+    div.col {
+        position: relative;
+    }
+    div.col-md-4.text-center {
+        display: block;
+        width:50%;
+        margin-left: auto !important;
+        margin-right: auto !important
+    }
 
 
+    #like-btn,#follow-btn {
+        position: absolute;
+        right: 0%;
+    }
+
+    .mt-4.d-flex.flex-column.flex-md-row {
+        align-items: flex-start; /* 수직 정렬은 flex-start로 설정 */
+    }
+    .button-container {
+        margin-top: 5px;
+        flex: 1;
+        align-items: center; /* 버튼 수직 중앙 정렬 */
+        flex-wrap: wrap; /* 필요에 따라 버튼이 넘칠 경우 줄 바꿈 */
+    }
+    .wishbutton-custom-style,.buybutton-custom-style {
+        white-space: nowrap;
+        display: inline-flex;
+        justify-content: center;
+        align-items: left;
+        font-size: 1em;
+        margin-right: 10px;
+        width: auto;
+   
+    }
+}
+
+
+
+</style>
+{% endblock extra-style %}
 {% block content %}
 
 <head>
@@ -246,37 +289,39 @@
             <!-- 인스타그램 공유 -->
 
 
-            <div class="mt-4 d-flex ">
-                <audio controls class="me-3 " controlsList="nodownload">
+            <div class="mt-4 d-flex flex-column flex-md-row">
+                <audio controls class="me-3 " controlsList="nodownload"  style="flex-shrink: 0; margin-right: 3%;">
                     <source src="{{ song.mp3.url }}" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
-                {% if user.is_authenticated %}
-                {% is_purchased user song.id as purchased %}
-                {% is_added_to_cart user song.id as added %}
-                {% if purchased %}
-                <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3"
-                    class="btn btn-outline-light me-2 text-center align-items-center d-flex ">
-                    다운로드
-                </a>
-                {% else %}
-                <form action="{% url 'payments:payment_pay' song.id %}"
-                    onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                    <button class="btn btn-outline-light me-2 " type="submit" onclick=""
-                        style="height: 100%;">구매하기</button>
-                </form>
-                {% endif %}
-                {% if not added %}
-                <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2"
-                    onclick="addToCart('{{song.id}}');">찜하기</button>
-                {% else %}
-                <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2"
-                    onclick="removeFromCart('{{song.id}}');">찜 취소</button>
-                {% endif %}
-                {% else %}
-                <button class="btn btn-outline-light me-2" onclick="gotoLogin()">구매하기</button>
-                <button class="btn btn-outline-light me-2" onclick="gotoLogin()">찜하기</button>
-                {% endif %}
+                <div class="button-container d-flex justify-content-left">
+                    {% if user.is_authenticated %}
+                    {% is_purchased user song.id as purchased %}
+                    {% is_added_to_cart user song.id as added %}
+                    {% if purchased %}
+                    <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3"
+                        class="btn btn-outline-light me-2  buybutton-custom-style text-center d-flex ">
+                        다운로드
+                    </a>
+                    {% else %}
+                    <form action="{% url 'payments:payment_pay' song.id %}"
+                        onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
+                        <button class="btn btn-outline-light me-2 buybutton-custom-style" type="submit" onclick=""
+                            style="height: 100%;">구매하기</button>
+                    </form>
+                    {% endif %}
+                    {% if not added %}
+                    <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2 wishbutton-custom-style"
+                        onclick="addToCart('{{song.id}}');">찜하기</button>
+                    {% else %}
+                    <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2 wishbutton-custom-style"
+                      onclick="removeFromCart('{{song.id}}');">찜 취소</button>
+                    {% endif %}
+                    {% else %}
+                   <button class="btn btn-outline-light me-2 buybutton-custom-style" onclick="gotoLogin()">구매하기</button>
+                   <button class="btn btn-outline-light me-2 wishbutton-custom-style" onclick="gotoLogin()">찜하기</button>
+                   {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -414,7 +459,7 @@
         })
             .then(response => {
                 addBtn.id = 'remove-btn-' + response.data.song_id;  // Change the ID
-                addBtn.className = 'btn btn-outline-danger me-2';  // Change the classes
+                addBtn.className = 'btn btn-outline-danger me-2 wishbutton-custom-style';  // Change the classes
                 addBtn.onclick = () => removeFromCart(songId);  // Change the onclick event
                 addBtn.textContent = '찜 취소';
                 // alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
@@ -433,7 +478,7 @@
         })
             .then(response => {
                 removeBtn.id = 'add-btn-' + response.data.song_id;  // Change the ID
-                removeBtn.className = 'btn btn-outline-light me-2';  // Change the classes
+                removeBtn.className = 'btn btn-outline-light me-2 wishbutton-custom-style';  // Change the classes
                 removeBtn.onclick = () => addToCart(songId);  // Change the onclick event
                 removeBtn.textContent = '찜하기';
                 // alert(response.data.success);
@@ -450,7 +495,7 @@
 
     (function () { // DON'T EDIT BELOW THIS LINE
         var d = document, s = d.createElement('script');
-        s.src = 'https://music-value-platform.disqus.com/embed.js';
+        s.src = 'https://music-value-platform-1.disqus.com/embed.js';
         s.setAttribute('data-timestamp', +new Date());
         (d.head || d.body).appendChild(s);
     })();

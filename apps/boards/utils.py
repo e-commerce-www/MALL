@@ -19,12 +19,7 @@ def get_chosung(text):
         return CHOSUNG_LIST[(ord(char) - HANGUL_START) // 588]
 
     return ''.join(get_chosung_char(char) for char in text)
-  
-# def get_english_variants(text):
-#     # googletrans 라이브러리를 사용하여 한글을 영어로 번역
-#     result = translator.translate(text, src='ko', dest='en')
-#     result_no_spaces = result.text.replace(' ', '')  # 띄어쓰기 제거
-#     return result_no_spaces
+
 
 def get_english_variants(text):
     cache_key = f"translation_{text}"
