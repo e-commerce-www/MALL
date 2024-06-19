@@ -137,9 +137,9 @@ def board_read(request,pk):
     bookmark = Bookmark.objects.filter(user=request.user, board=board).exists()
 
     disqus_short = f"{settings.DISQUS_SHORTNAME_2}"
-    disqus_id = f"board-{board.id}"
+    disqus_id = f"board-{board.author}-{board.id}"
     disqus_url = f"{settings.DISQUS_MY_DOMAIN_2}{board.get_absolute_url()}"
-    disqus_title = f"{board.title}"
+    disqus_title = f"{board.title}-{board.author}"
 
     context = {
         "board": board, 
@@ -149,6 +149,7 @@ def board_read(request,pk):
         "disqus_id": disqus_id,
         "disqus_url": disqus_url,
         "disqus_title": disqus_title,
+        'kakao_javascript_key': settings.KAKAO_JS_KEY,
         }
 
     return render(request, 'boards/board_read.html', context = context)

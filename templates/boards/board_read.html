@@ -159,7 +159,7 @@
                     ...
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item kakao-link-btn" id = "kakaotalk-sharing-btn" href="javascript:;">카카오톡 공유</a>
+                    <a id="kakaotalk-sharing-btn" class="dropdown-item kakao-link-btn" href="javascript:;">카카오톡 공유</a>
                     <a class="dropdown-item instagram-btn" href="https://www.instagram.com/direct/inbox/">인스타그램 공유</a>
                     <a class="dropdown-item" id="copy-url">URL 복사</a>
                 </div>
@@ -317,16 +317,16 @@
 
 
     // 카카오톡 공유
-            Kakao.Share.createCustomButton({
-                container: '#kakaotalk-sharing-btn',
-                templateId: 108578,   // 복사해둔 템플릿 ID
-                templateArgs: {
-                    title: "{{ board.title }}",
-                    author: "{{board.author.username }}",
-                    url: "{{ board.get_absolute_url }}",
-                },
-            });
-        
+    Kakao.Share.createCustomButton({
+        container: '#kakaotalk-sharing-btn',
+        templateId: 108578,
+        templateArgs: {
+            title: "{{ board.title }}",
+            author: "{{board.author.username }}",
+            url: "{{ board.get_absolute_url }}",
+        },
+    });
+
     
 
 </script>
