@@ -31,13 +31,26 @@
     }
     @media (max-width: 576px) {
     .col-auto.d-flex.align-items-center {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+    display: flex;
+    flex-wrap: wrap; /* 요소가 넘칠 경우 줄바꿈 */
+    align-items: center;
+    gap: 5px;
         }
-
+    /*오디오 요소*/
+    #audio{
+        order: 1;     /*순서 1번*/
+    }
+    /*가사 버튼*/
+    #lyrics_btn {
+        order: 2;     /*순서 2번*/
+    }
+    /*결제 다운로드 버튼*/
+    #payment_btn {
+        order: 3;     /*순서 3번*/
+    }
     /* 찜하기 버튼 */
-    .col-auto.d-flex.align-items-center button {
+    #wish-btn {
+        order: 4;     /*순서 4번*/
         margin-top: 5px;
         width: 100%;
         max-width: 100px;
@@ -45,12 +58,8 @@
 
     .col.d-flex {
         flex-direction: column;
-        }
+        gap: 5px;
 
-    .btn-group,
-    #search-form {
-        width: 100%;
-        margin-top: 15px;
         }
 
     .search-item {
@@ -70,6 +79,32 @@
         max-height: 50vh;
         overflow-y: auto;
         }
+    #sort_button_group{
+        display: flex;
+        text-align: center; /* 가운데 정렬 */
+        white-space: nowrap;
+        width: fit-content;
+        margin-bottom: 5px;
+    }
+    #new_button,#popular_button{
+    display: inline-block;
+    width: fit-content;
+    text-align: center; /* 가운데 정렬 */
+    padding: 2px 6px; /* 버튼의 패딩 조정 */
+    font-size: normal; /* 텍스트 크기 조정 */
+    margin: 5 5px; /* 버튼 간의 간격 조정 */
+    }
+    
+    #search-form{
+        flex : 1;
+        margin-left: 5px;
+        margin-right: 5px;
+        white-space: nowrap;
+        flex-direction: column; /* 세로로 배치 */
+        align-items: stretch; /* 길이 맞춤 */
+        margin-top: 10px; /* 위 여백 */
+        margin-bottom: 10px; /* 아래 여백 */
+  }
     .input-group {
         flex-direction: row;
         }
@@ -77,15 +112,6 @@
         flex: 1;
         margin-right: 5px;
         }
-
-    #search-form {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .form-control {
-        width: 100%; /* 모바일 화면에서 입력창이 검색 폼의 너비에 맞도록 조정 */
-    }
     }
 </style>
 
@@ -100,9 +126,9 @@
         <div class="container">
             <div class="row mt-3 mb-3">
                 <div class="col d-flex ">
-                    <div class="btn-group m-0" role="group" aria-label="Sort" style="border: 1px solid hsla(0, 0%, 100%, .3);">
-                        <button type="button" class="btn btn-dark m-0" onclick="showRecent();">최신순</button>
-                        <button type="button" class="btn btn-dark m-0" onclick="showRanking();">인기순</button>
+                    <div class="btn-group m-0" role="group" aria-label="Sort" style="border: 1px solid hsla(0, 0%, 100%, .3);" id="sort_button_group">
+                        <button type="button" class="btn btn-dark m-0" onclick="showRecent();" id="new_button">최신순</button>
+                        <button type="button" class="btn btn-dark m-0" onclick="showRanking();" id="popular_button">인기순</button>
                     </div>
                     <div style="display: inline-block; margin-left: 10px;">
 
@@ -143,7 +169,7 @@
                         <div class="d-flex ">
                             <form class="d-flex " id="search-form">
                                 <div class="input-group ">
-                                    <input type="text" id="search-input" title="title" class="form-control" style="width: 300px; border: 1px solid hsla(0, 0%, 100%, .3);" placeholder="검색어를 입력하세요. (노래명;아티스트명)">
+                                    <input type="text" id="search-input" title="title" class="form-control" style="max-width: 300px; border: 1px solid hsla(0, 0%, 100%, .3);" placeholder="검색어를 입력하세요. (노래명;아티스트명)">
                                     <button type="submit" class="btn btn-outline-light bg-dark " style="border: 1px solid hsla(0, 0%, 100%, .3);">검색</button>
                                 </div>
                             </form>
@@ -175,14 +201,10 @@
                             </small>
                         </a>
                     </div>
-                    <div class="col">
-                        <div>
-                            <a class="btn btn me-2 text-white " style="cursor: pointer;" data-id="{{ song.id }}"
-                                onclick="showLyrics(this.getAttribute('data-id'))">📃</a>
-                        </div>
-                    </div>
                     <div class="col-auto d-flex align-items-center">
-                        <audio controls class="me-3" controlsList="nodownload">
+                            <a id="lyrics_btn" class="btn btn me-2 text-white " style="cursor: pointer;" data-id="{{ song.id }}"
+                                onclick="showLyrics(this.getAttribute('data-id'))">📃</a>
+                        <audio id="audio" controls class="me-3" controlsList="nodownload" style="padding: 5px;">
                             <source src="{{ song.mp3.url }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
@@ -191,6 +213,7 @@
                         {% is_purchased user song.id as purchased %}
                         {% is_added_to_cart user song.id as added %}
                             <!-- 찜 버튼 -->
+                            <div id="wish-btn">
                             {% if not added %}
                                 <button id="add-btn-{{song.id}}" type="button" class="btn btn me-2"
                                     onclick="addToCart('{{song.id}}');">🤍</button>
@@ -198,20 +221,21 @@
                                 <button id="remove-btn-{{song.id}}" type="button" class="btn btn me-2"
                                     onclick="removeFromCart('{{song.id}}');">❤️</button>
                             {% endif %}
+                            </div>
                             {% if not purchased %}
                             <!-- 다운로드 버튼 -->
-                                <form action="{% url 'payments:payment_pay' song.id %}"
+                                <form id="payment_btn" action="{% url 'payments:payment_pay' song.id %}"
                                     onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
                                     <button class="btn btn me-2" type="submit" onclick="">💳</button>
                                 </form>
                             {% else %}
-                                <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
+                                <a id="payment_btn" ref="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
                                     <button class="btn btn me-2">💾</button>
                                 </a>
                             {% endif %}
                         {% else %}
-                            <button type="button" class="btn btn me-2" onclick="gotoLogin();">🤍</button>
-                            <button class="btn btn me-2" type="submit" onclick="gotoLogin();">💳</button>
+                            <button id="add-btn-{{song.id}}" type="button" class="btn btn me-2" onclick="gotoLogin();">🤍</button>
+                            <button id="payment_btn" class="btn btn me-2" type="submit" onclick="gotoLogin();">💳</button>
                         {% endif %}
                     </div>
                 </div>
