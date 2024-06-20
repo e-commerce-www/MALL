@@ -40,6 +40,20 @@ def get_disqus_comment_count(disqus_id):
     return 0
 
 
+def comment_count(request):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        board_id = request.GET.get('board_id')
+        board = Board.objects.get(pk=board_id)
+        disqus_id = f"board-{board.id}-{board.created_at.timestamp()}"
+        comment_count = get_disqus_comment_count(disqus_id)
+        
+        # print(f"comment count : {disqus_id} : ", comment_count) // 댓글 수 확인 위한 코드
+
+        return JsonResponse({'comment_count': comment_count})
+    return JsonResponse({'comment_count': 0})
+
+
+
 # 게시글 목록
 def board_list(request):
     sort = request.GET.get('sort','latest')
@@ -95,18 +109,6 @@ def board_list(request):
     })
 
 
-def comment_count(request):
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        board_id = request.GET.get('board_id')
-        disqus_id = f"board-{board_id}"
-        comment_count = get_disqus_comment_count(disqus_id)
-        
-        # print(f"comment count : {disqus_id} : ", comment_count) // 댓글 수 확인 위한 코드
-
-        return JsonResponse({'comment_count': comment_count})
-    return JsonResponse({'comment_count': 0})
-
-
 # 게시글 등록
 def board_create(request):
     if request.user.is_anonymous:
@@ -137,7 +139,7 @@ def board_read(request,pk):
     bookmark = Bookmark.objects.filter(user=request.user, board=board).exists()
 
     disqus_short = f"{settings.DISQUS_SHORTNAME_2}"
-    disqus_id = f"board-{board.author}-{board.id}"
+    disqus_id = f"board-{board.id}-{board.created_at.timestamp()}"
     disqus_url = f"{settings.DISQUS_MY_DOMAIN_2}{board.get_absolute_url()}"
     disqus_title = f"{board.title}-{board.author}"
 
@@ -184,6 +186,7 @@ def board_delete(request, pk):
         query_string = urlencode({'deleted': 'true'})
         url = f"{base_url}?{query_string}"
         return HttpResponseRedirect(url)
+    
     except Board.DoesNotExist:
         base_url = reverse("boards:board_list")
         query_string = urlencode({'error': 'Board not found'})
