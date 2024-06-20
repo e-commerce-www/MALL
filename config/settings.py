@@ -42,6 +42,8 @@ DISQUS_API_KEY = config('DISQUS_API_KEY')
 DISQUS_SHORTNAME_2 = config('DISQUS_SHORTNAME_2')
 DISQUS_MY_DOMAIN_2 = config('DISQUS_MY_DOMAIN_2')
 
+OPENAI_API_KEY = config('OPENAI_API_KEY')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
 
