@@ -383,7 +383,7 @@ function gotoLogin() {
         })
             .then(response => {
                 addBtn.id = 'remove-btn-' + response.data.song_id;  // Change the ID
-                addBtn.className = 'btn btn me-2';  // Change the classes
+                addBtn.className = 'btn btn';  // Change the classes
                 addBtn.onclick = () => removeFromCart(songId);  // Change the onclick event
                 addBtn.textContent = '❤️';
                 // alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
@@ -402,7 +402,7 @@ function gotoLogin() {
         })
             .then(response => {
                 removeBtn.id = 'add-btn-' + response.data.song_id;  // Change the ID
-                removeBtn.className = 'btn btn me-2';  // Change the classes
+                removeBtn.className = 'btn btn';  // Change the classes
                 removeBtn.onclick = () => self.addToCart(songId);  // Change the onclick event
                 removeBtn.textContent = '🤍';
                 // alert(response.data.success);
