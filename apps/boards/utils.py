@@ -1,7 +1,7 @@
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 from django.core.cache import cache
 
-translator = Translator()
+# translator = Translator()
 
 def get_chosung(text):
     HANGUL_START = 44032
@@ -28,7 +28,8 @@ def get_english_variants(text):
     if cached_translation:
         return cached_translation
     
-    result = translator.translate(text, src='ko', dest='en').text
+    translator = GoogleTranslator(source='ko', target='en')
+    result = translator.translate(text)
     result_no_spaces = result.replace(' ', '')  # 띄어쓰기 제거
     cache.set(cache_key, result_no_spaces, timeout=60*60*24)  # 24시간 동안 캐시
 
