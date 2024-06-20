@@ -65,172 +65,17 @@
         text-align: center;
     }
 
-  .search-thumbnail {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 5%;
-  }
-  .button-container {
-    display:flex;
-    margin-top:5px;
-  }
-  .cartbutton-custom-style, .buybutton-custom-style {
-    white-space: nowrap;
-    display: flex;
-    justify-content: center;
-    align-items: center; /* 가운데 정렬 */
-    font-size: 1em;
-    margin-right: 10px;
-    flex: 1 1 auto; /* flex-grow, flex-shrink, flex-basis 설정 */
-    max-width: 200px; /* 최대 너비 설정 */
-    height: 50px; /* 동일한 높이 설정 */
-}
-  @media (max-width: 576px) {
-    .search-form {
-      flex-direction: column;
-      align-items: center;
-    }
-
-        .input-group {
-        width: 100%;
-        margin-bottom: 10px;
-        }
-
-        .form-control {
-        width: 100%;
-        }
-
-        .card {
-        padding: 10px;
-        }
-
-        .btn {
-        font-size: 14px;
-        padding: 8px 12px;
-        }
-
-        .col-auto.d-flex.align-items-center {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        }
-
-        .col-auto.d-flex.align-items-center button {
-        margin-top: 5px;
-        width: 100%;
-        max-width: 85px;
-        }
-    /* 이건 추천곡, 신곡 전용 반응형 css입니다. */
-    @media (max-width: 576px){
-        
-        .input-group{
-            width: 100%;
-            }
-        .recommended_songs .carousel {
-            display: block;
-        }
-        .recent_songs .carousel {
-            display: block;
-        }
-
-        .recent_songs .d-none {
-            display: none !important;
-        }
-        .card{
-            width: 100%;
-            border-radius: 10%;
-        }
-        .carousel-inner {
-        display: block;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        }
-        .carousel-item {
-            flex: 0 0 auto;
-            scroll-snap-align: center;
-        }
-        .carousel-inner::-webkit-scrollbar {
-            display: none; /* Hide scrollbar for Chrome, Safari and Opera */
-        }
-    }
-    
-/* TOP5 부분 반응형 css 입니다. */
-    @media (max-width: 576px){
-        .search-form {
-            flex-direction: column;
-            align-items: center;
-        }
-        .form-control {
-            width: 100%;
-        }
-        .btn {
-            font-size: 14px;
-            padding: 8px;
-        }
-        .col-auto.d-flex.align-items-center {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }   
-
-        .col-auto.d-flex.align-items-center button {
-            margin-top: 5px;
-            width: 100%;
-            max-width: 185%;
-            }
-        }
-        .button-container {
-        margin-top: 5px;
-        flex: 1;
-        flex-wrap: wrap; /* 필요에 따라 버튼이 넘칠 경우 줄 바꿈 */
-    }
-    .cartbutton-custom-style,.buybutton-custom-style {
-        white-space: nowrap;
-        display: inline-flex;
-        justify-content: center;
-        align-items: left;
-        font-size: 1em;
-        margin-right: 10px;
-        width: auto;
-   
-    }
+    .search-thumbnail {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 5%;
     }
 
     @media (max-width: 576px) {
-        .search-form {
-        flex-direction: column;
-        align-items: center;
-        }
-
-        .input-group {
-        width: 100%;
-        margin-bottom: 10px;
-        }
-
-        .form-control {
-        width: 100%;
-        }
-
-        .card {
-        padding: 10px;
-        }
-
-        .btn {
-        font-size: 14px;
-        padding: 8px 12px;
-        }
-
         .col-auto.d-flex.align-items-center {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        }
-
-        .col-auto.d-flex.align-items-center button {
-        margin-top: 5px;
-        width: 100%;
-        max-width: 85px;
+        width: 200%;
+        margin-top: 15px;
         }
     }
 </style>
@@ -392,7 +237,7 @@
 
 
     
-<!-- TOP5 ------>
+<!-- TOP5 -->
     <div class="container">
         <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
             <h1 id="chart-title" class="fs-2 text-white m-0 ">TOP5</h1>
@@ -400,7 +245,7 @@
         <div class="row mt-3 px-4"> 
             {% for song, score in ranking_songs %}
             <div class="container-fluid p-0 mt-1">
-                <div class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                <div class="row justify-content-between align-items-center bg-dark p-2 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
                         <a href="{% url 'songs:song_detail' pk=song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
                     {% endthumbnail %}
@@ -418,49 +263,53 @@
                             <small class="fs-6" style="color: #888888;"><a class="text-decoration-none " href="{% url 'sellers:seller_artist' song.seller.user.id %}" style="color:#888;" >{{ song.seller }}</a></small>
                         </a>
                     </div>
-                    <div class="col">
-                        <div>
-                            <a class="btn btn-outline-light me-2" style="cursor: pointer;" data-id="{{ song.id }}"
-                                onclick="showLyrics(this.getAttribute('data-id'))">lyrics</a>
-                        </div>
-                    </div>
-                    <div class="mt-4 d-flex flex-column flex-md-row">
-                        <audio controls class="me-3 w-md-auto" controlsList="nodownload" >
+
+                    <div class="col-auto d-flex align-items-center">
+                        <audio controls class="me-0" controlsList="nodownload">
                             <source src="{{ song.mp3.url }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
-                        <div class="button-container d-flex justify-content-left">
-                            {% if user.is_authenticated %}
+
+
+
+                        {% if user.is_authenticated %}
                         <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
                             {% is_purchased user song.id as purchased %}
                             {% is_added_to_cart user song.id as added %}
                             {% if not added %}
-                            <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2 cartbutton-custom-style"
-                                onclick="addToCart('{{song.id}}');">add to cart</button>
+
+                            <button id="add-btn-{{song.id}}" type="button" class="btn btn"
+                                onclick="addToCart('{{song.id}}');">🤍</button>
+                            <!-- 가사 버튼 -->
+                            <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}"
+                            onclick="showLyrics('{{ song.id }}')">📃</a>
                             {% else %}
-                            <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2 cartbutton-custom-style"
-                                onclick="removeFromCart('{{song.id}}');">delete from cart</button>
+                            <button id="remove-btn-{{song.id}}" type="button" class="btn btn"
+                                onclick="removeFromCart('{{song.id}}');">❤️</button>
+                            <!-- 가사 버튼 -->
+                            <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}"
+                            onclick="showLyrics('{{ song.id }}')">📃</a>
                             {% endif %}
 
                             {% if not purchased %}
                                 <form action="{% url 'payments:payment_pay' song.id %}" onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                                    <button class="btn btn-outline-light me-2 buybutton-custom-style" type="submit" onclick="">구매하기</button>
+                                    <button class="btn btn" type="submit" onclick="">💳</button>
                                 </form>
                             {% else %}
                                 <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
-                                    <button class="btn btn-outline-light me-2 buybutton-custom-style">다운로드</button>
+                                    <button class="btn btn">💾</button>
                                 </a>
                             {% endif %}
-                            {% else %}
-                            <button type="button" class="btn btn-outline-light me-2 buybutton-custom-style" onclick="gotoLogin();">찜하기</button>
+                        {% else %}
+                            <button type="button" class="btn btn" onclick="gotoLogin();">🤍</button>
                             <!-- 다운로드 버튼 -->
-                            <button class="btn btn-outline-light me-2 buybutton-custom-style" type="submit" onclick="gotoLogin();">구매하기</button>
+                            <button class="btn btn" type="submit" onclick="gotoLogin();">💳</button>
+                            <!-- 가사 버튼 -->
+                            <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}"
+                            onclick="showLyrics('{{ song.id }}')">📃</a>
                             {% endif %}
-                        </div>
                     </div>
                 </div>
-
-
             </div>
             {% endfor %}
         </div>
@@ -534,14 +383,14 @@ function gotoLogin() {
         })
             .then(response => {
                 addBtn.id = 'remove-btn-' + response.data.song_id;  // Change the ID
-                addBtn.className = 'btn btn-outline-danger me-2';  // Change the classes
+                addBtn.className = 'btn btn';  // Change the classes
                 addBtn.onclick = () => removeFromCart(songId);  // Change the onclick event
-                addBtn.textContent = 'delete from cart';
+                addBtn.textContent = '❤️';
                 // alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
             })
             .catch(error => console.log(error));
     }
-
+ 
     function removeFromCart(songId) {
         const removeBtn = document.getElementById('remove-btn-' + (songId));
         axios({
@@ -553,9 +402,9 @@ function gotoLogin() {
         })
             .then(response => {
                 removeBtn.id = 'add-btn-' + response.data.song_id;  // Change the ID
-                removeBtn.className = 'btn btn-outline-light me-2';  // Change the classes
+                removeBtn.className = 'btn btn';  // Change the classes
                 removeBtn.onclick = () => self.addToCart(songId);  // Change the onclick event
-                removeBtn.textContent = 'add to cart';
+                removeBtn.textContent = '🤍';
                 // alert(response.data.success);
             })
             .catch(error => console.log(error));

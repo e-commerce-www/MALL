@@ -113,8 +113,8 @@
                             </div>
                             <div class="col">
                                 <div>
-                                    <a class=" btn btn-outline-light me-2 text-white" style="cursor: pointer;" data-id="{{ cart.song.id }}"
-                                        onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
+                                    <a class=" btn btn me-2 text-white" style="cursor: pointer;" data-id="{{ cart.song.id }}"
+                                        onclick="showLyrics(this.getAttribute('data-id'))">📃</a>
                                 </div>
                             </div>
                             <div class="col-auto d-flex align-items-center">
@@ -129,28 +129,28 @@
                                 {% is_added_to_cart user cart.song.id as added %}
                                 <!-- 찜 버튼 -->
                                 {% if not added %}
-                                <button id="add-btn-{{cart.song.id}}" type="button" class="btn btn-outline-light me-2"
-                                    onclick="addToCart('{{cart.song.id}}');">찜하기</button>
+                                <button id="add-btn-{{cart.song.id}}" type="button" class="btn btn me-2"
+                                    onclick="addToCart('{{cart.song.id}}');">🤍</button>
                                 {% else %}
                                 <button id="remove-btn-{{cart.song.id}}" type="button"
-                                    class="btn btn-outline-danger me-2" onclick="removeFromCart('{{cart.song.id}}');">찜 취소</button>
+                                    class="btn btn me-2" onclick="removeFromCart('{{cart.song.id}}');">❤️</button>
                                 {% endif %}
                                 {% if not purchased %}
                                 <!-- 다운로드 버튼 -->
                                 <form action="{% url 'payments:payment_pay' cart.song.id %}"
                                     onsubmit="return confirmPurchase('{{ cart.song.title|escapejs }}')">
-                                    <button class="btn btn-outline-light me-2" type="submit" onclick="">구매하기</button>
+                                    <button class="btn btn me-2" type="submit" onclick="">💳</button>
                                 </form>
                                 {% else %}
                                 <a href="{{ cart.song.mp3.url }}" download="{{ cart.song.title }}.mp3">
-                                    <button class="btn btn-outline-light me-2">다운로드</button>
+                                    <button class="btn btn me-2">💾</button>
                                 </a>
                                 {% endif %}
                                 {% else %}
-                                <button type="button" class="btn btn-outline-light me-2"
-                                    onclick="gotoLogin();">찜하기</button>
-                                <button class="btn btn-outline-light me-2" type="submit"
-                                    onclick="gotoLogin();">구매하기</button>
+                                <button type="button" class="btn btn me-2"
+                                    onclick="gotoLogin();">🤍</button>
+                                <button class="btn btn me-2" type="submit"
+                                    onclick="gotoLogin();">💳</button>
                                 {% endif %}
                             </div>
                         </div>
@@ -162,17 +162,17 @@
                     <ul class="pagination">
                         {% if page_obj.has_other_pages %}
                         {% if page_obj.has_previous %}
-                        <li class="page-item"><a class="page-link"
-                                href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
+                        <li class="page-item"><a class="page-link text-bg-dark"
+                                href="?page={{ page_obj.previous_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">&laquo; Previous</a></li>
                         {% endif %}
 
                         {% for num in page_range %}
-                        <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link"
-                                href="?page={{ num }}">{{ num }}</a></li>
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link text-bg-dark"
+                                href="?page={{ num }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">{{ num }}</a></li>
                         {% endfor %}
 
                         {% if page_obj.has_next %}
-                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next
+                        <li class="page-item"><a class="page-link text-bg-dark" href="?page={{ page_obj.next_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">Next
                                 &raquo;</a></li>
                         {% endif %}
                         {% endif %}
@@ -221,18 +221,18 @@
                                     <!-- 다운로드 버튼 -->
                                     <form action="{% url 'payments:payment_pay' song.id %}"
                                         onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                                        <button class="btn btn-outline-light me-2" type="submit" onclick="">구매하기</button>
+                                        <button class="btn btn me-2" type="submit" onclick="">💳</button>
                                     </form>
                                     {% else %}
                                     <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
-                                        <button class="btn btn-outline-light me-2">다운로드</button>
+                                        <button class="btn btn me-2">💾</button>
                                     </a>
                                     {% endif %}
                                     {% else %}
-                                    <button type="button" class="btn btn-outline-light me-2"
-                                        onclick="gotoLogin();">찜하기</button>
-                                    <button class="btn btn-outline-light me-2" type="submit"
-                                        onclick="gotoLogin();">구매하기</button>
+                                    <button type="button" class="btn btn me-2"
+                                        onclick="gotoLogin();">🤍</button>
+                                    <button class="btn btn me-2" type="submit"
+                                        onclick="gotoLogin();">💳</button>
                                     {% endif %}
                                 </div>
                             </div>

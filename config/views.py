@@ -151,4 +151,4 @@ def search(request):
             return JsonResponse({'success': 'false', 'message': '검색 결과가 없습니다.'})
     else:
         return JsonResponse({'error': 'Invalid request method'})
-
+    

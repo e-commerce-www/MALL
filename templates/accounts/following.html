@@ -38,6 +38,9 @@
     .list-group-item:last-child {
         border-bottom: none;
     }
+    .break {
+        display: none;
+    }
 
     @media (max-width: 576px) {
         .remenu {
@@ -76,6 +79,33 @@
         .right-bottom h2 {
             margin-bottom: 20px;
         }
+        #follow_number{
+            font-size: small;
+            white-space: nowrap;
+        }
+        #recent_activity{
+            font-size: small;
+            white-space: normal;
+            word-break: break-all;
+        }
+        #follow_btn{
+            font-size: smaller;
+            white-space: nowrap;
+            word-break: break-all;
+            block-size: auto;
+            max-width: 75px;
+            padding-top : 5px;
+            padding-bottom: 5px;
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+        .break{
+            display: inline;
+        }
+        .col-md-4.recommendations{
+            margin: 5px;
+            border-top:solid gray 1px;
+        }
     }
 </style>
 
@@ -106,22 +136,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for follow in page_obj %}
+                    {% for follow, recent_songs in page_obj %}
                     <tr>
                         <td>&nbsp;</td>
                     </tr>
                     <tr id="data-{{follow.following.id}}">
-                        <td class = "text-white">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
-                        <td><a href = "{% url 'follows:following' pk=follow.id %}" style="color: aquamarine;">{{ follow.following.username }}</a></td>
+                        <td class = "text-white" id="follow_number">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
+                        <td><a href = "{% url 'follows:following' pk=follow.following.id %}" style="color: aquamarine;">{{ follow.following.username }}</a></td>
                         <td class = "text-white">
-                            {% if follow.recent_songs %}
-                                <a class="text-decoration-none text-bg-info" href="{% url 'songs:song_detail' follow.recent_songs.0.id %}">{{follow.recent_songs.0.title}}</a>을 등록하셨습니다.
+                            {% if recent_songs %}
+                                <a class="text-decoration-none text-bg-info" id="recent_activity" href="{% url 'songs:song_detail' recent_songs.0.id %}">{{recent_songs.0.title}}을 등록</a>
                             {% else %}
                                 최근 활동 없음.
                             {% endif %}
                         </td>
                         <td>
-                            <a  class="btn btn-danger me-2" onclick="unfollowArtist('{{follow.following.id}}')">팔로우 취소</a>
+                            <a  class="btn btn-danger me-2" onclick="unfollowArtist('{{follow.following.id}}')" id="follow_btn">팔로우<span class="break"></span>취소</a>
                         </td>
                     </tr>
                     {% endfor %}

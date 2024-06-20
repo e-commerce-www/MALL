@@ -53,9 +53,9 @@ def song_detail(request, pk):
 
     request.session["viewed_songs"] = viewed_songs
     
-    disqus_short = f"{settings.DISQUS_SHORTNAME}"
+    disqus_short = f"{settings.DISQUS_SHORTNAME_2}"
     disqus_id = f"song-{song.seller}-{song.id}"
-    disqus_url = f"{settings.DISQUS_MY_DOMAIN}{song.get_absolute_url()}"
+    disqus_url = f"{settings.DISQUS_MY_DOMAIN_2}{song.get_absolute_url()}"
     disqus_title = f"{song.title}-{song.seller}"
     
     context = {
