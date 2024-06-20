@@ -3,7 +3,11 @@
 {% load session_filters %}
 {% block extra-style %}
 <style>
-    /* 검색창 스타일 */
+    .search-form {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
     .search-form {
         display: flex;
         justify-content: center;
@@ -13,18 +17,35 @@
     .input-group {
         width: 50%;
     }
+    .input-group {
+        width: 50%;
+    }
 
     .form-control {
         padding: 12px 20px;
         font-size: 16px;
         color: #333;
     }
+    .form-control {
+        padding: 12px 20px;
+        font-size: 16px;
+        color: #333;
+    }
 
-    /* 검색 결과 스타일 */
+    .search-result {
+        text-align: center;
+    }
     .search-result {
         text-align: center;
     }
 
+    .search-results {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
     .search-results {
         list-style-type: none;
         padding: 0;
@@ -38,6 +59,11 @@
         margin: 20px;
         text-align: center;
     }
+    .search-item {
+        width: 200px;
+        margin: 20px;
+        text-align: center;
+    }
 
     .search-thumbnail {
         width: 150px;
@@ -46,91 +72,10 @@
         border-radius: 5%;
     }
 
-    /* 모바일 반응형 스타일 */
     @media (max-width: 576px) {
-        /* 검색창 스타일 */
-        .search-form {
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .input-group {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        .form-control {
-            width: 100%;
-        }
-
-        .card {
-            padding: 10px;
-        }
-
-        .btn {
-            font-size: 14px;
-            padding: 8px 12px;
-        }
-
-        /* Flexbox를 사용하여 수직 정렬 및 중앙 정렬 */
         .col-auto.d-flex.align-items-center {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* 버튼에 추가적인 스타일 적용 */
-        .col-auto.d-flex.align-items-center button {
-            margin-top: 5px;
-            width: 100%;
-            max-width: 85px;
-        }
-
-        /* 추천곡 및 신곡 카루셀 스타일 */
-        .recommended_songs .carousel,
-        .recent_songs .carousel {
-            display: block;
-        }
-
-        /* .d-none 클래스를 사용하여 요소 숨기기 */
-        .recent_songs .d-none {
-            display: none !important;
-        }
-
-        .card {
-            width: 100%;
-            border-radius: 10%;
-        }
-
-        .carousel-inner {
-            display: block;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-        }
-
-        .carousel-item {
-            flex: 0 0 auto;
-            scroll-snap-align: center;
-        }
-
-        .carousel-inner::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera 에서 스크롤바 숨기기 */
-        }
-
-        /* TOP5 부분 반응형 스타일 */
-        .search-form {
-            flex-direction: row;
-            align-items: center;
-        }
-
-        .form-control {
-            width: 100%;
-        }
-
-        .btn {
-            flex-direction: row;
-            font-size: 15px;
-            padding: 1px;
+        width: 200%;
+        margin-top: 15px;
         }
     }
 </style>
@@ -300,7 +245,7 @@
         <div class="row mt-3 px-4"> 
             {% for song, score in ranking_songs %}
             <div class="container-fluid p-0 mt-1">
-                <div class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                <div class="row justify-content-between align-items-center bg-dark p-2 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
                         <a href="{% url 'songs:song_detail' pk=song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
                     {% endthumbnail %}
@@ -320,10 +265,12 @@
                     </div>
 
                     <div class="col-auto d-flex align-items-center">
-                        <audio controls class="me-3" controlsList="nodownload">
+                        <audio controls class="me-0" controlsList="nodownload">
                             <source src="{{ song.mp3.url }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
+
+
 
                         {% if user.is_authenticated %}
                         <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
@@ -331,32 +278,32 @@
                             {% is_added_to_cart user song.id as added %}
                             {% if not added %}
 
-                            <button id="add-btn-{{song.id}}" type="button" class="btn btn me-2"
+                            <button id="add-btn-{{song.id}}" type="button" class="btn btn"
                                 onclick="addToCart('{{song.id}}');">🤍</button>
                             <!-- 가사 버튼 -->
-                            <a class="btn btn me-2" style="cursor: pointer;" data-id="{{ song.id }}"
+                            <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}"
                             onclick="showLyrics('{{ song.id }}')">📃</a>
                             {% else %}
-                            <button id="remove-btn-{{song.id}}" type="button" class="btn btn me-2"
+                            <button id="remove-btn-{{song.id}}" type="button" class="btn btn"
                                 onclick="removeFromCart('{{song.id}}');">❤️</button>
                             <!-- 가사 버튼 -->
-                            <a class="btn btn me-2" style="cursor: pointer;" data-id="{{ song.id }}"
+                            <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}"
                             onclick="showLyrics('{{ song.id }}')">📃</a>
                             {% endif %}
 
                             {% if not purchased %}
                                 <form action="{% url 'payments:payment_pay' song.id %}" onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                                    <button class="btn btn me-2" type="submit" onclick="">💳</button>
+                                    <button class="btn btn" type="submit" onclick="">💳</button>
                                 </form>
                             {% else %}
                                 <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
-                                    <button class="btn btn me-2">💾</button>
+                                    <button class="btn btn">💾</button>
                                 </a>
                             {% endif %}
                         {% else %}
-                            <button type="button" class="btn btn me-2 " onclick="gotoLogin();">🤍</button>
+                            <button type="button" class="btn btn" onclick="gotoLogin();">🤍</button>
                             <!-- 다운로드 버튼 -->
-                            <button class="btn btn me-2" type="submit" onclick="gotoLogin();">💳</button>
+                            <button class="btn btn" type="submit" onclick="gotoLogin();">💳</button>
                             <!-- 가사 버튼 -->
                             <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}"
                             onclick="showLyrics('{{ song.id }}')">📃</a>
@@ -367,13 +314,8 @@
             {% endfor %}
         </div>
     </div>
-
 {% endblock %}
-
-
-
 {% block extra-script %}
-
 <script>
 document
     .getElementById("search-form")
