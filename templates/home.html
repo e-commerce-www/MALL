@@ -3,11 +3,7 @@
 {% load session_filters %}
 {% block extra-style %}
 <style>
-    .search-form {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
+    /* 검색창 스타일 */
     .search-form {
         display: flex;
         justify-content: center;
@@ -17,24 +13,14 @@
     .input-group {
         width: 50%;
     }
-    .input-group {
-        width: 50%;
-    }
 
     .form-control {
         padding: 12px 20px;
         font-size: 16px;
         color: #333;
     }
-    .form-control {
-        padding: 12px 20px;
-        font-size: 16px;
-        color: #333;
-    }
 
-    .search-result {
-        text-align: center;
-    }
+    /* 검색 결과 스타일 */
     .search-result {
         text-align: center;
     }
@@ -46,19 +32,7 @@
         flex-wrap: wrap;
         justify-content: center;
     }
-    .search-results {
-        list-style-type: none;
-        padding: 0;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
 
-    .search-item {
-        width: 200px;
-        margin: 20px;
-        text-align: center;
-    }
     .search-item {
         width: 200px;
         margin: 20px;
@@ -72,136 +46,91 @@
         border-radius: 5%;
     }
 
+    /* 모바일 반응형 스타일 */
     @media (max-width: 576px) {
-        .search-form {
-        flex-direction: column;
-        align-items: center;
-        }
-
-        .input-group {
-        width: 100%;
-        margin-bottom: 10px;
-        }
-
-        .form-control {
-        width: 100%;
-        }
-
-        .card {
-        padding: 10px;
-        }
-
-        .btn {
-        font-size: 14px;
-        padding: 8px 12px;
-        }
-
-        .col-auto.d-flex.align-items-center {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        }
-
-        .col-auto.d-flex.align-items-center button {
-        margin-top: 5px;
-        width: 100%;
-        max-width: 85px;
-        }
-    /* 이건 추천곡, 신곡 전용 반응형 css입니다. */
-    @media (max-width: 576px){
-        
-        .input-group{
-            width: 100%;
-            }
-        .recommended_songs .carousel {
-            display: block;
-        }
-        .recent_songs .carousel {
-            display: block;
-        }
-
-        .recent_songs .d-none {
-            display: none !important;
-        }
-        .card{
-            width: 100%;
-            border-radius: 10%;
-        }
-        .carousel-inner {
-        display: block;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        }
-        .carousel-item {
-            flex: 0 0 auto;
-            scroll-snap-align: center;
-        }
-        .carousel-inner::-webkit-scrollbar {
-            display: none; /* Hide scrollbar for Chrome, Safari and Opera */
-        }
-    }
-    
-/* TOP5 부분 반응형 css 입니다. */
-    @media (max-width: 576px){
+        /* 검색창 스타일 */
         .search-form {
             flex-direction: column;
             align-items: center;
         }
+
+        .input-group {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
         .form-control {
             width: 100%;
         }
+
+        .card {
+            padding: 10px;
+        }
+
         .btn {
             font-size: 14px;
-            padding: 8px;
+            padding: 8px 12px;
         }
+
+        /* Flexbox를 사용하여 수직 정렬 및 중앙 정렬 */
         .col-auto.d-flex.align-items-center {
             display: flex;
             flex-direction: column;
             align-items: center;
-        }   
+        }
 
+        /* 버튼에 추가적인 스타일 적용 */
         .col-auto.d-flex.align-items-center button {
             margin-top: 5px;
             width: 100%;
-            max-width: 185%;
-            }
-        }
-    }
-
-    @media (max-width: 576px) {
-        .search-form {
-        flex-direction: column;
-        align-items: center;
+            max-width: 85px;
         }
 
-        .input-group {
-        width: 100%;
-        margin-bottom: 10px;
+        /* 추천곡 및 신곡 카루셀 스타일 */
+        .recommended_songs .carousel,
+        .recent_songs .carousel {
+            display: block;
         }
 
-        .form-control {
-        width: 100%;
+        /* .d-none 클래스를 사용하여 요소 숨기기 */
+        .recent_songs .d-none {
+            display: none !important;
         }
 
         .card {
-        padding: 10px;
+            width: 100%;
+            border-radius: 10%;
+        }
+
+        .carousel-inner {
+            display: block;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+        }
+
+        .carousel-item {
+            flex: 0 0 auto;
+            scroll-snap-align: center;
+        }
+
+        .carousel-inner::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera 에서 스크롤바 숨기기 */
+        }
+
+        /* TOP5 부분 반응형 스타일 */
+        .search-form {
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .form-control {
+            width: 100%;
         }
 
         .btn {
-        font-size: 14px;
-        padding: 8px 12px;
-        }
-
-        .col-auto.d-flex.align-items-center {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        }
-
-        .col-auto.d-flex.align-items-center button {
-        margin-top: 5px;
-        width: 100%;
-        max-width: 85px;
+            flex-direction: row;
+            font-size: 15px;
+            padding: 1px;
         }
     }
 </style>
@@ -396,8 +325,6 @@
                             Your browser does not support the audio element.
                         </audio>
 
-
-
                         {% if user.is_authenticated %}
                         <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
                             {% is_purchased user song.id as purchased %}
@@ -436,14 +363,17 @@
                             {% endif %}
                     </div>
                 </div>
-
-
             </div>
             {% endfor %}
         </div>
     </div>
+
 {% endblock %}
+
+
+
 {% block extra-script %}
+
 <script>
 document
     .getElementById("search-form")
