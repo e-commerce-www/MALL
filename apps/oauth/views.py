@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from .forms import UserEditForm
 from django.core.paginator import Paginator
 from django.db.models import Count
-from apps.follows.recommend import prepare_follow_matrix, train_knn_model, recommend_follows_knn
+from apps.follows.utils import prepare_follow_matrix, train_knn_model, recommend_follows_knn
 
 from apps.orders.models import Order
 from apps.follows.models import Follows
