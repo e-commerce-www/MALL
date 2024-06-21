@@ -1,87 +1,90 @@
 {% load session_filters %}
 {% load thumbnail %}
 
-{% for song in page_obj %}
+
+<style>
+    /* 전체 스크롤바 스타일링 */
+    ::-webkit-scrollbar {
+        width: 10px; /* 스크롤바 너비 */
+    }
+
+    /* 스크롤바의 track (배경) 스타일링 */
+    ::-webkit-scrollbar-track {
+        background-color: #000000; /* 스크롤바 배경색 */
+    }
+
+    /* 스크롤바의 thumb (바 부분) 스타일링 */
+    ::-webkit-scrollbar-thumb {
+        background-color: #888; /* 스크롤바 색상 */
+        border-radius: 50px; /* 스크롤바 모서리 둥글기 */
+    }
+
+    /* 마우스 오버 시 스크롤바 thumb 스타일링 */
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #555; /* 마우스 오버 시 스크롤바 색상 변경 */
+    }
+</style>
 
 
-<div class="container p-0 mt-1 px-3">
-    <div class="row justify-content-between align-items-center bg-dark p-1 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
-        {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
-            <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
-        {% endthumbnail %}
-        <div class="col">
-            {% if forloop.counter <= 3 %} 
-                <span style="margin-right: 2px; color: yellow;">New</span>
-            {% endif %}
-            <a class="text-decoration-none " href="{% url 'songs:song_detail' song.id %}">
-                <!-- 노래 세부 내용 페이지로 링크 -->
-                <h5 class="text-white mb-0">{{ song.title }}</h5>
-                <small class="fs-6" style="color: #888888;">
-                    <a class="text-decoration-none " style="color: #888;"  href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{ song.seller }}</a>
-                </small>
-            </a>
-        </div>
-        <div class="col-auto d-flex align-items-center">
-            <audio controls class="me-0" controlsList="nodownload">
-                <source src="{{ song.mp3.url }}" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
 
-            {% if user.is_authenticated %}
-            <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
-            {% is_purchased user song.id as purchased %}
-            {% is_added_to_cart user song.id as added %}
-            
-                <!-- 찜 버튼 -->
-                {% if not added %}
-                    <button id="add-btn-{{song.id}}" type="button" class="btn btn"
-                        onclick="addToCart('{{song.id}}');">🤍</button>
-                        <a class="btn btn text-white" style="cursor: pointer;" data-id="{{ song.id }}" onclick="showLyrics(this.getAttribute('data-id'))">📃</a>
-                {% else %}
-                    <button id="remove-btn-{{song.id}}" type="button" class="btn btn" onclick="removeFromCart('{{song.id}}');">❤️</button>
-                    <a class="btn btn text-white" style="cursor: pointer;" data-id="{{ song.id }}" onclick="showLyrics(this.getAttribute('data-id'))">📃</a>
-                {% endif %}
-                {% if not purchased %}
-                <!-- 다운로드 버튼 -->
-                <form action="{% url 'payments:payment_pay' song.id %}"
-                    onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                    <button class="btn btn" type="submit" onclick="">💳</button>
-                </form>
-                {% else %}
-                <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
-                    <button class="btn btn">💾</button>
+<div class="container p-0 mt-1 px-3" style="overflow-x: auto; white-space: nowrap;">
+    {% for song in page_obj %}
+        <div class="d-inline-block shadow rounded-2 m-1" style="width: 200px; display: inline-block; vertical-align: top; border: none;">
+            <div style="width: 100%; height: 150px; overflow: hidden; border-radius: 8px;">
+                <a href="{% url 'songs:song_detail' song.id %}" style="display: block; height: 100%;">
+                    <img src="{{ song.thumbnail.url }}" alt="" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;"> <!--width 삭제 시 중앙정렬-->
                 </a>
-                {% endif %}
-            {% else %}
-                <button type="button" class="btn btn" onclick="gotoLogin();">🤍</button>
-                <button class="btn btn" type="submit" onclick="gotoLogin();">💳</button>
-            {% endif %}
+            </div>
+            <div class="p-2">
+                <div>
+                    <span style="color: yellow;">New!!</span>
+                    <a class="text-decoration-none" href="{% url 'songs:song_detail' song.id %}">
+                        <!-- 노래 세부 내용 페이지로 링크 -->
+                        <h6 class="text-white mb-0" style="font-size: 14px;">{{ song.title }}</h6>
+                    </a>
+                    <small class="fs-6" style="color: #888;">
+                        <a class="text-decoration-none" style="color: #888;" href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{ song.seller }}</a>
+                    </small>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <audio controls class="me-0" controlsList="nodownload" style="width: 100%;">
+                        <source src="{{ song.mp3.url }}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    {% if user.is_authenticated %}
+                        {% is_purchased user song.id as purchased %}
+                        {% is_added_to_cart user song.id as added %}
+                        
+                        <!-- 찜 버튼 -->
+                        {% if not added %}
+                            <button id="add-btn-{{song.id}}" type="button" class="btn btn" onclick="addToCart('{{song.id}}');">🤍</button>
+                        {% else %}
+                            <button id="remove-btn-{{song.id}}" type="button" class="btn btn" onclick="removeFromCart('{{song.id}}');">❤️</button>
+                        {% endif %}
+                        
+                        <!-- 가사 보기 버튼 -->
+                        <button class="btn btn-sm btn" style="cursor: pointer;" data-id="{{ song.id }}" onclick="showLyrics(this.getAttribute('data-id'))">📃</button>
+                        
+                        {% if not purchased %}
+                        <!-- 다운로드 버튼 -->
+                        <form action="{% url 'payments:payment_pay' song.id %}" onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
+                            <button class="btn btn-sm" type="submit">💳</button>
+                        </form>
+                        {% else %}
+                        <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
+                            <button class="btn btn-sm">💾</button>
+                        </a>
+                        {% endif %}
+                    {% else %}
+                        <button type="button" class="btn btn-sm btn" onclick="gotoLogin();">🤍</button>
+                        <button class="btn btn-sm btn" type="submit" onclick="gotoLogin();">💳</button>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-{% endfor %}
-
-<div class="container mt-3">
-    <div class="d-flex justify-content-center">
-        <ul class="pagination">
-            {% if page_obj.has_other_pages %}
-            {% if page_obj.has_previous %}
-            <li class="page-item"><a class="page-link text-bg-dark "
-                    href="?page={{ page_obj.previous_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">&laquo; </a></li>
-            {% endif %}
-
-            {% for num in page_range %}
-            <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link text-bg-dark "
-                    href="?page={{ num }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">{{ num }}</a></li>
-            {% endfor %}
-
-            {% if page_obj.has_next %}
-            <li class="page-item"><a class="page-link text-bg-dark " href="?page={{ page_obj.next_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">
-                    &raquo;</a></li>
-            {% endif %}
-            {% endif %}
-        </ul>
-    </div>
+    {% endfor %}
 </div>
 
 

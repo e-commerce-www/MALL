@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from .forms import UserEditForm
 from django.core.paginator import Paginator
-from django.db.models import Count,Sum
+from django.db.models import Count, Sum
 from apps.follows.recommend import prepare_follow_matrix, train_knn_model, recommend_follows_knn
 
 from apps.orders.models import Order
@@ -70,12 +70,11 @@ def sales(request):
     if seller:
         # 노래별로 주문 수 계산
         orders_by_song = Order.objects.filter(
-            paymentis_paid=True,
-            songseller=seller
-        ).values('song_id', 'songtitle', 'songcreated_at', 'songprice') \
+            payment__is_paid=True,
+            song__seller=seller
+        ).values('song_id', 'song__title', 'song__created_at', 'song__price') \
         .annotate(order_count=Count('id'), total_amount=Sum('amount')) \
-        .order_by('-songcreated_at')
-
+        .order_by('-song__created_at')
     else:
         orders_by_song = []
 
@@ -143,7 +142,7 @@ def follower(request):
     user_follow_matrix, user_ids = prepare_follow_matrix()
     knn = train_knn_model(user_follow_matrix)
     recommendations = recommend_follows_knn(user_id, knn, user_follow_matrix, user_ids, top_n=5) if knn is not None else []
- 
+
     print("추천된 사용자 ID (view) : ", recommendations) # 확인 위한 디버깅 출력
 
     recommended_users = User.objects.filter(id__in=recommendations)

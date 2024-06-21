@@ -137,8 +137,8 @@
         </div>
 
 <div id="songs-container">
-        <div class="row mt-3 px-4"> 
-            {% for song, score in page_obj %}
+
+            {% for song, _ in page_obj %}
             <div class="container-fluid p-0 mt-1">
                 <div class="row justify-content-between align-items-center bg-dark p-2 shadow rounded-2" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
@@ -194,7 +194,6 @@
                 </div>
             </div>
             {% endfor %}
-        </div>
         <div class="container mt-3">
             <div class="d-flex justify-content-center">
                 <div>
@@ -348,25 +347,19 @@
         });
         loginModal.show();
     }
-
-    function showRecent(pageNumber = 1) {
+    
+    function showRecent() {
         const title = document.getElementById('chart-title');
         axios({
             method: 'get',
             url: '{% url "songs:song_recent" %}',
-            params: {
-                page: pageNumber
-            }
         })
-            .then(response => {
-                title.textContent = '차트 | 최신순';
-                document.getElementById('songs-container').innerHTML = response.data;
-                console.log(response.data)
-            })
-            .then(() => {
-            bindAudioControls(); // 바인딩 함수 호출
-            })
-            .catch(error => console.log(error));
+        .then(response => {
+            title.textContent = '차트 | 최신순';
+            document.getElementById('songs-container').innerHTML = response.data;
+            bindAudioControls(); // 새로운 HTML에 대해 이벤트 핸들러 재바인딩
+        })
+        .catch(error => console.error('Error fetching recent songs:', error));
     }
 
     function showRanking(pageNumber = 1) {
@@ -378,14 +371,12 @@
                 page: pageNumber
             }
         })
-            .then(response => {
-                title.textContent = '차트 | 인기순';
-                document.getElementById('songs-container').innerHTML = response.data;
-            })
-            .then(() => {
-            bindAudioControls(); // 바인딩 함수 호출
-            })
-            .catch(error => console.log(error));
+        .then(response => {
+            title.textContent = '차트 | 인기순';
+            document.getElementById('songs-container').innerHTML = response.data;
+            bindAudioControls(); // 새로운 HTML에 대해 이벤트 핸들러 재바인딩
+        })
+        .catch(error => console.error('Error fetching popular songs:', error));
     }
 
     function filterByBoth(tempo, genre) {
@@ -442,5 +433,7 @@
             })
             .catch(error => console.log(error));
     });
+
+    
 </script>
 {% endblock extra-script %}
