@@ -8,15 +8,7 @@
         justify-content: center;
         margin-bottom: 20px;
     }
-    .search-form {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
 
-    .input-group {
-        width: 50%;
-    }
     .input-group {
         width: 50%;
     }
@@ -26,18 +18,6 @@
         font-size: 16px;
         color: #333;
     }
-    .form-control {
-        padding: 12px 20px;
-        font-size: 16px;
-        color: #333;
-    }
-
-    .search-result {
-        text-align: center;
-    }
-    .search-result {
-        text-align: center;
-    }
 
     .search-results {
         list-style-type: none;
@@ -45,20 +25,9 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-    }
-    .search-results {
-        list-style-type: none;
-        padding: 0;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        text-align: center
     }
 
-    .search-item {
-        width: 200px;
-        margin: 20px;
-        text-align: center;
-    }
     .search-item {
         width: 200px;
         margin: 20px;
@@ -75,24 +44,44 @@
     @media (max-width: 576px) {
         .col-auto.d-flex.align-items-center {
         width: 200%;
-        margin-top: 15px;
+        margin: 15px 0px 0px;
+        padding-left: 0px;
+        padding-right: 0px;
+        }
+
+        #top5mobile {
+            padding: .3rem !important;
+        }
+        
+        .btn {
+            padding:5px;
+            
         }
     }
 </style>
 {% endblock extra-style %}
 {% block content %}
 <div class="container">
+<!-- 검색창 -->
+<div class="container">
     <!-- 검색창 -->
     <form id="search-form" class="search-form">
         {% csrf_token %}
         <div class="input-group">
-            <input type="text" id="search-input" title="title" class="form-control" placeholder="검색어를 입력하세요. (노래명;아티스트명)" style="border: 1px solid hsla(0, 0%, 100%, 0.3)" />
-            <button type="submit" class="btn btn-outline-light bg-dark search-button" style="border: 1px solid hsla(0, 0%, 100%, 0.3)">검색</button>
+        <input type="text" id="search-input" title="title" class="form-control" placeholder="검색어를 입력하세요. (노래명;아티스트명)"
+            style="border: 1px solid hsla(0, 0%, 100%, 0.3)" />
+        <button type="submit" class="btn btn-outline-light bg-dark search-button"
+            style="border: 1px solid hsla(0, 0%, 100%, 0.3)">
+            검색
+        </button>
         </div>
     </form>
-    <div id="display-content" class="mt-3"></div>
+
+    <!-- 검색 결과 -->
+<div class="search-result">
+    <div id="display-content" class="text-white"></div>
 </div>
-</form>
+>>>>>>> refs/remotes/origin/main
 
 <!-- 추천곡 ------>
 {% if user.is_authenticated %}
@@ -244,7 +233,7 @@
         <div class="row mt-3 px-4"> 
             {% for song, score in ranking_songs %}
             <div class="container-fluid p-0 mt-1">
-                <div class="row justify-content-between align-items-center bg-dark p-2 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                <div id="top5mobile" class="row justify-content-between align-items-center bg-dark p-2 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
                         <a href="{% url 'songs:song_detail' pk=song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
                     {% endthumbnail %}
@@ -316,34 +305,32 @@
 {% endblock %}
 {% block extra-script %}
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-            document.getElementById("search-form")
-                .addEventListener("submit", function (event) {
-                    event.preventDefault();
-                    const search_name_value = document.getElementById("search-input").value;
-                    const display_content = document.getElementById("display-content");
-
-                    axios({
-                        method: "post",
-                        url: '{% url "search" %}',
-                        data: JSON.stringify({
-                            title: search_name_value,
-                        }),
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRFToken": "{{ csrf_token }}",
-                        },
-                    })
-                    .then((response) => {
-                        if (response.data.success === "true") {
-                            display_content.innerHTML = response.data.data;
-                        } else {
-                            display_content.textContent = response.data.message;
-                        }
-                    })
-                    .catch((error) => console.log(error));
-                });
-        });
+document
+    .getElementById("search-form")
+    .addEventListener("submit", function (event) {
+        event.preventDefault();
+        const search_name_value = document.getElementById("search-input").value;
+        const display_content = document.getElementById("display-content");
+        axios({
+            method: "post",
+            url: '{% url "search" %}',
+            data: JSON.stringify({
+            title: search_name_value,
+            }),
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+        })
+        .then((response) => {
+            if (response.data.success === "true") {
+                display_content.innerHTML = response.data.data;
+            } else {
+                display_content.textContent = response.data.message;
+            }
+        })
+        .catch((error) => console.log(error, "no"));
+    });
 
 function showLyrics(songId) {
     const lyrics = "여기에 서버에서 가져온 가사를 채웁니다.";
@@ -391,7 +378,7 @@ function gotoLogin() {
             })
             .catch(error => console.log(error));
     }
- 
+
     function removeFromCart(songId) {
         const removeBtn = document.getElementById('remove-btn-' + (songId));
         axios({
