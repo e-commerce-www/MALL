@@ -42,7 +42,6 @@ DISQUS_API_KEY = config('DISQUS_API_KEY')
 DISQUS_SHORTNAME_2 = config('DISQUS_SHORTNAME_2')
 DISQUS_MY_DOMAIN_2 = config('DISQUS_MY_DOMAIN_2')
 
-OPENAI_API_KEY = config('OPENAI_API_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
@@ -207,7 +206,6 @@ MEDIA_URL = '/uploads/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'    #배포시에 주석해제
-
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')

@@ -75,6 +75,7 @@ def sales(request):
         ).values('song_id', 'songtitle', 'songcreated_at', 'songprice') \
         .annotate(order_count=Count('id'), total_amount=Sum('amount')) \
         .order_by('-songcreated_at')
+
     else:
         orders_by_song = []
 
