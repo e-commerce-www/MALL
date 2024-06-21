@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from .forms import UserEditForm
 from django.core.paginator import Paginator
-from django.db.models import Count,Sum
+from django.db.models import Count, Sum
 from apps.follows.recommend import prepare_follow_matrix, train_knn_model, recommend_follows_knn
 
 from apps.orders.models import Order
@@ -70,12 +70,11 @@ def sales(request):
     if seller:
         # 노래별로 주문 수 계산
         orders_by_song = Order.objects.filter(
-            paymentis_paid=True,
-            songseller=seller
-        ).values('song_id', 'songtitle', 'songcreated_at', 'songprice') \
-        .annotate(order_count=Count('id'), total_amount=Sum('amount')) \
-        .order_by('-songcreated_at')
-
+            payment__is_paid=True,
+            song__seller=seller
+        ).values('song_id', 'song__title', 'song__created_at', 'song__price') \
+         .annotate(order_count=Count('id'), total_amount=Sum('amount')) \
+         .order_by('-song__created_at')
     else:
         orders_by_song = []
 
