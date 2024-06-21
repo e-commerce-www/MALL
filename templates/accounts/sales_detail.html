@@ -126,7 +126,7 @@
                     <td class = "text-white">{{order.song__created_at|date:"Y년 n월 j일"}}</td>
                     <td class = "text-white">{{order.song__title}}</td>
                     <td class = "text-white">{{order.order_count}}명</td>
-                    <td class = "text-white">{{ order.song__price|multiply:order.order_count|intcomma }}원</td>
+                    <td class = "text-white">{{ order.total_amount }}원</td>
                 </tr>
                 {% endfor %}
             </tbody>
