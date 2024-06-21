@@ -379,16 +379,15 @@
             .catch(error => console.log(error));
     }
 
-    function filterByBoth(tempo, genre) {
+    function filterByBoth(tempo, genre, pageNumber = 1) {
         const title = document.getElementById('chart-title');
-        console.log(tempo);
-        console.log(genre);
         axios({
             method: 'get',
-            url: '{% url "songs:song_filter" %}',  
+            url: '{% url "songs:song_filter" %}',
             params: {
                 tempo: tempo,
-                genre: genre
+                genre: genre,
+                page: pageNumber
             }
         })
         .then(response => {
@@ -401,7 +400,9 @@
             } else {
                 title.textContent = '음원 목록 | 장르 : ' + genre + ' | 템포 : ' + tempo;
             }
-            document.getElementById('songs-container').innerHTML = response.data;
+            document.getElementById('songs-container').innerHTML = response.data.content_html;
+            document.getElementById('pagination-container').innerHTML = response.data.pagination_html;
+            bindAudioControls(); // 바인딩 함수 호출
         })
         .catch(error => {
             console.error('Error fetching data:', error);
@@ -446,8 +447,10 @@
             const order = document.getElementById('chart-title').textContent.includes('최신순') ? 'recent' : 'ranked';
             if (order === 'recent') {
                 showRecent(page);
-            } else {
+            } else if (order === 'ranked') {
                 showRanking(page);
+            } else {
+                filterByBoth(document.getElementById('tempo-select').value, document.getElementById('genre-select').value, page);
             }
         }
     });
