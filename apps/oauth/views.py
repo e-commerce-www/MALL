@@ -73,8 +73,8 @@ def sales(request):
             payment__is_paid=True,
             song__seller=seller
         ).values('song_id', 'song__title', 'song__created_at', 'song__price') \
-        .annotate(order_count=Count('id'), total_amount=Sum('amount')) \
-        .order_by('-song__created_at')
+         .annotate(order_count=Count('id'), total_amount=Sum('amount')) \
+         .order_by('-song__created_at')
     else:
         orders_by_song = []
 
