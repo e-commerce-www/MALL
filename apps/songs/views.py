@@ -9,6 +9,8 @@ from apps.likes.models import Like
 from apps.follows.models import Follows
 from .models import Song
 from .services import ranked_songs
+from datetime import timedelta,datetime
+from django.utils import timezone
 import boto3
 import os
 
@@ -111,6 +113,47 @@ def song_recent(request):
     page_range = range(start_page, end_page + 1)
     return render(request, "songs/song_list_recent.html", context={"page_obj": page_obj, "page_range": page_range})
 
+
+# def song_recent(request):
+#     songs = Song.objects.all().order_by("-created_at")
+#     page_number = request.GET.get("page", 1)
+
+#     paginator = Paginator(songs, 5)
+#     page_obj = paginator.get_page(page_number)
+
+#     current_page = page_obj.number  # 이 부분을 앞으로 옮김
+
+#     range_size = 5
+#     half_range = range_size // 2
+
+#     start_page = max(current_page - half_range, 1)
+#     end_page = min(start_page + range_size - 1, paginator.num_pages)
+
+#     page_range = range(start_page, end_page + 1)
+
+#     return render(
+#         request, 
+#         "songs/song_list_recent.html", 
+#         {"page_obj": page_obj, "page_range": page_range}
+#     )
+
+def song_recent(request):
+    # 최근 3일 이내의 곡들을 가져오기 위한 날짜 계산
+    three_days_ago = timezone.now() - timedelta(days=3)
+
+    # 최신순으로 생성된 곡 중에서 최근 3일 이내의 곡들을 필터링하여 가져오기
+    songs = Song.objects.filter(created_at__gte=three_days_ago).order_by("-created_at")
+
+    # 한 페이지에 모든 곡을 표시하도록 페이지네이션 설정
+    paginator = Paginator(songs, len(songs))  # 전체 곡 수 만큼 페이지네이션 설정
+    page_number = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_number)
+
+    return render(
+        request,
+        "songs/song_list_recent.html",
+        {"page_obj": page_obj}
+    )
 
 def song_ranking(request):
     songs = ranked_songs()
