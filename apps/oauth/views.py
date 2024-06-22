@@ -142,7 +142,7 @@ def follower(request):
     user_follow_matrix, user_ids = prepare_follow_matrix()
     knn = train_knn_model(user_follow_matrix)
     recommendations = recommend_follows_knn(user_id, knn, user_follow_matrix, user_ids, top_n=5) if knn is not None else []
- 
+
     print("추천된 사용자 ID (view) : ", recommendations) # 확인 위한 디버깅 출력
 
     recommended_users = User.objects.filter(id__in=recommendations)
