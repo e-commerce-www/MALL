@@ -74,7 +74,6 @@ CACHES = {
     }
 }
 
-# Redis 캐시 타임아웃 설정 (예: 1시간)
 CACHE_TIMEOUT = 3600
 
 # Application definition
