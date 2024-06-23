@@ -163,7 +163,7 @@
             {% if recommendations %}
                 <ul class="list-group">
                     {% for user in recommendations %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <li id ="recommendation-{{user.id}}" class="list-group-item d-flex justify-content-between align-items-center">
                         <a ><span class="text-white">{{ user.username }}</span></a>
                         <button class="btn btn-sm btn-primary" onclick="followUser({{ user.id }})">Follow</button>
                     </li>
@@ -218,6 +218,7 @@
         })
             .then(response => {
                 unfollowBtn.remove()
+                location.reload();
             })
             .catch(error => console.log(error));
     }
@@ -234,6 +235,10 @@
         .then(function (response) {
             if (response.data.success) {
                 alert('팔로우 추가되었습니다');
+                const recommendationItem = document.getElementById('recommendation-' + userId);
+                if (recommendationItem) {
+                    recommendationItem.remove();  // 추천 목록에서 해당 사용자 제거
+                }
                 location.reload();  // 페이지 새로고침
             } else {
                 alert('Error: ' + response.data.error);

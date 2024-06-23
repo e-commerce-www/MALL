@@ -68,7 +68,7 @@ SOCIALACCOUNT_PROVIDERS = {
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',  # Redis 서버 주소와 포트를 설정
+        'LOCATION': config('REDIS_URL'),  # Redis 서버 주소와 포트를 설정
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
