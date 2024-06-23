@@ -24,36 +24,6 @@
     }
 </style>
 
-<div class="container p-0 mt-1 px-3">
-    {% for song in page_obj %}
-    <div class="row justify-content-between align-items-center bg-dark p-2 shadow rounded-2" style="border: 1px solid hsla(0, 0%, 100%, .3);">
-        {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
-            <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;">
-                <img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;">
-            </a>
-        {% endthumbnail %}
-        <div class="col">
-            {% if forloop.counter <= 3 %} 
-                <span style="margin-right: 2px; color: yellow;">New</span>
-            {% endif %}
-            <a class="text-decoration-none" href="{% url 'songs:song_detail' song.id %}">
-                <!-- 노래 세부 내용 페이지로 링크 -->
-                <h5 class="text-white mb-0">{{ song.title }}</h5>
-                <small class="fs-6" style="color: #888888;">
-                    <a class="text-decoration-none" style="color: #888;" href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{ song.seller }}</a>
-                </small>
-            </a>
-        </div>
-        <div class="col-auto d-flex align-items-center">
-            <audio controls class="me-0" controlsList="nodownload">
-                <source src="{{ song.mp3.url }}" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-
 <div class="container p-0 mt-1 px-3" style="overflow-x: auto; white-space: nowrap;">
     {% for song in page_obj %}
         <div class="d-inline-block shadow rounded-2 m-1" style="width: 200px; display: inline-block; vertical-align: top; border: none;">

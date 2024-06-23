@@ -166,7 +166,3 @@ def song_filter(request):
         "songs/song_list_filters.html",
         context={"page_obj": page_obj, "page_range": page_range,},
     )
-
-
-
-
