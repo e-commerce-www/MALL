@@ -41,15 +41,16 @@ from apps.songs.services import ranked_songs
 import json
 import random
 
-from django.shortcuts import render
-from apps.songs.models import Song
-from apps.orders.models import Order
-from apps.songs.services import ranked_songs
-import random
+from django.core.cache import cache
+from django.conf import settings
+
 
 def get_random_ranking_songs(count=4):
     """상위 20개의 랭킹 노래 중에서 주어진 개수만큼 랜덤으로 반환하는 함수"""
     top_20_songs = ranked_songs()[:20]
+    if not top_20_songs:
+        top_20_songs = ranked_songs()[:20]
+        cache.set('top_20_songs', top_20_songs, timeout=settings.CACHE_TIMEOUT)
     recommend_songs = [song [0] for song in top_20_songs]
     return random.sample(recommend_songs, min(count, len(recommend_songs)))
 

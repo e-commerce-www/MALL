@@ -5,6 +5,7 @@ from django.conf import settings
 from sklearn.neighbors import NearestNeighbors
 from django.contrib.auth import get_user_model
 from apps.follows.models import Follows
+from config.cache_utils import set_cache, get_cache, delete_cache
 
 User = get_user_model()
 
@@ -12,19 +13,6 @@ User = get_user_model()
 CACHE_KEY_USER_MATRIX = 'user_follow_matrix'
 CACHE_KEY_USER_IDS = 'user_ids'
 CACHE_KEY_KNN_MODEL = 'knn_model'
-
-
-def set_cache(key, value, timeout=settings.CACHE_TIMEOUT):
-    cache.set(key, pickle.dumps(value), timeout)
-
-
-def get_cache(key):
-    value = cache.get(key)
-    return pickle.loads(value) if value else None
-
-
-def delete_cache(key):
-    cache.delete(key)
     
 
 def prepare_follow_matrix():

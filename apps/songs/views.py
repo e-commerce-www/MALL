@@ -8,7 +8,9 @@ from apps.likes.models import Like
 # from apps.oauth.models import User
 from apps.follows.models import Follows
 from .models import Song
-from .services import ranked_songs
+from .services import ranked_songs, recent_songs
+from datetime import timedelta,datetime
+from django.utils import timezone
 import boto3
 import os
 
@@ -87,12 +89,27 @@ def song_lyrics(request):
         return HttpResponse(str(e), status=500)
 
 
+
 def song_recent(request):
-    songs = Song.objects.all().order_by("-created_at")
+    songs = recent_songs()
     page_number = request.GET.get("page", 1)
     paginator = Paginator(songs, 5)
     page_obj = paginator.get_page(page_number)
-    return render(request, "songs/song_list_recent.html", {"page_obj": page_obj})
+    
+    # page_range 설정
+    current_page = page_obj.number
+    range_size = 5
+    half_range = range_size // 2
+
+    start_page = max(current_page - half_range, 1)
+    end_page = start_page + range_size - 1
+
+    if end_page > paginator.num_pages:
+        end_page = paginator.num_pages
+        start_page = max(end_page - range_size + 1, 1)
+
+    page_range = range(start_page, end_page + 1)
+    return render(request, "songs/song_list_recent.html", context={"page_obj": page_obj, "page_range": page_range})
 
 
 def song_ranking(request):
