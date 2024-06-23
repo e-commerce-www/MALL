@@ -3,7 +3,6 @@ from django.core.paginator import Paginator
 from django.http import StreamingHttpResponse, HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
-from django.template.loader import render_to_string
 from django.http import JsonResponse, Http404
 from apps.likes.models import Like
 # from apps.oauth.models import User
@@ -16,7 +15,6 @@ import os
 
 def song_list(request):
     song_list = ranked_songs()
-
     paginator = Paginator(song_list, 5)
 
     page_number = request.GET.get("page", 1)
@@ -94,26 +92,13 @@ def song_recent(request):
     page_number = request.GET.get("page", 1)
     paginator = Paginator(songs, 5)
     page_obj = paginator.get_page(page_number)
-    
-    current_page = page_obj.number
-    range_size = 5
-    half_range = range_size // 2
-
-    start_page = max(current_page - half_range, 1)
-    end_page = min(start_page + range_size - 1, paginator.num_pages)
-
-    page_range = range(start_page, end_page + 1)
-
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        content_html = render_to_string('songs/song_list_content.html', {'page_obj': page_obj})
-        pagination_html = render_to_string('songs/pagination.html', {'page_obj': page_obj, 'page_range': page_range})
-        return JsonResponse({'content_html': content_html, 'pagination_html': pagination_html})
-    return render(request, "songs/song_list_recent.html", context={"page_obj": page_obj, "page_range": page_range})
+    return render(request, "songs/song_list_recent.html", {"page_obj": page_obj})
 
 
 def song_ranking(request):
     songs = ranked_songs()
     paginator = Paginator(songs, 5)
+
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
 
@@ -126,12 +111,11 @@ def song_ranking(request):
 
     page_range = range(start_page, end_page + 1)
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        content_html = render_to_string('songs/song_list_content.html', {'page_obj': page_obj})
-        pagination_html = render_to_string('songs/pagination.html', {'page_obj': page_obj, 'page_range': page_range})
-        return JsonResponse({'content_html': content_html, 'pagination_html': pagination_html})
-    return render(request, "songs/song_list_ranking.html", context={"page_obj": page_obj, "page_range": page_range})
-
+    return render(
+        request,
+        "songs/song_list_ranking.html",
+        context={"page_obj": page_obj, "page_range": page_range},
+    )
 
 def song_filter(request):
     tempo = request.GET.get("tempo", "")
@@ -145,11 +129,9 @@ def song_filter(request):
     if tempo:
         songs = songs.filter(tempo=tempo)
 
-    print(f"Filtered Songs: {songs}")  # 디버그용 출력
-
+    paginator = Paginator(songs, 10)
 
     page_number = request.GET.get("page", 1)
-    paginator = Paginator(songs, 5)
     page_obj = paginator.get_page(page_number)
 
     current_page = page_obj.number
@@ -161,16 +143,8 @@ def song_filter(request):
 
     page_range = range(start_page, end_page + 1)
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        content_html = render_to_string('songs/song_list_content.html', {'page_obj': page_obj})
-        pagination_html = render_to_string('songs/pagination.html', {'page_obj': page_obj, 'page_range': page_range})
-        return JsonResponse({'content_html': content_html, 'pagination_html': pagination_html})
-
     return render(
         request,
         "songs/song_list_filters.html",
-        context={"page_obj": page_obj, "page_range": page_range},
+        context={"page_obj": page_obj, "page_range": page_range,},
     )
-
-
-

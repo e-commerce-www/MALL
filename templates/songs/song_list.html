@@ -30,38 +30,16 @@
         border-radius: 5%;
     }
     @media (max-width: 576px) {
-    .col-auto.d-flex.align-items-center {
-    display: flex;
-    flex-wrap: wrap; /* 요소가 넘칠 경우 줄바꿈 */
-    align-items: center;
-    gap: 5px;
+        .col-auto.d-flex.align-items-center {
+        width: 500%;
+        margin: 15px 0px 0px;
+        padding-left: 0;
+        padding-right: 0;
         }
-    /*오디오 요소*/
-    #audio{
-        order: 1;     /*순서 1번*/
     }
-    /*가사 버튼*/
-    #lyrics_btn {
-        order: 2;     /*순서 2번*/
+    #search-elements {
+        display: block !important;
     }
-    /*결제 다운로드 버튼*/
-    #payment_btn {
-        order: 3;     /*순서 3번*/
-    }
-    /* 찜하기 버튼 */
-    #wish-btn {
-        order: 4;     /*순서 4번*/
-        margin-top: 5px;
-        width: 100%;
-        max-width: 100px;
-        }
-
-    .col.d-flex {
-        flex-direction: column;
-        gap: 5px;
-
-        }
-
     .search-item {
         width: 100%;
         margin: 10px 0;
@@ -75,25 +53,6 @@
         max-width: 90%;
         }
 
-    #lyricsContent {
-        max-height: 50vh;
-        overflow-y: auto;
-        }
-    #sort_button_group{
-        display: flex;
-        text-align: center; /* 가운데 정렬 */
-        white-space: nowrap;
-        width: fit-content;
-        margin-bottom: 5px;
-    }
-    #new_button,#popular_button{
-    display: inline-block;
-    width: fit-content;
-    text-align: center; /* 가운데 정렬 */
-    padding: 2px 6px; /* 버튼의 패딩 조정 */
-    font-size: normal; /* 텍스트 크기 조정 */
-    margin: 5 5px; /* 버튼 간의 간격 조정 */
-    }
     
     #search-form{
         flex : 1;
@@ -104,18 +63,16 @@
         align-items: stretch; /* 길이 맞춤 */
         margin-top: 10px; /* 위 여백 */
         margin-bottom: 10px; /* 아래 여백 */
-  }
-    .input-group {
-        flex-direction: row;
-        }
-    .form-control {
-        flex: 1;
-        margin-right: 5px;
-        }
     }
-</style>
 
+    .btn {
+            padding:5px;
+        }
+
+    
+</style>
 {% endblock extra-style %}
+
 {% block content %}
 <div class="container">
 
@@ -125,7 +82,7 @@
     <div>
         <div class="container">
             <div class="row mt-3 mb-3">
-                <div class="col d-flex ">
+                <div class="col d-flex" id="search-elements">
                     <div class="btn-group m-0" role="group" aria-label="Sort" style="border: 1px solid hsla(0, 0%, 100%, .3);" id="sort_button_group">
                         <button type="button" class="btn btn-dark m-0" onclick="showRecent();" id="new_button">최신순</button>
                         <button type="button" class="btn btn-dark m-0" onclick="showRanking();" id="popular_button">인기순</button>
@@ -179,35 +136,87 @@
             </div>
         </div>
 
-        <div id="songs-container">
-            {% include 'songs/song_list_content.html' %}
+<div id="songs-container">
+        <div class="row mt-3 px-4"> 
+            {% for song, score in page_obj %}
+            <div class="container-fluid p-0 mt-1">
+                <div class="row justify-content-between align-items-center bg-dark p-2 shadow rounded-2" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                    {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
+                        <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
+                    {% endthumbnail %}
+                    <div class="col">
+                        <span class="text-white" style="margin-right: 2px;">{{ page_obj.start_index|add:forloop.counter0 }}</span>
+                        <span class="text-white ">위</span> 
+                        {% if score >= 50 %}
+                            <span style="color: deeppink;">Hot!</span>    
+                        {% elif score < 50 and score >= 20 %}
+                            <span style="color: aquamarine;">Recommended!!!</span>
+                        {% endif %}
+                        <a class="text-decoration-none " href="{% url 'songs:song_detail' song.id %}">
+                            <!-- 노래 세부 내용 페이지로 링크 -->
+                            <h5 class="text-white mb-0">{{ song.title }}</h5>
+                            <small class="fs-6" style="color: #888888;">
+                                <a class="text-decoration-none " style="color: #888;" href="{% url 'sellers:seller_artist' song.seller.user.id %}">{{ song.seller }}</a>
+                            </small>
+                        </a>
+                    </div>
+                    <div class="col-auto d-flex align-items-center">
+                        <audio controls class="me-0" controlsList="nodownload">
+                            <source src="{{ song.mp3.url }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                        {% if user.is_authenticated %}
+                        <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
+                            {% is_purchased user song.id as purchased %}
+                            {% is_added_to_cart user song.id as added %}
+                            {% if not added %}
+                                <button id="add-btn-{{song.id}}" type="button" class="btn btn" onclick="addToCart('{{song.id}}');">🤍</button>
+                                <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}" onclick="showLyrics('{{ song.id }}')">📃</a>
+                            {% else %}
+                                <button id="remove-btn-{{song.id}}" type="button" class="btn btn" onclick="removeFromCart('{{song.id}}');">❤️</button>
+                                <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}" onclick="showLyrics('{{ song.id }}')">📃</a>
+                            {% endif %}
+                            {% if not purchased %}
+                                <form action="{% url 'payments:payment_pay' song.id %}" onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
+                                    <button class="btn btn" type="submit" onclick="">💳</button>
+                                </form>
+                            {% else %}
+                                <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
+                                    <button class="btn btn">💾</button>
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <button type="button" class="btn btn" onclick="gotoLogin();">🤍</button>
+                            <button class="btn btn" type="submit" onclick="gotoLogin();">💳</button>
+                            <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}" onclick="showLyrics('{{ song.id }}')">📃</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
-
-        <div class="container mt-3" id="pagination-container">
+        <div class="container mt-3">
             <div class="d-flex justify-content-center">
                 <div>
                     <ul class="pagination">
                         {% if page_obj.has_other_pages %}
                         {% if page_obj.has_previous %}
-                        <li class="page-item"><a class="page-link text-bg-dark" href="?page={{ page_obj.previous_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">&laquo; Previous</a></li>
+                        <li class="page-item"><a class="page-link text-bg-dark " href="?page={{ page_obj.previous_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">&laquo; Previous</a></li>
                         {% endif %}
-
                         {% for num in page_range %}
-                        <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link text-bg-dark" href="?page={{ num }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">{{ num }}</a></li>
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link text-bg-dark " href="?page={{ num }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">{{ num }}</a></li>
                         {% endfor %}
-
                         {% if page_obj.has_next %}
-                        <li class="page-item"><a class="page-link text-bg-dark" href="?page={{ page_obj.next_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">Next &raquo;</a></li>
+                        <li class="page-item"><a class="page-link text-bg-dark " href="?page={{ page_obj.next_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">Next &raquo;</a></li>
                         {% endif %}
                         {% endif %}
                     </ul>
                 </div>
             </div>
         </div>
-
     </div>
-
 </div>
+
 
 {% endblock content %}
 
@@ -301,7 +310,7 @@
         })
             .then(response => {
                 addBtn.id = 'remove-btn-' + response.data.song_id;  // Change the ID
-                addBtn.className = 'btn btn me-2';  // Change the classes
+                addBtn.className = 'btn btn';  // Change the classes
                 addBtn.onclick = () => removeFromCart(songId);  // Change the onclick event
                 addBtn.textContent = '❤️';
                 // alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
@@ -320,7 +329,7 @@
         })
             .then(response => {
                 removeBtn.id = 'add-btn-' + response.data.song_id;  // Change the ID
-                removeBtn.className = 'btn btn me-2';  // Change the classes
+                removeBtn.className = 'btn btn';  // Change the classes
                 removeBtn.onclick = () => addToCart(songId);  // Change the onclick event
                 removeBtn.textContent = '🤍';
                 // alert(response.data.success);
@@ -379,15 +388,16 @@
             .catch(error => console.log(error));
     }
 
-    function filterByBoth(tempo, genre, pageNumber = 1) {
+    function filterByBoth(tempo, genre) {
         const title = document.getElementById('chart-title');
+        console.log(tempo);
+        console.log(genre);
         axios({
             method: 'get',
-            url: '{% url "songs:song_filter" %}',
+            url: '{% url "songs:song_filter" %}',  
             params: {
                 tempo: tempo,
-                genre: genre,
-                page: pageNumber
+                genre: genre
             }
         })
         .then(response => {
@@ -400,17 +410,12 @@
             } else {
                 title.textContent = '음원 목록 | 장르 : ' + genre + ' | 템포 : ' + tempo;
             }
-            document.getElementById('songs-container').innerHTML = response.data.content_html;
-            document.getElementById('pagination-container').innerHTML = response.data.pagination_html;
-            bindAudioControls(); // 바인딩 함수 호출
+            document.getElementById('songs-container').innerHTML = response.data;
         })
         .catch(error => {
             console.error('Error fetching data:', error);
         });
     }
-
-
-    // 
 
     document.getElementById("search-form").addEventListener('submit', function (event) {
         event.preventDefault();
@@ -436,23 +441,6 @@
                 }
             })
             .catch(error => console.log(error));
-    });
-
-    // 페이지네이션 링크 클릭 이벤트 처리
-    document.addEventListener('click', function(event) {
-        if (event.target.classList.contains('page-link')) {
-            event.preventDefault();
-            const url = new URL(event.target.href);
-            const page = url.searchParams.get('page');
-            const order = document.getElementById('chart-title').textContent.includes('최신순') ? 'recent' : 'ranked';
-            if (order === 'recent') {
-                showRecent(page);
-            } else if (order === 'ranked') {
-                showRanking(page);
-            } else {
-                filterByBoth(document.getElementById('tempo-select').value, document.getElementById('genre-select').value, page);
-            }
-        }
     });
 </script>
 {% endblock extra-script %}

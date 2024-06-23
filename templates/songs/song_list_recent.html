@@ -5,7 +5,7 @@
 
 
 <div class="container p-0 mt-1 px-3">
-    <div class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
+    <div class="row justify-content-between align-items-center bg-dark p-2 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
         {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
             <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
         {% endthumbnail %}
@@ -21,13 +21,8 @@
                 </small>
             </a>
         </div>
-        <div class="col">
-            <div>
-                <a class="btn btn-outline-light me-2 text-white" style="cursor: pointer;" data-id="{{ song.id }}" onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
-            </div>
-        </div>
         <div class="col-auto d-flex align-items-center">
-            <audio controls class="me-3" controlsList="nodownload">
+            <audio controls class="me-0" controlsList="nodownload">
                 <source src="{{ song.mp3.url }}" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
@@ -39,32 +34,52 @@
             
                 <!-- 찜 버튼 -->
                 {% if not added %}
-                    <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2"
-                        onclick="addToCart('{{song.id}}');">찜하기</button>
+                    <button id="add-btn-{{song.id}}" type="button" class="btn btn"
+                        onclick="addToCart('{{song.id}}');">🤍</button>
+                        <a class="btn btn text-white" style="cursor: pointer;" data-id="{{ song.id }}" onclick="showLyrics(this.getAttribute('data-id'))">📃</a>
                 {% else %}
-                    <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2"
-                        onclick="removeFromCart('{{song.id}}');">찜 취소</button>
+                    <button id="remove-btn-{{song.id}}" type="button" class="btn btn" onclick="removeFromCart('{{song.id}}');">❤️</button>
+                    <a class="btn btn text-white" style="cursor: pointer;" data-id="{{ song.id }}" onclick="showLyrics(this.getAttribute('data-id'))">📃</a>
                 {% endif %}
                 {% if not purchased %}
                 <!-- 다운로드 버튼 -->
                 <form action="{% url 'payments:payment_pay' song.id %}"
                     onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                    <button class="btn btn-outline-light me-2" type="submit" onclick="">구매하기</button>
+                    <button class="btn btn" type="submit" onclick="">💳</button>
                 </form>
                 {% else %}
                 <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
-                    <button class="btn btn-outline-light me-2">다운로드</button>
+                    <button class="btn btn">💾</button>
                 </a>
                 {% endif %}
             {% else %}
-                <button type="button" class="btn btn-outline-light me-2" onclick="gotoLogin();">찜하기</button>
-                <button class="btn btn-outline-light me-2" type="submit" onclick="gotoLogin();">구매하기</button>
+                <button type="button" class="btn btn" onclick="gotoLogin();">🤍</button>
+                <button class="btn btn" type="submit" onclick="gotoLogin();">💳</button>
             {% endif %}
         </div>
     </div>
 </div>
 {% endfor %}
 
+<div class="container mt-3">
+    <div class="d-flex justify-content-center">
+        <ul class="pagination">
+            {% if page_obj.has_other_pages %}
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link text-bg-dark "
+                    href="?page={{ page_obj.previous_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">&laquo; </a></li>
+            {% endif %}
 
+            {% for num in page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link text-bg-dark "
+                    href="?page={{ num }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">{{ num }}</a></li>
+            {% endfor %}
 
-
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link text-bg-dark " href="?page={{ page_obj.next_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                    &raquo;</a></li>
+            {% endif %}
+            {% endif %}
+        </ul>
+    </div>
+</div>
