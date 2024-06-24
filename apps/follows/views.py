@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from .models import Follows
+from .recommend import delete_cache, CACHE_KEY_USER_MATRIX, CACHE_KEY_USER_IDS, CACHE_KEY_KNN_MODEL
 from django.http import JsonResponse
 
 User = get_user_model()
@@ -45,19 +46,26 @@ def follow_song(request, pk):
 @login_required
 def follow(request):
     user_id = request.GET.get("userid")
-    user_to_follow = User.objects.get(pk=user_id)
-    if request.user != user_to_follow:
-        Follows.objects.get_or_create(follower=request.user, following=user_to_follow)
-
-    return JsonResponse({"success": True})
+    try:
+        user_to_follow = User.objects.get(pk=user_id)
+        if request.user != user_to_follow:
+            Follows.objects.get_or_create(follower=request.user, following=user_to_follow)
+        return JsonResponse({"success": True})
+    except User.DoesNotExist:
+        return JsonResponse({"success": False, "error": "User does not exist"})
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
 
 
 @login_required
 def unfollow(request):
     user_id = request.GET.get("userid")
-    user_to_unfollow = User.objects.get(pk=user_id)
-    if request.user != user_to_unfollow:
-        Follows.objects.filter(
-            follower=request.user, following=user_to_unfollow
-        ).delete()
-    return JsonResponse({"success": True})
+    try:
+        user_to_unfollow = User.objects.get(pk=user_id)
+        if request.user != user_to_unfollow:
+            Follows.objects.filter(follower=request.user, following=user_to_unfollow).delete()
+        return JsonResponse({"success": True})
+    except User.DoesNotExist:
+        return JsonResponse({"success": False, "error": "User does not exist"})
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})

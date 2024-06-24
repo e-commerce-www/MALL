@@ -64,6 +64,18 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': config('REDIS_URL'),  # Redis 서버 주소와 포트를 설정
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+CACHE_TIMEOUT = 3600
+
 # Application definition
 
 INSTALLED_APPS = [

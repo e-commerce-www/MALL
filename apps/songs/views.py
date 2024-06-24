@@ -8,7 +8,7 @@ from apps.likes.models import Like
 # from apps.oauth.models import User
 from apps.follows.models import Follows
 from .models import Song
-from .services import ranked_songs
+from .services import ranked_songs, recent_songs
 from datetime import timedelta,datetime
 from django.utils import timezone
 import boto3
@@ -91,7 +91,7 @@ def song_lyrics(request):
 
 
 def song_recent(request):
-    songs = Song.objects.all().order_by("-created_at")
+    songs = recent_songs()
     page_number = request.GET.get("page", 1)
     paginator = Paginator(songs, 5)
     page_obj = paginator.get_page(page_number)
