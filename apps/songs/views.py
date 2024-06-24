@@ -91,25 +91,22 @@ def song_lyrics(request):
 
 
 def song_recent(request):
-    songs = recent_songs()
+    # 최근 3일 이내의 곡들을 가져오기 위한 날짜 계산
+    three_days_ago = timezone.now() - timedelta(days=7)
+
+    # 최신순으로 생성된 곡 중에서 최근 3일 이내의 곡들을 필터링하여 가져오기
+    songs = Song.objects.filter(created_at__gte=three_days_ago).order_by("-created_at")
+
+    # 한 페이지에 모든 곡을 표시하도록 페이지네이션 설정
+    paginator = Paginator(songs, len(songs))  # 전체 곡 수 만큼 페이지네이션 설정
     page_number = request.GET.get("page", 1)
-    paginator = Paginator(songs, 5)
     page_obj = paginator.get_page(page_number)
-    
-    # page_range 설정
-    current_page = page_obj.number
-    range_size = 5
-    half_range = range_size // 2
 
-    start_page = max(current_page - half_range, 1)
-    end_page = start_page + range_size - 1
-
-    if end_page > paginator.num_pages:
-        end_page = paginator.num_pages
-        start_page = max(end_page - range_size + 1, 1)
-
-    page_range = range(start_page, end_page + 1)
-    return render(request, "songs/song_list_recent.html", context={"page_obj": page_obj, "page_range": page_range})
+    return render(
+        request,
+        "songs/song_list_recent.html",
+        {"page_obj": page_obj}
+    )
 
 
 def song_ranking(request):

@@ -29,11 +29,11 @@ def get_disqus_comment_count(disqus_id):
     response = requests.get(api_url, params=params)
     if response.status_code == 200:
         data = response.json()
-        print(data)
+        # print(data)
         return data['response']['posts']
     
     elif response.status_code == 400 and response.json().get('code') == 2:
-        print(f"Thread not found for ID {disqus_id}")
+        # print(f"Thread not found for ID {disqus_id}")
         return 0  # 스레드가 존재하지 않는 경우
     
     # print("Error: ", response.status_code, response.json())
@@ -110,9 +110,10 @@ def board_list(request):
 
 
 # 게시글 등록
+@login_required
 def board_create(request):
-    if request.user.is_anonymous:
-        return render(request, 'boards/board_create.html', {'show_login_modal': True, 'next': request.get_full_path()})
+    # if request.user.is_anonymous:
+    #     return render(request, 'boards/board_create.html')
 
     if request.method == "POST":
         form = BoardForm(request.POST)
@@ -130,9 +131,10 @@ def board_create(request):
 
 
 # 게시글 보기
+@login_required
 def board_read(request,pk):
-    if request.user.is_anonymous:
-        return render(request, 'boards/board_read.html', {'show_login_modal': True, 'next': request.get_full_path()})
+    # if request.user.is_anonymous:
+    #     return render(request, 'boards/board_read.html')
 
     board = Board.objects.annotate(likes_count=Count('board_likes')).get(pk=pk)
     board_like = BoardLike.objects.filter(user=request.user, board=board).exists()
@@ -195,9 +197,10 @@ def board_delete(request, pk):
 
 
 # 북마크 글
+@login_required
 def bookmarked_boards(request):
-    if request.user.is_anonymous:
-        return render(request, 'boards/bookmark_list.html', {'show_login_modal': True, 'next': request.get_full_path()})
+    # if request.user.is_anonymous:
+    #     return render(request, 'boards/bookmark_list.html')
     
     bookmarks = Bookmark.objects.filter(user=request.user).select_related('board').order_by('-created_at')
 
