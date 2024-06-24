@@ -2,6 +2,7 @@
 {% load session_filters %}
 {% load thumbnail %}
 {% block extra-style %}
+{% load static %}
 <style>
 
 @media (max-width:576px) {
@@ -259,7 +260,7 @@
 
             <!-- 인스타그램 공유 -->
             <a href="https://www.instagram.com/direct/inbox/" class="instagram-btn">
-                <img src="/uploads/insta.jpeg" alt="Instagram Icon" />
+                <img src="{% static 'Instagram_icon.png' %}" alt="Instagram Icon" />
             </a>
 
             <div id="toast">링크가 복사되었습니다!</div>
