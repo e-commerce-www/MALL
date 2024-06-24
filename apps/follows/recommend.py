@@ -20,7 +20,7 @@ def prepare_follow_matrix():
     cached_user_ids = get_cache(CACHE_KEY_USER_IDS)
 
     if cached_matrix is not None and cached_user_ids is not None:
-        print("Using cached follow matrix and user ids")
+        # print("Using cached follow matrix and user ids")
         return cached_matrix, cached_user_ids
 
     follows = Follows.objects.all().values('follower_id', 'following_id')
@@ -42,13 +42,13 @@ def train_knn_model(user_follow_matrix):
     cached_knn = get_cache(CACHE_KEY_KNN_MODEL)
 
     if cached_knn is not None:
-        print("Using cached KNN model")
+        # print("Using cached KNN model")
         return cached_knn
 
     if user_follow_matrix.empty or len(user_follow_matrix) < 2:
         return None
 
-    print("Training new KNN model")
+    # print("Training new KNN model")
     knn = NearestNeighbors(metric='cosine', algorithm='brute')
     knn.fit(user_follow_matrix)
 
@@ -86,15 +86,6 @@ def recommend_follows_knn(user_id, knn, user_follow_matrix, user_ids, top_n=5):
     final_recommendations = list(recommendations - followed_users)
 
     return final_recommendations[:top_n]
-
-    # for similar_user in similar_users:
-    #     similar_user_followings = set(user_follow_matrix.columns[user_follow_matrix.loc[similar_user] == 1])
-        
-        # # 사용자와 유사한 사용자의 팔로우 목록이 겹치는지 확인
-        # if followed_users & similar_user_followings:
-        #     recommendations.update(similar_user_followings - followed_users)
-
-    # return list(recommendations)[:top_n]
 
 
 

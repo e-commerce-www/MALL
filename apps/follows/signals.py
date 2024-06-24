@@ -7,7 +7,7 @@ from .recommend import CACHE_KEY_USER_MATRIX, CACHE_KEY_USER_IDS, CACHE_KEY_KNN_
 @receiver(post_save, sender=Follows)
 @receiver(post_delete, sender=Follows)
 def clear_cache(sender, **kwargs):
-    print("Clearing cache due to Follows model change")
+    # print("Clearing cache due to Follows model change")
     delete_cache(CACHE_KEY_USER_MATRIX)
     delete_cache(CACHE_KEY_USER_IDS)
     delete_cache(CACHE_KEY_KNN_MODEL)
