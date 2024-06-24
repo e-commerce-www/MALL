@@ -41,6 +41,8 @@ exceptiongroup==1.2.1
 fastjsonschema==2.19.1
 filelock==3.13.4
 frozenlist==1.4.1
+greenlet==3.0.3
+gunicorn==22.0.0
 h11==0.14.0
 h2==3.2.0
 hpack==3.0.0
