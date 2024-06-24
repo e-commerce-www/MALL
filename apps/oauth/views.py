@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from .forms import UserEditForm
 from django.core.paginator import Paginator
-from django.db.models import Count
+from django.db.models import Count, Sum
+from apps.follows.recommend import prepare_follow_matrix, train_knn_model, recommend_follows_knn
 
 from apps.orders.models import Order
 from apps.follows.models import Follows
@@ -12,6 +14,7 @@ from apps.songs.models import Song
 from apps.sellers.models import Seller
 from apps.payments.models import Payment
 
+User = get_user_model()
 
 @login_required
 def profile(request):
@@ -69,7 +72,9 @@ def sales(request):
         orders_by_song = Order.objects.filter(
             payment__is_paid=True,
             song__seller=seller
-        ).values('song__title', 'song__created_at', 'song__price').annotate(order_count=Count('id')).order_by('-created_at')
+        ).values('song_id', 'song__title', 'song__created_at', 'song__price') \
+         .annotate(order_count=Count('id'), total_amount=Sum('amount')) \
+         .order_by('-song__created_at')
     else:
         orders_by_song = []
 
@@ -100,16 +105,24 @@ def sales(request):
 
 
 @login_required
-def follower_recent(request):
-    myfollow = Follows.objects.filter(follower=request.user)
-    
+def follower(request):
+    # myfollow = Follows.objects.filter(follower=request.user)
 
+    # for se_follow in myfollow:
+    #     # 각 팔로우한 유저 최근 음악 1개 가져오기
+    #     seller_of_following = Seller.objects.get(user=se_follow.following)
+    #     se_follow.recent_songs = Song.objects.filter(seller=seller_of_following).order_by('-id')[:1]
+
+    myfollow = Follows.objects.filter(follower=request.user).select_related('following').prefetch_related('following__seller_set__song_set')
+
+    follow_data = []
     for se_follow in myfollow:
-        # 각 팔로우한 유저 최근 음악 1개 가져오기
-        seller_of_following = Seller.objects.get(user=se_follow.following)
-        se_follow.recent_songs = Song.objects.filter(seller=seller_of_following).order_by('-id')[:1]
+        seller_of_following = se_follow.following.seller_set.first()
+        if seller_of_following:
+            recent_songs = seller_of_following.song_set.order_by('-id')[:1]
+            follow_data.append((se_follow, recent_songs))
 
-    paginator = Paginator(myfollow, 3)
+    paginator = Paginator(follow_data, 3)
 
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
@@ -122,13 +135,25 @@ def follower_recent(request):
     end_page = min(start_page + range_size - 1, paginator.num_pages)
 
     page_range = range(start_page, end_page + 1)
+
+
+    # 팔로우 추천
+    user_id = request.user.id
+    user_follow_matrix, user_ids = prepare_follow_matrix()
+    knn = train_knn_model(user_follow_matrix)
+    recommendations = recommend_follows_knn(user_id, knn, user_follow_matrix, user_ids, top_n=5) if knn is not None else []
+
+    # print("추천된 사용자 ID (view) : ", recommendations) # 확인 위한 디버깅 출력
+
+    recommended_users = User.objects.filter(id__in=recommendations)
+    recommendations_data = [{'id': user.id, 'username':user.username} for user in recommended_users]
+
+    # print("추천된 사용자 : ", recommendations_data) # 확인 위한 디버깅출력
     
     context={
         "page_obj": page_obj, 
         "page_range": page_range,
+        "recommendations" : recommendations_data,
     }
 
     return render(request, 'accounts/following.html', context)
-
-
-

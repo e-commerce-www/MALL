@@ -32,6 +32,63 @@
         color: white;
     }
 
+    @media (max-width: 576px) {
+    
+    .col-auto.d-flex.align-items-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+    }
+    .col-auto.d-flex.align-items-center button {
+        margin-top: 5px; /* 버튼들 간의 간격 조정 */
+    }
+    }
+
+    @media (max-width: 576px) {
+        .remenu {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid hsla(0, 0%, 100%, .3);
+            border-bottom: 1px solid hsla(0, 0%, 100%, .3);
+            text-align: left;
+        }
+
+        .remenu a {
+            text-decoration: none;
+            color: #bcbcbc;
+            font-weight: 500;
+        }
+
+        .remenu a:hover {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        .remenu li {
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        .left-section,
+        .right-top,
+        .right-bottom {
+            padding: 20px;
+        }
+
+        .left-section h2,
+        .right-top h2,
+        .right-bottom h2 {
+            margin-bottom: 20px;
+        }
+
+        .SaleDetail {
+            font-size: small;
+        }
+
+    }
+
 </style>
 
 {% endblock extra-style %}
@@ -66,10 +123,10 @@
                 {% for order in page_obj %}
                 <tr>
                     <td class = "text-white">No. {{ page_obj.start_index | add:forloop.counter0 }}</td>
-                    <td class = "text-white">{{order.song__created_at|date:"Y년 n월 j일 g:i A"}}</td>
+                    <td class = "text-white">{{order.song__created_at|date:"Y년 n월 j일"}}</td>
                     <td class = "text-white">{{order.song__title}}</td>
                     <td class = "text-white">{{order.order_count}}명</td>
-                    <td class = "text-white">{{ order.song__price|multiply:order.order_count|intcomma }}원</td>
+                    <td class = "text-white">{{ order.total_amount }}원</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -83,15 +140,16 @@
             <ul class="pagination">
             {% if page_obj.has_other_pages %}
                 {% if page_obj.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
+                <li class="page-item"><a class="page-link text-bg-dark" href="?page={{ page_obj.previous_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">&laquo; Previous</a></li>
                 {% endif %}
     
                 {% for num in page_range %}
-                    <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link text-bg-dark" 
+                        href="?page={{ num }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">{{ num }}</a></li>
                 {% endfor %}
     
                 {% if page_obj.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a></li>
+                <li class="page-item"><a class="page-link text-bg-dark" href="?page={{ page_obj.next_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">Next &raquo;</a></li>
                 {% endif %}
             {% endif %}
             </ul>

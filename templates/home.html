@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load thumbnail %}
 {% load session_filters %}
-
 {% block extra-style %}
 <style>
     .search-form {
@@ -17,13 +16,7 @@
     .form-control {
         padding: 12px 20px;
         font-size: 16px;
-        /* 입력창 배경색 */
         color: #333;
-        /* 입력창 텍스트 색상 */
-    }
-
-    .search-result {
-        text-align: center;
     }
 
     .search-results {
@@ -32,6 +25,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        text-align: center
     }
 
     .search-item {
@@ -47,64 +41,200 @@
         border-radius: 5%;
     }
 
+    @media (max-width: 576px) {
+        .col-auto.d-flex.align-items-center {
+        width: 200%;
+        margin: 15px 0px 0px;
+        padding-left: 0px;
+        padding-right: 0px;
+        }
+
+        #top5mobile {
+            padding: .3rem !important;
+        }
+        
+        .btn {
+            padding:5px;
+            
+        }
+    }
 </style>
 {% endblock extra-style %}
-
-
 {% block content %}
+<div class="container">
+<!-- 검색창 -->
 <div class="container">
     <!-- 검색창 -->
     <form id="search-form" class="search-form">
         {% csrf_token %}
         <div class="input-group">
-            <input type="text" id="search-input" title="title" class="form-control" placeholder="검색어를 입력하세요. (노래명;아티스트명)" style="border: 1px solid hsla(0, 0%, 100%, .3);">
-            <button type="submit" class="btn btn-outline-light bg-dark  " style="border: 1px solid hsla(0, 0%, 100%, .3)">검색</button>
+        <input type="text" id="search-input" title="title" class="form-control" placeholder="검색어를 입력하세요. (노래명;아티스트명)"
+            style="border: 1px solid hsla(0, 0%, 100%, 0.3)" />
+        <button type="submit" class="btn btn-outline-light bg-dark search-button"
+            style="border: 1px solid hsla(0, 0%, 100%, 0.3)">
+            검색
+        </button>
         </div>
     </form>
 
     <!-- 검색 결과 -->
-    <div class="search-result">
-        <div id="display-content" class="text-white "></div>
-    </div>
+<div class="search-result">
+    <div id="display-content" class="text-white"></div>
+</div>
 
-    <div class="container ">
-        <div class="row">
-            <div class="col-12 mb-4">
-                <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
-                    <h1 id="chart-title" class="fs-2 text-white m-0 ">신곡</h1>
+<!-- 추천곡 ------>
+{% if user.is_authenticated %}
+<!-- 모바일에서 추천곡 ------>
+<div class="container">
+    <div class="row recommended_songs">
+        <div id="recommendedCarousel" class="carousel slide d-sm-none">
+            <h5 id="chart-title" class="fs-2 text-white m-0">{{ user.username }}님을 위한 추천곡</h5>
+            <div class="carousel-inner">
+                <div style="border-bottom: 0px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
                 </div>
-                <div class="row mt-3">
-                    {% for song in object %}
-                    <div class="col-sm-6 col-md-3 mb-4" >
-                        <div class="card text-center bg-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);">
-                            <a href="{% url 'songs:song_detail' pk=song.id %}" class="text-decoration-none ">
-                                {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
-                                <img src="{{ thumb.url }}" class="card-img-top food-image" alt="{{ song.title }}">
-                                <div class="card-body row">
-                                    <h5 class="card-title text-white ">{{ song.title }}</h5>
-                                    <p class="p-0 m-0 "><a class="text-decoration-none " href="{% url 'sellers:seller_artist' song.seller.user.id %}" style="color:#888;">{{song.seller}}</a></p>
-                                </div>
-                                {% endthumbnail %}
-                            </a>
+                {% for song in recommended_songs %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="d-flex justify-content-center align-items-center h-100">
+                        <div class="col-sm-6 col-md-3 mb-4">
+                            <div class="card text-center bg-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                                <a href="{% url 'songs:song_detail' pk=song.id %}" class="text-decoration-none">
+                                    {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
+                                        <img src="{{ thumb.url }}" class="card-img-top food-image"  alt="{{ song.title }}" style>
+                                        <div class="card-body row" style="text-align: left;">
+                                            <h5 class="card-title text-white" style="font-size: 100%;">{{ song.title }}</h5>
+                                            <p class="p-0 m-0">
+                                                <a class="text-decoration-none" href="{% url 'sellers:seller_artist' song.seller.id %}" style="color:#888;margin-left: 20px;">{{ song.seller }}</a>
+                                            </p>
+                                        </div>
+                                    {% endthumbnail %}
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    {% endfor %}
                 </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#recommendedCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#recommendedCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <!-- PC 화면에서 추천곡 -->
+        <div class="col-12 mb-4 d-none d-sm-block">
+            <div style="border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
+                <h1 id="chart-title" class="fs-2 text-white m-0 ">{{ user.username }}님을 위한 추천곡</h1>
+            </div>
+            <div class="row mt-3">
+                    {% for song in recommended_songs %}
+                        <div class="col-sm-6 col-md-3 mb-4">
+                            <div class="card text-center bg-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                                <a href="{% url 'songs:song_detail' pk=song.id %}" class="text-decoration-none">
+                                    {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
+                                        <img src="{{ thumb.url }}" class="card-img-top food-image" alt="{{ song.title }}">
+                                        <div class="card-body row">
+                                            <h5 class="card-title text-white">{{ song.title }}</h5>
+                                            <p class="p-0 m-0">
+                                                <a class="text-decoration-none" href="{% url 'sellers:seller_artist' song.seller.id %}" style="color:#888;">{{ song.seller }}</a>
+                                            </p>
+                                        </div>
+                                    {% endthumbnail %}
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
             </div>
         </div>
     </div>
-    
+</div>
+{% endif %}
 
+
+<!-- 신곡 -->
+<div class="container">
+    <div class="row recent_songs">
+        <div id="recentCarousel" class="carousel slide d-sm-none">
+            <h5 id="chart-title" class="fs-2 text-white m-0">신곡</h5>
+            <div class="carousel-inner">
+                <div style="border-bottom: 0px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
+                </div>
+                {% for song in object %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="d-flex justify-content-center align-items-center h-100">
+                        <div class="col-sm-6 col-md-3 mb-4">
+                            <div class="card text-center bg-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                                <a href="{% url 'songs:song_detail' pk=song.id %}" class="text-decoration-none">
+                                    {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
+                                        <img src="{{ thumb.url }}" class="card-img-top food-image" alt="{{ song.title }}">
+                                        <div class="card-body row" style="text-align: left;">
+                                            <h5 class="card-title text-white" style="font-size: 100%;">{{ song.title }}</h5>
+                                            <p class="p-0 m-0">
+                                                <a class="text-decoration-none" href="{% url 'sellers:seller_artist' song.seller.id %}" style="color:#888;margin-left: 20px;">{{ song.seller }}</a>
+                                            </p>
+                                        </div>
+                                    {% endthumbnail %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#recentCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#recentCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <!-- PC 화면에서 추천곡 -->
+        <div class="col-12 mb-4 d-none d-sm-block">
+            <div style="border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
+                <h1 id="chart-title" class="fs-2 text-white m-0 ">신곡</h1>
+            </div>
+            <div class="row mt-3">
+                    {% for song in object %}
+                        <div class="col-sm-6 col-md-3 mb-4">
+                            <div class="card text-center bg-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                                <a href="{% url 'songs:song_detail' pk=song.id %}" class="text-decoration-none">
+                                    {% thumbnail song.thumbnail "300x300" crop="center" as thumb %}
+                                        <img src="{{ thumb.url }}" class="card-img-top food-image" alt="{{ song.title }}">
+                                        <div class="card-body row">
+                                            <h5 class="card-title text-white">{{ song.title }}</h5>
+                                            <p class="p-0 m-0">
+                                                <a class="text-decoration-none" href="{% url 'sellers:seller_artist' song.seller.id %}" style="color:#888;">{{ song.seller }}</a>
+                                            </p>
+                                        </div>
+                                    {% endthumbnail %}
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    
+<!-- TOP5 -->
     <div class="container">
         <div style=" border-bottom: 1px solid hsla(0, 0%, 100%, .3); padding-bottom: 24px;">
             <h1 id="chart-title" class="fs-2 text-white m-0 ">TOP5</h1>
         </div>
-        <div class="row mt-3 px-4">
+        <div class="row mt-3 px-4"> 
             {% for song, score in ranking_songs %}
             <div class="container-fluid p-0 mt-1">
-                <div class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                <div id="top5mobile" class="row justify-content-between align-items-center bg-dark p-2 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
-                        <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
+                        <a href="{% url 'songs:song_detail' pk=song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
                     {% endthumbnail %}
                     <div class="col">
                         <span class="text-white" style="margin-right: 2px;">{{ forloop.counter }}</span>
@@ -120,116 +250,116 @@
                             <small class="fs-6" style="color: #888888;"><a class="text-decoration-none " href="{% url 'sellers:seller_artist' song.seller.user.id %}" style="color:#888;" >{{ song.seller }}</a></small>
                         </a>
                     </div>
-                    <div class="col">
-                        <div>
-                            <a class="btn btn-outline-light me-2" style="cursor: pointer;" data-id="{{ song.id }}"
-                                onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
-                        </div>
-                    </div>
+
                     <div class="col-auto d-flex align-items-center">
-                        <audio controls class="me-3" controlsList="nodownload">
+                        <audio controls class="me-0" controlsList="nodownload">
                             <source src="{{ song.mp3.url }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
+
+
 
                         {% if user.is_authenticated %}
                         <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
                             {% is_purchased user song.id as purchased %}
                             {% is_added_to_cart user song.id as added %}
                             {% if not added %}
-                            <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2"
-                                onclick="addToCart('{{song.id}}');">찜하기</button>
+
+                            <button id="add-btn-{{song.id}}" type="button" class="btn btn"
+                                onclick="addToCart('{{song.id}}');">🤍</button>
+                            <!-- 가사 버튼 -->
+                            <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}"
+                            onclick="showLyrics('{{ song.id }}')">📃</a>
                             {% else %}
-                            <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2"
-                                onclick="removeFromCart('{{song.id}}');">찜 취소</button>
+                            <button id="remove-btn-{{song.id}}" type="button" class="btn btn"
+                                onclick="removeFromCart('{{song.id}}');">❤️</button>
+                            <!-- 가사 버튼 -->
+                            <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}"
+                            onclick="showLyrics('{{ song.id }}')">📃</a>
                             {% endif %}
 
                             {% if not purchased %}
                                 <form action="{% url 'payments:payment_pay' song.id %}" onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                                    <button class="btn btn-outline-light me-2" type="submit" onclick="">구매하기</button>
+                                    <button class="btn btn" type="submit" onclick="">💳</button>
                                 </form>
                             {% else %}
                                 <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
-                                    <button class="btn btn-outline-light me-2">다운로드</button>
+                                    <button class="btn btn">💾</button>
                                 </a>
                             {% endif %}
                         {% else %}
-                            <button type="button" class="btn btn-outline-light me-2 " onclick="gotoLogin();">찜하기</button>
+                            <button type="button" class="btn btn" onclick="gotoLogin();">🤍</button>
                             <!-- 다운로드 버튼 -->
-                            <button class="btn btn-outline-light me-2" type="submit" onclick="gotoLogin();">구매하기</button>
-                        {% endif %}
+                            <button class="btn btn" type="submit" onclick="gotoLogin();">💳</button>
+                            <!-- 가사 버튼 -->
+                            <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}"
+                            onclick="showLyrics('{{ song.id }}')">📃</a>
+                            {% endif %}
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
-</div>
 {% endblock %}
-
 {% block extra-script %}
 <script>
-    document.getElementById("search-form").addEventListener('submit', function (event) {
+document
+    .getElementById("search-form")
+    .addEventListener("submit", function (event) {
         event.preventDefault();
-        const search_name_value = document.getElementById('search-input').value;
-        const display_content = document.getElementById('display-content');
+        const search_name_value = document.getElementById("search-input").value;
+        const display_content = document.getElementById("display-content");
         axios({
-            method: 'post',
+            method: "post",
             url: '{% url "search" %}',
             data: JSON.stringify({
-                title: search_name_value
+            title: search_name_value,
             }),
             headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+        })
+        .then((response) => {
+            if (response.data.success === "true") {
+                display_content.innerHTML = response.data.data;
+            } else {
+                display_content.textContent = response.data.message;
             }
         })
-            .then(response => {
-                if (response.data.success === 'true') {
-                    display_content.innerHTML = response.data.data;
-                } else {
-                    display_content.textContent = response.data.message;
-                }
-            })
-            .catch(error => console.log(error));
+        .catch((error) => console.log(error, "no"));
     });
 
-
-    function showLyrics(songId) {
-        // 예제를 위해 가사를 고정된 값으로 설정, 실제로는 서버에서 가사를 가져오는 코드 필요
-        const lyrics = '여기에 서버에서 가져온 가사를 채웁니다.';
-        axios({
-            method: 'get',
-            url: '{% url "songs:song_lyrics" %}',
-            params: {
-                songid: songId
-            },
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-            .then(response => {
-                // 모달의 가사 내용을 업데이트하고 모달을 표시
-                document.getElementById('lyricsContent').innerText = response.data.success;
-
-                // 모달 창을 표시
-                var lyricsModal = new bootstrap.Modal(document.getElementById('lyricsModal'), {
-                    keyboard: true
-                });
-                lyricsModal.show();
-            })
-            .catch(error => console.log(error));
-    }
-
-    function gotoLogin() {
-        var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {
-            keyboard: false
+function showLyrics(songId) {
+    const lyrics = "여기에 서버에서 가져온 가사를 채웁니다.";
+    axios({
+    method: "get",
+    url: '{% url "songs:song_lyrics" %}',
+    params: {
+        songid: songId,
+    },
+    headers: {
+        "Content-Type": "application/json",
+    },
+    })
+    .then((response) => {
+        document.getElementById("lyricsContent").innerText = response.data.success;
+        var lyricsModal = new bootstrap.Modal(document.getElementById("lyricsModal"), {
+        keyboard: true,
         });
-        loginModal.show();
+        lyricsModal.show();
+    })
+    .catch((error) => console.log(error));
+}
+
+function gotoLogin() {
+    var loginModal = new bootstrap.Modal(document.getElementById("loginModal"), {
+    keyboard: false,
+    });
+    loginModal.show();
     }
-
     function addToCart(songId) {
-
         const addBtn = document.getElementById('add-btn-' + (songId));
         axios({
             method: 'get',
@@ -240,9 +370,9 @@
         })
             .then(response => {
                 addBtn.id = 'remove-btn-' + response.data.song_id;  // Change the ID
-                addBtn.className = 'btn btn-outline-danger me-2';  // Change the classes
+                addBtn.className = 'btn btn';  // Change the classes
                 addBtn.onclick = () => removeFromCart(songId);  // Change the onclick event
-                addBtn.textContent = '찜 취소';
+                addBtn.textContent = '❤️';
                 // alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
             })
             .catch(error => console.log(error));
@@ -259,9 +389,9 @@
         })
             .then(response => {
                 removeBtn.id = 'add-btn-' + response.data.song_id;  // Change the ID
-                removeBtn.className = 'btn btn-outline-light me-2';  // Change the classes
+                removeBtn.className = 'btn btn';  // Change the classes
                 removeBtn.onclick = () => self.addToCart(songId);  // Change the onclick event
-                removeBtn.textContent = '찜하기';
+                removeBtn.textContent = '🤍';
                 // alert(response.data.success);
             })
             .catch(error => console.log(error));
@@ -270,8 +400,22 @@
     function confirmPurchase(title) {
         return confirm('정말 "' + title + '"을(를) 구매하시겠습니까?');
     }
+
+    const audios = document.querySelectorAll('audio');
+
+    function pauseAllOthers(currentAudio) {
+        audios.forEach(audio => {
+        if (audio !== currentAudio) {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+        });
+    }
+
+    audios.forEach(audio => {
+        audio.addEventListener('play', function () {
+        pauseAllOthers(audio);
+        });
+    });
 </script>
-
-
-
 {% endblock extra-script %}

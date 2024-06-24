@@ -29,9 +29,50 @@
         object-fit: cover;
         border-radius: 5%;
     }
-</style>
+    @media (max-width: 576px) {
+        .col-auto.d-flex.align-items-center {
+        width: 500%;
+        margin: 15px 0px 0px;
+        padding-left: 0;
+        padding-right: 0;
+        }
+    }
+    #search-elements {
+        display: block !important;
+    }
+    .search-item {
+        width: 100%;
+        margin: 10px 0;
+        }
 
+    .pagination {
+        justify-content: center;
+        }
+
+    .modal-dialog {
+        max-width: 90%;
+        }
+
+    
+    #search-form{
+        flex : 1;
+        margin-left: 5px;
+        margin-right: 5px;
+        white-space: nowrap;
+        flex-direction: column; /* 세로로 배치 */
+        align-items: stretch; /* 길이 맞춤 */
+        margin-top: 10px; /* 위 여백 */
+        margin-bottom: 10px; /* 아래 여백 */
+    }
+
+    .btn {
+            padding:5px;
+        }
+
+    
+</style>
 {% endblock extra-style %}
+
 {% block content %}
 <div class="container">
 
@@ -41,13 +82,16 @@
     <div>
         <div class="container">
             <div class="row mt-3 mb-3">
-                <div class="col d-flex ">
-                    <div class="btn-group m-0" role="group" aria-label="Sort" style="border: 1px solid hsla(0, 0%, 100%, .3);">
-                        <button type="button" class="btn btn-dark m-0" onclick="showRecent();">최신순</button>
-                        <button type="button" class="btn btn-dark m-0" onclick="showRanking();">인기순</button>
+                <div class="col d-flex" id="search-elements">
+                    <div class="btn-group m-0" role="group" aria-label="Sort" style="border: 1px solid hsla(0, 0%, 100%, .3);" id="sort_button_group">
+                        <button type="button" class="btn btn-dark m-0" onclick="showRecent();" id="new_button">최신순</button>
+                        <button type="button" class="btn btn-dark m-0" onclick="showRanking();" id="popular_button">인기순</button>
                     </div>
                     <div style="display: inline-block; margin-left: 10px;">
-                        <select id="genre-select" class="form-select bg-dark text-white" style="border: 1px solid hsla(0, 0%, 100%, .3);" onchange="filterByGenre(this.value)">
+
+                        <select id="genre-select" class="form-select bg-dark text-white" style="border: 1px solid hsla(0, 0%, 100%, .3);" onchange="filterByBoth(document.getElementById('tempo-select').value,this.value)">
+
+                            <option value="">장르 선택</option>
                             <option value="">전체 장르</option>
                             <option value="pop">팝</option>
                             <option value="dance">댄스</option>
@@ -69,7 +113,7 @@
                         </select>
                     </div>
                     <div style="display: inline-block; margin-left: 10px;">
-                        <select id="tempo-select" class="form-select bg-dark text-white" onchange="filterByTempo(this.value)" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                        <select id="tempo-select" class="form-select bg-dark text-white" onchange="filterByBoth(this.value, document.getElementById('genre-select').value)" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                             <option value="">템포 선택</option>
                             <option value="slower">아주 느림</option>
                             <option value="slow">느림</option>
@@ -82,7 +126,7 @@
                         <div class="d-flex ">
                             <form class="d-flex " id="search-form">
                                 <div class="input-group ">
-                                    <input type="text" id="search-input" title="title" class="form-control" style="width: 300px; border: 1px solid hsla(0, 0%, 100%, .3);" placeholder="검색어를 입력하세요. (노래명;아티스트명)">
+                                    <input type="text" id="search-input" title="title" class="form-control" style="max-width: 300px; border: 1px solid hsla(0, 0%, 100%, .3);" placeholder="검색어를 입력하세요. (노래명;아티스트명)">
                                     <button type="submit" class="btn btn-outline-light bg-dark " style="border: 1px solid hsla(0, 0%, 100%, .3);">검색</button>
                                 </div>
                             </form>
@@ -92,19 +136,21 @@
             </div>
         </div>
 
-        <div id="songs-container">
+<div id="songs-container">
+
             {% for song, _ in page_obj %}
-            <div class="container p-0 mt-1 px-3">
-                <div class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2" style="border: 1px solid hsla(0, 0%, 100%, .3);">
+            <div class="container-fluid p-0 mt-1">
+                <div class="row justify-content-between align-items-center bg-dark p-2 shadow rounded-2" style="border: 1px solid hsla(0, 0%, 100%, .3);">
                     {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
                         <a href="{% url 'songs:song_detail' song.id %}" style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt="" style="width: 70px; height: 70px; padding: 0;"></a>
                     {% endthumbnail %}
                     <div class="col">
-                        {% if forloop.counter <= 3 and page_obj.number == 1 %} 
-                            <span style="margin-right: 2px; color: yellow;">{{ page_obj.start_index | add:forloop.counter0 }}</span><span style="color: yellow;">위</span>
-                        {% else %}
-                            <span class="text-white" style="margin-right: 2px;">{{ page_obj.start_index | add:forloop.counter0 }}</span><span
-                                class="text-white ">위</span>
+                        <span class="text-white" style="margin-right: 2px;">{{ page_obj.start_index|add:forloop.counter0 }}</span>
+                        <span class="text-white ">위</span> 
+                        {% if score >= 50 %}
+                            <span style="color: deeppink;">Hot!</span>    
+                        {% elif score < 50 and score >= 20 %}
+                            <span style="color: aquamarine;">Recommended!!!</span>
                         {% endif %}
                         <a class="text-decoration-none " href="{% url 'songs:song_detail' song.id %}">
                             <!-- 노래 세부 내용 페이지로 링크 -->
@@ -114,90 +160,104 @@
                             </small>
                         </a>
                     </div>
-                    <div class="col">
-                        <div>
-                            <a class="btn btn-outline-light me-2 text-white " style="cursor: pointer;" data-id="{{ song.id }}"
-                                onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
-                        </div>
-                    </div>
                     <div class="col-auto d-flex align-items-center">
-                        <audio controls class="me-3" controlsList="nodownload">
+                        <audio controls class="me-0" controlsList="nodownload">
                             <source src="{{ song.mp3.url }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
                         {% if user.is_authenticated %}
                         <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
-                        {% is_purchased user song.id as purchased %}
-                        {% is_added_to_cart user song.id as added %}
-                            <!-- 찜 버튼 -->
+                            {% is_purchased user song.id as purchased %}
+                            {% is_added_to_cart user song.id as added %}
                             {% if not added %}
-                                <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2"
-                                    onclick="addToCart('{{song.id}}');">찜하기</button>
+                                <button id="add-btn-{{song.id}}" type="button" class="btn btn" onclick="addToCart('{{song.id}}');">🤍</button>
+                                <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}" onclick="showLyrics('{{ song.id }}')">📃</a>
                             {% else %}
-                                <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2"
-                                    onclick="removeFromCart('{{song.id}}');">찜 취소</button>
+                                <button id="remove-btn-{{song.id}}" type="button" class="btn btn" onclick="removeFromCart('{{song.id}}');">❤️</button>
+                                <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}" onclick="showLyrics('{{ song.id }}')">📃</a>
                             {% endif %}
                             {% if not purchased %}
-                            <!-- 다운로드 버튼 -->
-                                <form action="{% url 'payments:payment_pay' song.id %}"
-                                    onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                                    <button class="btn btn-outline-light me-2" type="submit" onclick="">구매하기</button>
+                                <form action="{% url 'payments:payment_pay' song.id %}" onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
+                                    <button class="btn btn" type="submit" onclick="">💳</button>
                                 </form>
                             {% else %}
                                 <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
-                                    <button class="btn btn-outline-light me-2">다운로드</button>
+                                    <button class="btn btn">💾</button>
                                 </a>
                             {% endif %}
                         {% else %}
-                            <button type="button" class="btn btn-outline-light me-2" onclick="gotoLogin();">찜하기</button>
-                            <button class="btn btn-outline-light me-2" type="submit" onclick="gotoLogin();">구매하기</button>
+                            <button type="button" class="btn btn" onclick="gotoLogin();">🤍</button>
+                            <button class="btn btn" type="submit" onclick="gotoLogin();">💳</button>
+                            <a class="btn btn" style="cursor: pointer;" data-id="{{ song.id }}" onclick="showLyrics('{{ song.id }}')">📃</a>
                         {% endif %}
                     </div>
                 </div>
             </div>
             {% endfor %}
-            <div class="container mt-3">
-                <div class="d-flex justify-content-center">
-                    <div>
-                        <ul class="pagination">
-                            {% if page_obj.has_other_pages %}
-                            {% if page_obj.has_previous %}
-                            <li class="page-item"><a class="page-link text-bg-dark "
-                                    href="?page={{ page_obj.previous_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">&laquo; Previous</a></li>
-                            {% endif %}
-    
-                            {% for num in page_range %}
-                            <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link text-bg-dark "
-                                    href="?page={{ num }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">{{ num }}</a></li>
-                            {% endfor %}
-    
-                            {% if page_obj.has_next %}
-                            <li class="page-item"><a class="page-link text-bg-dark " href="?page={{ page_obj.next_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">Next
-                                    &raquo;</a></li>
-                            {% endif %}
-                            {% endif %}
-                        </ul>
-                    </div>
+        <div class="container mt-3">
+            <div class="d-flex justify-content-center">
+                <div>
+                    <ul class="pagination">
+                        {% if page_obj.has_other_pages %}
+                        {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link text-bg-dark " href="?page={{ page_obj.previous_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">&laquo; Previous</a></li>
+                        {% endif %}
+                        {% for num in page_range %}
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link text-bg-dark " href="?page={{ num }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">{{ num }}</a></li>
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link text-bg-dark " href="?page={{ page_obj.next_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">Next &raquo;</a></li>
+                        {% endif %}
+                        {% endif %}
+                    </ul>
                 </div>
             </div>
         </div>
-
     </div>
-
 </div>
+
 
 {% endblock content %}
 
 {% block extra-script %}
 <script>
-    var myAudio = document.getElementById("myAudio");
+    // 음악 탭에 들어갔을때 나오는 음악 리스트의 중복 재생 방지
+    const audios = document.querySelectorAll('audio');
+        function pauseAllOthers(currentAudio) {
+            audios.forEach(audio => {
+                if (audio != currentAudio) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            });
+        }
+        // Add event listeners to all audio elements
+        audios.forEach(audio => {
+            audio.addEventListener('play', function() {
+                pauseAllOthers(audio);
+            });
+        });
+        
 
-    function playAudio() {
-        myAudio.play();
-    }
-
-    function pauseAudio() {
-        myAudio.pause();
+    
+    // 최신순, 인기순, 장르별 중복 재생 방지
+    function bindAudioControls() {
+        const audios = document.querySelectorAll('audio');
+        // Function to pause all other audios
+        function pauseAllOthers(currentAudio) {
+            audios.forEach(audio => {
+                if (audio != currentAudio) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            });
+        }
+        // Add event listeners to all audio elements
+        audios.forEach(audio => {
+            audio.addEventListener('play', function() {
+                pauseAllOthers(audio);
+            });
+        });
     }
 
     function confirmPurchase(title) {
@@ -249,9 +309,9 @@
         })
             .then(response => {
                 addBtn.id = 'remove-btn-' + response.data.song_id;  // Change the ID
-                addBtn.className = 'btn btn-outline-danger me-2';  // Change the classes
+                addBtn.className = 'btn btn';  // Change the classes
                 addBtn.onclick = () => removeFromCart(songId);  // Change the onclick event
-                addBtn.textContent = '찜 취소';
+                addBtn.textContent = '❤️';
                 // alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
             })
             .catch(error => console.log(error));
@@ -268,9 +328,9 @@
         })
             .then(response => {
                 removeBtn.id = 'add-btn-' + response.data.song_id;  // Change the ID
-                removeBtn.className = 'btn btn-outline-light me-2';  // Change the classes
+                removeBtn.className = 'btn btn';  // Change the classes
                 removeBtn.onclick = () => addToCart(songId);  // Change the onclick event
-                removeBtn.textContent = '찜하기';
+                removeBtn.textContent = '🤍';
                 // alert(response.data.success);
             })
             .catch(error => console.log(error));
@@ -287,25 +347,23 @@
         });
         loginModal.show();
     }
-
-    function showRecent(pageNumber = 1) {
-        const title = document.getElementById('chart-title')
+    
+    function showRecent() {
+        const title = document.getElementById('chart-title');
         axios({
             method: 'get',
             url: '{% url "songs:song_recent" %}',
-            params: {
-                page: pageNumber
-            }
         })
-            .then(response => {
-                title.textContent = '차트 | 최신순';
-                document.getElementById('songs-container').innerHTML = response.data;
-            })
-            .catch(error => console.log(error));
+        .then(response => {
+            title.textContent = '차트 | 최신순';
+            document.getElementById('songs-container').innerHTML = response.data;
+            bindAudioControls(); // 새로운 HTML에 대해 이벤트 핸들러 재바인딩
+        })
+        .catch(error => console.error('Error fetching recent songs:', error));
     }
 
     function showRanking(pageNumber = 1) {
-        const title = document.getElementById('chart-title')
+        const title = document.getElementById('chart-title');
         axios({
             method: 'get',
             url: '{% url "songs:song_ranking" %}',
@@ -313,48 +371,35 @@
                 page: pageNumber
             }
         })
-            .then(response => {
-                title.textContent = '차트 | 인기순';
-                document.getElementById('songs-container').innerHTML = response.data;
-            })
-            .catch(error => console.log(error));
+        .then(response => {
+            title.textContent = '차트 | 인기순';
+            document.getElementById('songs-container').innerHTML = response.data;
+            bindAudioControls(); // 새로운 HTML에 대해 이벤트 핸들러 재바인딩
+        })
+        .catch(error => console.error('Error fetching popular songs:', error));
     }
 
-    function filterByGenre(genre) {
+    function filterByBoth(tempo, genre) {
         const title = document.getElementById('chart-title');
+        console.log(tempo);
+        console.log(genre);
         axios({
             method: 'get',
-            url: '{% url "songs:song_genre" %}',  // Django URL을 적절하게 설정해야 합니다.
+            url: '{% url "songs:song_filter" %}',  
             params: {
+                tempo: tempo,
                 genre: genre
             }
         })
         .then(response => {
-            if (genre === "") {
-                title.textContent = '장르별 음원 | 전체';
-            } else {
+            if (tempo === "" && genre === "") {
+                title.textContent = '음원 목록 | 전체';
+            } else if (tempo === ""){
                 title.textContent = '장르별 음원 | ' + genre;
-            }
-            document.getElementById('songs-container').innerHTML = response.data;
-        })
-        .catch(error => console.log(error));
-    }
-
-    function filterByTempo(tempo) {
-        const title = document.getElementById('chart-title');
-        console.log(tempo);
-        axios({
-            method: 'get',
-            url: '{% url "songs:song_tempo" %}',  // 적절한 URL로 교체하세요
-            params: {
-                tempo: tempo
-            }
-        })
-        .then(response => {
-            if (tempo === "") {
-                title.textContent = '템포별 음원 | 전체';
-            } else {
+            } else if (genre === ""){
                 title.textContent = '템포별 음원 | ' + tempo;
+            } else {
+                title.textContent = '음원 목록 | 장르 : ' + genre + ' | 템포 : ' + tempo;
             }
             document.getElementById('songs-container').innerHTML = response.data;
         })
@@ -362,8 +407,6 @@
             console.error('Error fetching data:', error);
         });
     }
-
-    // 
 
     document.getElementById("search-form").addEventListener('submit', function (event) {
         event.preventDefault();
@@ -391,5 +434,6 @@
             .catch(error => console.log(error));
     });
 
+    
 </script>
 {% endblock extra-script %}

@@ -1,8 +1,51 @@
 {% extends "base.html" %}
 {% load session_filters %}
 {% load thumbnail %}
+{% block extra-style %}
+<style>
+
+@media (max-width:576px) {
+    div.col {
+        position: relative;
+    }
+    div.col-md-4.text-center {
+        display: block;
+        width:50%;
+        margin-left: auto !important;
+        margin-right: auto !important
+    }
 
 
+    #like-btn,#follow-btn {
+        position: absolute;
+        right: 0%;
+    }
+
+    .mt-4.d-flex.flex-column.flex-md-row {
+        align-items: flex-start; /* 수직 정렬은 flex-start로 설정 */
+    }
+    .button-container {
+        margin-top: 5px;
+        flex: 1;
+        align-items: center; /* 버튼 수직 중앙 정렬 */
+        flex-wrap: wrap; /* 필요에 따라 버튼이 넘칠 경우 줄 바꿈 */
+    }
+    .wishbutton-custom-style,.buybutton-custom-style {
+        white-space: nowrap;
+        display: inline-flex;
+        justify-content: center;
+        align-items: left;
+        font-size: 1em;
+        margin-right: 10px;
+        width: auto;
+   
+    }
+}
+
+
+
+</style>
+{% endblock extra-style %}
 {% block content %}
 
 <head>
@@ -174,105 +217,111 @@
             </div>
             <div class="mt-3 align-content-center align-items-center  d-flex ">
                 <span style="background-color: black; border-radius: 8px; color: navajowhite; padding: 5px;">장르</span>
-                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">{{ song.display_genre }}</span>
+                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">{{song.display_genre }}</span>
             </div>
             <div class="mt-3  align-content-center align-items-center  d-flex ">
                 <span style="background-color: black; border-radius: 8px; color: navajowhite; padding: 5px;">템포</span>
-                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">{{ song.display_tempo }}</span>
+                <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">{{song.display_tempo }}</span>
 
             </div>
             <div class="mt-3 align-content-center align-items-center  d-flex ">
                 <span style="background-color: black; border-radius: 8px; color: navajowhite; padding: 5px;">가사</span>
                 <span style="background-color: black; border-radius: 8px; color: aqua; padding: 5px;">
-                    <a class="btn btn-outline-light me-2 text-white" style="cursor: pointer;" data-id="{{ song.id }}"
-                        onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
+                    <a class="btn btn me-2 text-white" style="cursor: pointer;" data-id="{{ song.id }}"
+                        onclick="showLyrics(this.getAttribute('data-id'))">📃</a>
                 </span>
             </div>
             <br>
             <!-- 카카오톡 공유 -->
-            <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+            <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+                integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
+                crossorigin="anonymous"></script>
             <script>
-                Kakao.init("3b9fa38a430a9d653116c4f0d6b9bf7f");   // 아까 복사해둔 JavaScript 키
-                function sendLink() {
-                    Kakao.Link.sendCustom({
-                        templateId: 108578,   // 복사해둔 템플릿 ID
-                        templateArgs: {
-                            thumb: "{{song.thumbnail.url}}",
-                            title: "{{song.title}}",
-                            seller: "{{song.seller}}",
-                            description: "{{ page.excerpt }}",
-                            url: "{{ page.url }}",
-                        },
-                    });
-                }
+                Kakao.init('{{kakao_javascript_key}}'); // 사용하려는 앱의 JavaScript 키 입력
             </script>
-            <a class="kakao-link-btn" href="javascript:sendLink()">
-                <img src="//developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" />
+
+            <a id="kakaotalk-sharing-btn" class="kakao-link-btn" href="javascript:;">
+                <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                    alt="카카오톡 공유 보내기 버튼" />
             </a>
+
+            <script>
+                Kakao.Share.createCustomButton({
+                    container: '#kakaotalk-sharing-btn',
+                    templateId: 108578,
+                    templateArgs: {
+                        thumb: "{{ song.thumbnail.url }}",
+                        title: "{{ song.title }}",
+                        seller: "{{ song.seller }}",
+                    },
+                });
+            </script>
 
             <!-- 인스타그램 공유 -->
             <a href="https://www.instagram.com/direct/inbox/" class="instagram-btn">
-                    <img src="/uploads/insta.jpeg" alt="Instagram Icon" />
-                </a>
+                <img src="/uploads/insta.jpeg" alt="Instagram Icon" />
+            </a>
 
-                <div id="toast">링크가 복사되었습니다!</div>
+            <div id="toast">링크가 복사되었습니다!</div>
 
-                <script>
-                    // 클래스를 사용하여 요소를 찾기 위해 querySelector 사용
-                    document.querySelector('.instagram-btn').addEventListener('click', function (event) {
-                        event.preventDefault();
+            <script>
+                // 클래스를 사용하여 요소를 찾기 위해 querySelector 사용
+                document.querySelector('.instagram-btn').addEventListener('click', function (event) {
+                    event.preventDefault();
 
-                        const url = window.location.href; // 현재 페이지 URL 가져오기
+                    const url = window.location.href; // 현재 페이지 URL 가져오기
 
-                        // modern API를 사용하여 클립보드에 텍스트 복사
-                        navigator.clipboard.writeText(url).then(function () {
-                            // 사용자에게 복사 완료 메시지 표시
-                            var toast = document.getElementById("toast");
-                            toast.className = "show";
-                            setTimeout(function () {
-                                toast.className = toast.className.replace("show", "");
-                                // 인스타그램 페이지를 새로운 창으로 열기
-                                window.open('https://www.instagram.com/direct/inbox/', '_blank');
-                            }, 1000);
-                        }).catch(function (error) {
-                            console.error('복사를 실패했습니다: ', error);
-                        });
+                    // modern API를 사용하여 클립보드에 텍스트 복사
+                    navigator.clipboard.writeText(url).then(function () {
+                        // 사용자에게 복사 완료 메시지 표시
+                        var toast = document.getElementById("toast");
+                        toast.className = "show";
+                        setTimeout(function () {
+                            toast.className = toast.className.replace("show", "");
+                            // 인스타그램 페이지를 새로운 창으로 열기
+                            window.open('https://www.instagram.com/direct/inbox/', '_blank');
+                        }, 1000);
+                    }).catch(function (error) {
+                        console.error('복사를 실패했습니다: ', error);
                     });
-                </script>
+                });
+            </script>
             <!-- 인스타그램 공유 -->
 
 
-            <div class="mt-4 d-flex ">
-                <audio controls class="me-3 " controlsList="nodownload">
+            <div class="mt-4 d-flex flex-column flex-md-row">
+                <audio controls class="me-3 " controlsList="nodownload"  style="flex-shrink: 0; margin-right: 3%;">
                     <source src="{{ song.mp3.url }}" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
-                {% if user.is_authenticated %}
-                {% is_purchased user song.id as purchased %}
-                {% is_added_to_cart user song.id as added %}
-                {% if purchased %}
-                <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3"
-                    class="btn btn-outline-light me-2 text-center align-items-center d-flex ">
-                    다운로드
-                </a>
-                {% else %}
-                <form action="{% url 'payments:payment_pay' song.id %}"
-                    onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                    <button class="btn btn-outline-light me-2 " type="submit" onclick=""
-                        style="height: 100%;">구매하기</button>
-                </form>
-                {% endif %}
-                {% if not added %}
-                <button id="add-btn-{{song.id}}" type="button" class="btn btn-outline-light me-2"
-                    onclick="addToCart('{{song.id}}');">찜하기</button>
-                {% else %}
-                <button id="remove-btn-{{song.id}}" type="button" class="btn btn-outline-danger me-2"
-                    onclick="removeFromCart('{{song.id}}');">찜 취소</button>
-                {% endif %}
-                {% else %}
-                <button class="btn btn-outline-light me-2" onclick="gotoLogin()">구매하기</button>
-                <button class="btn btn-outline-light me-2" onclick="gotoLogin()">찜하기</button>
-                {% endif %}
+                <div class="button-container d-flex justify-content-left">
+                    {% if user.is_authenticated %}
+                    {% is_purchased user song.id as purchased %}
+                    {% is_added_to_cart user song.id as added %}
+                    {% if purchased %}
+                    <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3"
+                        class="btn btn-outline-light me-2  buybutton-custom-style text-center d-flex ">
+                        다운로드
+                    </a>
+                    {% else %}
+                    <form action="{% url 'payments:payment_pay' song.id %}"
+                        onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
+                        <button class="btn btn me-2 buybutton-custom-style" type="submit" onclick=""
+                            style="height: 100%;">💳</button>
+                    </form>
+                    {% endif %}
+                    {% if not added %}
+                    <button id="add-btn-{{song.id}}" type="button" class="btn btn me-2 wishbutton-custom-style"
+                        onclick="addToCart('{{song.id}}');">🤍</button>
+                    {% else %}
+                    <button id="remove-btn-{{song.id}}" type="button" class="btn btn me-2 wishbutton-custom-style"
+                      onclick="removeFromCart('{{song.id}}');">❤️</button>
+                    {% endif %}
+                    {% else %}
+                   <button class="btn btn me-2 buybutton-custom-style" onclick="gotoLogin()">💳</button>
+                   <button class="btn btn me-2 wishbutton-custom-style" onclick="gotoLogin()">🤍</button>
+                   {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -410,9 +459,9 @@
         })
             .then(response => {
                 addBtn.id = 'remove-btn-' + response.data.song_id;  // Change the ID
-                addBtn.className = 'btn btn-outline-danger me-2';  // Change the classes
+                addBtn.className = 'btn btn me-2 wishbutton-custom-style';  // Change the classes
                 addBtn.onclick = () => removeFromCart(songId);  // Change the onclick event
-                addBtn.textContent = '찜 취소';
+                addBtn.textContent = '❤️';
                 // alert('찜 목록에 "' + response.data.success + '"을(를) 추가하였습니다.');
             })
             .catch(error => console.log(error));
@@ -429,9 +478,9 @@
         })
             .then(response => {
                 removeBtn.id = 'add-btn-' + response.data.song_id;  // Change the ID
-                removeBtn.className = 'btn btn-outline-light me-2';  // Change the classes
+                removeBtn.className = 'btn btn me-2 wishbutton-custom-style';  // Change the classes
                 removeBtn.onclick = () => addToCart(songId);  // Change the onclick event
-                removeBtn.textContent = '찜하기';
+                removeBtn.textContent = '🤍';
                 // alert(response.data.success);
             })
             .catch(error => console.log(error));
@@ -446,9 +495,9 @@
 
     (function () { // DON'T EDIT BELOW THIS LINE
         var d = document, s = d.createElement('script');
-        s.src = 'https://music-value-platform.disqus.com/embed.js';
+        s.src = 'https://music-value-platform-1.disqus.com/embed.js';
         s.setAttribute('data-timestamp', +new Date());
         (d.head || d.body).appendChild(s);
-    })();
+    })(); 
 </script>
 {% endblock extra-script %}

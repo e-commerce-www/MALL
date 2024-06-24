@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,6 +37,11 @@ TWILIO_SERVICE_SID = config('TWILIO_SERVICE_SID')
 # DISQUS
 DISQUS_SHORTNAME = config('DISQUS_SHORTNAME')
 DISQUS_MY_DOMAIN = config('DISQUS_MY_DOMAIN')
+DISQUS_API_KEY = config('DISQUS_API_KEY')
+
+DISQUS_SHORTNAME_2 = config('DISQUS_SHORTNAME_2')
+DISQUS_MY_DOMAIN_2 = config('DISQUS_MY_DOMAIN_2')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
@@ -43,7 +49,8 @@ DEBUG = config('DEBUG')
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 
-SITE_ID = 10 
+
+SITE_ID = 10
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -56,6 +63,18 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': config('REDIS_URL'),  # Redis 서버 주소와 포트를 설정
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+CACHE_TIMEOUT = 3600
 
 # Application definition
 
@@ -89,6 +108,7 @@ INSTALLED_APPS = [
     'apps.songs',
     'apps.carts',
     'apps.likes',
+    'apps.boards',
     'apps',
 ]
 
@@ -131,23 +151,23 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': config('DATABASE_NAME'),
-#         'USER': config('DATABASE_USER'),
-#         'PASSWORD': config('DATABASE_PASSWORD'),
-#         'HOST': config('DATABASE_HOST'),
-#         'PORT': config('DATABASE_PORT'),
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
+        'HOST': config('DATABASE_HOST'),
+        'PORT': config('DATABASE_PORT'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -196,8 +216,9 @@ MEDIA_URL = '/uploads/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'    #배포시에 주석해제
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
@@ -209,8 +230,12 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-LOGIN_URL = 'home'
+# LOGIN_URL = 'home'
+ACCOUNT_LOGIN_ON_GET = True
 LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+ACCOUNT_LOGIN_REDIRECT_URL = 'home'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
 
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
@@ -221,3 +246,4 @@ SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_LOGOUT_ON_GET = True
 SOCIALACCOUNT_ONLY = True
+KAKAO_JS_KEY = config('KAKAO_JS_KEY')

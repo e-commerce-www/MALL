@@ -50,6 +50,19 @@
     .shopping-cart {
         color: #f0f0f0;
     }
+    @media (max-width: 576px) {
+        .col-auto.d-flex.align-items-center {
+        width: 200%;
+        margin: 15px 0px 0px;
+        padding-left: 0px;
+        padding-right: 0px;
+        }
+        
+        .btn {
+            padding:5px;
+            
+        }
+}
 </style>
 {% endblock extra-style %}
 
@@ -66,8 +79,8 @@
             <div class="row mt-3 mb-3">
                 <div class="col">
                     <div class="btn-group" role="group" aria-label="Sort">
-                        <button type="button" class="btn btn-dark " style="border: 1px solid hsla(0, 0%, 100%, .3);" onclick="myFavorite();">나의 찜 목록</button>
-                        <button type="button" class="btn btn-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);" onclick="myRecent();">최근 본 노래</button>
+                        <button type="button" class="btn btn-dark " style="border: 1px solid hsla(0, 0%, 100%, .3);" onclick="myFavorite();">My List</button>
+                        <button type="button" class="btn btn-dark" style="border: 1px solid hsla(0, 0%, 100%, .3);" onclick="myRecent();">Recent Music</button>
                     </div>
                 </div>
             </div>
@@ -82,7 +95,7 @@
                     {% endif %}
                     {% for cart in page_obj %}
                     <div class="container p-0 mt-1 px-3">
-                        <div class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);"
+                        <div class="row justify-content-between align-items-center bg-dark p-2 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);"
                             id="cart-song-{{ cart.song.id }}">
                             {% thumbnail cart.song.thumbnail "70x70" crop="center" as thumb %}
                             <a href="{% url 'songs:song_detail' cart.song.id %}"
@@ -98,14 +111,9 @@
                                     </small>
                                 </a>
                             </div>
-                            <div class="col">
-                                <div>
-                                    <a class=" btn btn-outline-light me-2 text-white" style="cursor: pointer;" data-id="{{ cart.song.id }}"
-                                        onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
-                                </div>
-                            </div>
+
                             <div class="col-auto d-flex align-items-center">
-                                <audio controls class="me-3" controlsList="nodownload">
+                                <audio controls class="me-0" controlsList="nodownload">
                                     <source src="{{ cart.song.mp3.url }}" type="audio/mpeg">
                                     Your browser does not support the audio element.
                                 </audio>
@@ -116,28 +124,26 @@
                                 {% is_added_to_cart user cart.song.id as added %}
                                 <!-- 찜 버튼 -->
                                 {% if not added %}
-                                <button id="add-btn-{{cart.song.id}}" type="button" class="btn btn-outline-light me-2"
-                                    onclick="addToCart('{{cart.song.id}}');">찜하기</button>
+                                <button id="add-btn-{{cart.song.id}}" type="button" class="btn btn" onclick="addToCart('{{cart.song.id}}');">🤍</button>
+                                <a class=" btn btn text-white" style="cursor: pointer;" data-id="{{ cart.song.id }}" onclick="showLyrics(this.getAttribute('data-id'))">📃</a>
+
                                 {% else %}
-                                <button id="remove-btn-{{cart.song.id}}" type="button"
-                                    class="btn btn-outline-danger me-2" onclick="removeFromCart('{{cart.song.id}}');">찜 취소</button>
+                                <button id="remove-btn-{{cart.song.id}}" type="button"class="btn btn" onclick="removeFromCart('{{cart.song.id}}');">❤️</button>
+                                <a class=" btn btn text-white" style="cursor: pointer;" data-id="{{ cart.song.id }}" onclick="showLyrics(this.getAttribute('data-id'))">📃</a>
                                 {% endif %}
                                 {% if not purchased %}
                                 <!-- 다운로드 버튼 -->
-                                <form action="{% url 'payments:payment_pay' cart.song.id %}"
-                                    onsubmit="return confirmPurchase('{{ cart.song.title|escapejs }}')">
-                                    <button class="btn btn-outline-light me-2" type="submit" onclick="">구매하기</button>
+                                <form action="{% url 'payments:payment_pay' cart.song.id %}" onsubmit="return confirmPurchase('{{ cart.song.title|escapejs }}')">
+                                    <button class="btn btn" type="submit" onclick="">💳</button>
                                 </form>
                                 {% else %}
                                 <a href="{{ cart.song.mp3.url }}" download="{{ cart.song.title }}.mp3">
-                                    <button class="btn btn-outline-light me-2">다운로드</button>
+                                    <button class="btn btn">💾</button>
                                 </a>
                                 {% endif %}
                                 {% else %}
-                                <button type="button" class="btn btn-outline-light me-2"
-                                    onclick="gotoLogin();">찜하기</button>
-                                <button class="btn btn-outline-light me-2" type="submit"
-                                    onclick="gotoLogin();">구매하기</button>
+                                <button type="button" class="btn btn" onclick="gotoLogin();">🤍</button>
+                                <button class="btn btn" type="submit" onclick="gotoLogin();">💳</button>
                                 {% endif %}
                             </div>
                         </div>
@@ -149,17 +155,17 @@
                     <ul class="pagination">
                         {% if page_obj.has_other_pages %}
                         {% if page_obj.has_previous %}
-                        <li class="page-item"><a class="page-link"
-                                href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a></li>
+                        <li class="page-item"><a class="page-link text-bg-dark"
+                                href="?page={{ page_obj.previous_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">&laquo; Previous</a></li>
                         {% endif %}
 
                         {% for num in page_range %}
-                        <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link"
-                                href="?page={{ num }}">{{ num }}</a></li>
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link text-bg-dark"
+                                href="?page={{ num }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">{{ num }}</a></li>
                         {% endfor %}
 
                         {% if page_obj.has_next %}
-                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next
+                        <li class="page-item"><a class="page-link text-bg-dark" href="?page={{ page_obj.next_page_number }}" style="border: 1px solid hsla(0, 0%, 100%, .3);">Next
                                 &raquo;</a></li>
                         {% endif %}
                         {% endif %}
@@ -167,6 +173,8 @@
                 </nav>
             </div>
 
+
+            <!--최근 본 음악-->
             <div class="container p-0 mt-1 px-3">
                 <div id="recentMusicList" class="song-list">
                     {% for song_id in request.session.viewed_songs %}
@@ -174,7 +182,7 @@
                     <div class="song-item">
                         {% if song %}
                         <div class="container-fluid p-0 mt-1">
-                            <div class="row justify-content-between align-items-center bg-dark p-3 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
+                            <div class="row justify-content-between align-items-center bg-dark p-1 shadow rounded-2 " style="border: 1px solid hsla(0, 0%, 100%, .3);">
                                 {% thumbnail song.thumbnail "70x70" crop="center" as thumb %}
                                 <a href="{% url 'songs:song_detail' song.id %}"
                                     style="padding: 0; display: inline; width: 70px;"><img src="{{ thumb.url }}" alt=""
@@ -189,14 +197,9 @@
                                         </small>
                                     </a>
                                 </div>
-                                <div class="col">
-                                    <div>
-                                        <a class="btn btn-outline-light me-2 text-white" style="cursor: pointer;" data-id="{{ song.id }}"
-                                            onclick="showLyrics(this.getAttribute('data-id'))">가사 보기</a>
-                                    </div>
-                                </div>
+                                
                                 <div class="col-auto d-flex align-items-center">
-                                    <audio controls class="me-3" controlsList="nodownload">
+                                    <audio controls class="me-0" controlsList="nodownload">
                                         <source src="{{ song.mp3.url }}" type="audio/mpeg">
                                         Your browser does not support the audio element.
                                     </audio>
@@ -205,21 +208,20 @@
                                     <!-- 여기서 templatetags 로 song.id를 넘겨서 구매한 노래인지 아닌 지 확인 하는 거를 체크-->
                                     {% is_purchased user song.id as purchased %}
                                     {% if not purchased %}
-                                    <!-- 다운로드 버튼 -->
-                                    <form action="{% url 'payments:payment_pay' song.id %}"
-                                        onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
-                                        <button class="btn btn-outline-light me-2" type="submit" onclick="">구매하기</button>
+                                    <a class="btn btn text-white" style="cursor: pointer;" data-id="{{ song.id }}" onclick="showLyrics(this.getAttribute('data-id'))">📃</a>
+                                    <!-- 구매버튼 -->
+                                    <form action="{% url 'payments:payment_pay' song.id %}" onsubmit="return confirmPurchase('{{ song.title|escapejs }}')">
+                                        <button class="btn btn" type="submit" onclick="">💳</button>
                                     </form>
                                     {% else %}
                                     <a href="{{ song.mp3.url }}" download="{{ song.title }}.mp3">
-                                        <button class="btn btn-outline-light me-2">다운로드</button>
+                                        <button class="btn btn">💾</button>
+                                        <a class="btn btn text-white" style="cursor: pointer;" data-id="{{ song.id }}" onclick="showLyrics(this.getAttribute('data-id'))">📃</a>
                                     </a>
                                     {% endif %}
                                     {% else %}
-                                    <button type="button" class="btn btn-outline-light me-2"
-                                        onclick="gotoLogin();">찜하기</button>
-                                    <button class="btn btn-outline-light me-2" type="submit"
-                                        onclick="gotoLogin();">구매하기</button>
+                                    <button type="button" class="btn btn" onclick="gotoLogin();">🤍</button>
+                                    <button class="btn btn" type="submit" onclick="gotoLogin();">💳</button>
                                     {% endif %}
                                 </div>
                             </div>
@@ -319,6 +321,26 @@
                 })
                 .catch(error => console.log(error));
         }
+
+        const audios = document.querySelectorAll('audio');
+
+    // Function to pause all other audios
+    function pauseAllOthers(currentAudio) {
+        audios.forEach(audio => {
+            if (audio !== currentAudio) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+        });
+    }
+
+    // Add event listeners to all audio elements
+    audios.forEach(audio => {
+        audio.addEventListener('play', function() {
+            pauseAllOthers(audio);
+        });
+    });
+
 
     </script>
     {% endblock extra-script %}
