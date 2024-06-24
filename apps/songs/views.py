@@ -112,6 +112,7 @@ def song_recent(request):
     return render(request, "songs/song_list_recent.html", context={"page_obj": page_obj, "page_range": page_range})
 
 
+
 def song_ranking(request):
     songs = ranked_songs()
     paginator = Paginator(songs, 5)
